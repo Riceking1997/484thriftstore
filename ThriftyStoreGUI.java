@@ -6,6 +6,7 @@
 package Capstone;
 
 
+import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -147,6 +148,9 @@ public class ThriftyStoreGUI extends Application{
     TextField txtloginpass = new TextField();
     Button btnlogin = new Button("Login");
     
+    //Employee Lists for checking who has logged in
+    ArrayList<Employee> WhoLoggedIn = new ArrayList<>();
+    
     @Override
     public void start(Stage primaryStage) {
         //Creating the Scene
@@ -245,14 +249,14 @@ public class ThriftyStoreGUI extends Application{
             //Adding Employee Table
             EmpTable = new TableView<>();
             EmpTable.setItems(EmpData);
-            TableColumn tblcempeid = new TableColumn("Product");
-            TableColumn tblcempname = new TableColumn("Picture");
-            TableColumn tblcempphone = new TableColumn("Price");
-            TableColumn tblcempaddy = new TableColumn("Quantity");
-            TableColumn tblcempsal = new TableColumn("Status");
-            TableColumn tblcemptype = new TableColumn("Exp. Date");
-            TableColumn tblcempstore = new TableColumn("Department");
-            TableColumn tblcempdepartment = new TableColumn("Store");
+            TableColumn tblcempeid = new TableColumn("Employee ID");
+            TableColumn tblcempname = new TableColumn("Name");
+            TableColumn tblcempphone = new TableColumn("Phone");
+            TableColumn tblcempaddy = new TableColumn("Address");
+            TableColumn tblcempsal = new TableColumn("Salary");
+            TableColumn tblcemptype = new TableColumn("Type");
+            TableColumn tblcempstore = new TableColumn("Store");
+            TableColumn tblcempdepartment = new TableColumn("Department");
             //EmpTable.setMinWidth(primaryScene.getWidth());
             EmpTable.getColumns().addAll(tblcempeid, tblcempname, tblcempphone, tblcempaddy, tblcempsal,
                 tblcemptype, tblcempstore, tblcempdepartment);
@@ -387,6 +391,13 @@ public class ThriftyStoreGUI extends Application{
         launch(args);
     }
     
+    public void testEmpLogin() {
+        
+        Employee emp1 = new Employee("1a", "Rick", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "cashier");
+        Employee emp2 = new Employee("3b", "Jim", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "executive");
+        Employee emp3 = new Employee("3b", "James", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "executive");
+    }
     
-    
+}
+
 }
