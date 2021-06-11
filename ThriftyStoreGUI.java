@@ -150,6 +150,10 @@ public class ThriftyStoreGUI extends Application{
     
     //Employee Lists for checking who has logged in
     ArrayList<Employee> WhoLoggedIn = new ArrayList<>();
+    String UserNameTyped;
+    String PasswordTyped;
+    String UserStatus;
+    Employee CurrentUser;
     
     @Override
     public void start(Stage primaryStage) {
@@ -170,6 +174,23 @@ public class ThriftyStoreGUI extends Application{
         
         btnlogin.setOnAction(e -> { 
             
+            //Filling in employee test list
+            testEmpLogin();
+            
+            //Pulling typed in username and password from textboxes
+            UserNameTyped = txtloginusr.getText();
+            PasswordTyped = txtloginpass.getText();
+            
+            //Looping through Employee list to identify user
+            for (Employee y : WhoLoggedIn) {
+                    if(y.getUsername().equals(UserNameTyped)) {
+                        UserStatus = y.getEmployeeType();
+                    }
+                }
+            
+            
+            
+            
             // Setting the alignment for our "overall" pane
             // and adding the MenuBar and TabPane to it.
             overallPane.setAlignment(Pos.TOP_CENTER);
@@ -181,13 +202,27 @@ public class ThriftyStoreGUI extends Application{
             tbPane.setMinHeight(primaryScene.getHeight());
 
             // Adding the Tabs to the TabPane
-            tbPane.getTabs().add(tabinv);
-            tbPane.getTabs().add(tabemp);
-            tbPane.getTabs().add(tabsup);
-            tbPane.getTabs().add(tabexp);
-            tbPane.getTabs().add(tabsale);
-            tbPane.getTabs().add(tabpay);
-            tbPane.getTabs().add(tabpos);
+            if(UserStatus.equals("executive")) {
+                tbPane.getTabs().add(tabinv);
+                tbPane.getTabs().add(tabemp);
+                tbPane.getTabs().add(tabsup);
+                tbPane.getTabs().add(tabexp);
+                tbPane.getTabs().add(tabsale);
+                tbPane.getTabs().add(tabpay);
+                tbPane.getTabs().add(tabpos);
+            } else if(UserStatus.equals("manager")) {
+                tbPane.getTabs().add(tabinv);
+                tbPane.getTabs().add(tabemp);
+                tbPane.getTabs().add(tabsup);
+                tbPane.getTabs().add(tabexp);
+                tbPane.getTabs().add(tabsale);
+                tbPane.getTabs().add(tabpay);
+                tbPane.getTabs().add(tabpos);
+            } else if (UserStatus.equals("cashier")) {
+                tbPane.getTabs().add(tabpay);
+                tbPane.getTabs().add(tabpos);
+            }
+            
 
             // To not allow the tab to be closed
             tabinv.setClosable(false);
@@ -393,11 +428,14 @@ public class ThriftyStoreGUI extends Application{
     
     public void testEmpLogin() {
         
-        Employee emp1 = new Employee("1a", "Rick", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "cashier");
-        Employee emp2 = new Employee("3b", "Jim", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "executive");
-        Employee emp3 = new Employee("3b", "James", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "executive");
+        Employee emp1 = new Employee("1a", "Rick", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "cashier", "Rick1", "123");
+        Employee emp2 = new Employee("3b", "Jim", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "executive", "Jim2", "123");
+        Employee emp3 = new Employee("3b", "James", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "manager", "James", "123");
+        
+        WhoLoggedIn.add(emp1);
+        WhoLoggedIn.add(emp2);
+        WhoLoggedIn.add(emp3);
     }
     
 }
 
-}
