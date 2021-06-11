@@ -3,19 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Thifty;
-
-import java.util.ArrayList;
+package Capstone;
 
 /**
  *
- * @author trane
+ * @author Diallo
  */
 public class Employee {
     
-    ArrayList<WorkLog> worklogList;
+     //ArrayList<WorkLog> worklogList;
     String empID;
     String empName;
+    String username;
+    String password;
     Double empSalary;
     String empAddress;
     String empEmail;
@@ -26,7 +26,8 @@ public class Employee {
         
     }
     
-    public Employee(String empID, String empName, Double empSalary,  String empAddress, String empEmail, String empPhone, String empType){
+    public Employee(String empID, String empName, Double empSalary,  String empAddress, String empEmail, String empPhone, String empType,
+                    String username, String password){
         
         this.empID = empID;
         this.empName = empName;
@@ -35,6 +36,8 @@ public class Employee {
         this.empEmail = empEmail;
         this.empPhone = empPhone;
         this.empType = empType;
+        this.username = username;
+        this.password = password;
         
     }
     
@@ -93,4 +96,13 @@ public class Employee {
     public void setEmployeeType(String eType){
         this.empType = eType;
     }
+    
+    public String getUsername(){
+        return this.username;
+    }
+    
+    public String getPassword(){
+        return this.password;
+    }
 }
+
