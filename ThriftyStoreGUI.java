@@ -31,6 +31,8 @@ import javafx.stage.Stage;
  */
 public class ThriftyStoreGUI extends Application{
     
+// This is a tester
+
     // TabPane and its Tabs
     TabPane tbPane = new TabPane();
     Tab tabinv = new Tab("Inventory");
