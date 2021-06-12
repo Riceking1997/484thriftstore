@@ -154,12 +154,16 @@ public class ThriftyStoreGUI extends Application{
     String PasswordTyped;
     String UserStatus;
     Employee CurrentUser;
+    Boolean validLogin;
     
     @Override
     public void start(Stage primaryStage) {
+        
+        validLogin = false;
+
         //Creating the Scene
         Scene primaryScene = new Scene(overallPane,800,800);
-        
+
         Scene loginScene = new Scene(LoginPane, 800, 800);
         LoginPane.setAlignment(Pos.CENTER);
         LoginPane.add(lblloginusr, 0, 0);
@@ -167,257 +171,306 @@ public class ThriftyStoreGUI extends Application{
         LoginPane.add(lblloginpass, 1, 0);
         LoginPane.add(txtloginpass, 1, 1);
         LoginPane.add(btnlogin, 2, 1);
-        
+
         primaryStage.setScene(loginScene);
         primaryStage.setTitle("Thrifty Store");
         primaryStage.show();
-        
+
         btnlogin.setOnAction(e -> { 
-            
+
             //Filling in employee test list
             testEmpLogin();
-            
+
             //Pulling typed in username and password from textboxes
             UserNameTyped = txtloginusr.getText();
             PasswordTyped = txtloginpass.getText();
-            
+
             //Looping through Employee list to identify user
             for (Employee y : WhoLoggedIn) {
                     if(y.getUsername().equals(UserNameTyped)) {
                         UserStatus = y.getEmployeeType();
+                        CurrentUser = y;
                     }
                 }
-            
-            
-            
-            
-            // Setting the alignment for our "overall" pane
-            // and adding the MenuBar and TabPane to it.
-            overallPane.setAlignment(Pos.TOP_CENTER);
-            overallPane.add(mnuBar, 0, 0);
-            overallPane.add(tbPane, 0, 1);
 
-            // Set the width and Height of the TabPane
-            tbPane.setMinWidth(primaryScene.getWidth());
-            tbPane.setMinHeight(primaryScene.getHeight());
+
+
 
             // Adding the Tabs to the TabPane
             if(UserStatus.equals("executive")) {
-                tbPane.getTabs().add(tabinv);
-                tbPane.getTabs().add(tabemp);
-                tbPane.getTabs().add(tabsup);
-                tbPane.getTabs().add(tabexp);
-                tbPane.getTabs().add(tabsale);
-                tbPane.getTabs().add(tabpay);
-                tbPane.getTabs().add(tabpos);
+                if(CurrentUser.password.equals(PasswordTyped)) {
+
+                    // Setting the alignment for our "overall" pane
+                    // and adding the MenuBar and TabPane to it.
+                    overallPane.setAlignment(Pos.TOP_CENTER);
+                    overallPane.add(mnuBar, 0, 0);
+                    overallPane.add(tbPane, 0, 1);
+
+                    // Set the width and Height of the TabPane
+                    tbPane.setMinWidth(primaryScene.getWidth());
+                    tbPane.setMinHeight(primaryScene.getHeight());
+
+                    validLogin = true;
+                    tbPane.getTabs().add(tabinv);
+                    tbPane.getTabs().add(tabemp);
+                    tbPane.getTabs().add(tabsup);
+                    tbPane.getTabs().add(tabexp);
+                    tbPane.getTabs().add(tabsale);
+                    tbPane.getTabs().add(tabpay);
+                    tbPane.getTabs().add(tabpos);
+                } else {
+                    validLogin = false;
+                    System.out.println("Invalid Log In");
+                }
             } else if(UserStatus.equals("manager")) {
-                tbPane.getTabs().add(tabinv);
-                tbPane.getTabs().add(tabemp);
-                tbPane.getTabs().add(tabsup);
-                tbPane.getTabs().add(tabexp);
-                tbPane.getTabs().add(tabsale);
-                tbPane.getTabs().add(tabpay);
-                tbPane.getTabs().add(tabpos);
+                if(CurrentUser.password.equals(PasswordTyped)) {
+                    // Setting the alignment for our "overall" pane
+                    // and adding the MenuBar and TabPane to it.
+                    overallPane.setAlignment(Pos.TOP_CENTER);
+                    overallPane.add(mnuBar, 0, 0);
+                    overallPane.add(tbPane, 0, 1);
+
+                    // Set the width and Height of the TabPane
+                    tbPane.setMinWidth(primaryScene.getWidth());
+                    tbPane.setMinHeight(primaryScene.getHeight());
+
+                    validLogin = true;
+                    tbPane.getTabs().add(tabinv);
+                    tbPane.getTabs().add(tabemp);
+                    tbPane.getTabs().add(tabsup);
+                    tbPane.getTabs().add(tabexp);
+                    tbPane.getTabs().add(tabsale);
+                    tbPane.getTabs().add(tabpay);
+                    tbPane.getTabs().add(tabpos);
+                } else {
+                    validLogin = false;
+                    System.out.println("Invalid Log In");
+                }
             } else if (UserStatus.equals("cashier")) {
-                tbPane.getTabs().add(tabpay);
-                tbPane.getTabs().add(tabpos);
+                if(CurrentUser.password.equals(PasswordTyped)) {
+                    // Setting the alignment for our "overall" pane
+                    // and adding the MenuBar and TabPane to it.
+                    overallPane.setAlignment(Pos.TOP_CENTER);
+                    overallPane.add(mnuBar, 0, 0);
+                    overallPane.add(tbPane, 0, 1);
+
+                    // Set the width and Height of the TabPane
+                    tbPane.setMinWidth(primaryScene.getWidth());
+                    tbPane.setMinHeight(primaryScene.getHeight());
+
+                    validLogin = true;
+                    tbPane.getTabs().add(tabpay);
+                    tbPane.getTabs().add(tabpos);
+                } else {
+                    validLogin = false;
+                    System.out.println("Invalid Log In");
+                }
+            } else {
+                validLogin = false;
+                System.out.println("Invalid Log In");
             }
-            
-
-            // To not allow the tab to be closed
-            tabinv.setClosable(false);
-            tabemp.setClosable(false);
-            tabsup.setClosable(false);
-            tabexp.setClosable(false);
-            tabsale.setClosable(false);
-            tabpay.setClosable(false);
-            tabpos.setClosable(false);
-
-            // Adding our GridPanes to each tab.
-            tabinv.setContent(invPane);
-            tabemp.setContent(empPane);
-            tabsup.setContent(supPane);
-            tabexp.setContent(expPane);
-            tabsale.setContent(salPane);
-            tabpay.setContent(payPane);
-            tabpos.setContent(posPane);
-
-            // Setting Alignment for our panes
-            invPane.setAlignment(Pos.CENTER);
-            empPane.setAlignment(Pos.CENTER);
-            supPane.setAlignment(Pos.CENTER);
-            expPane.setAlignment(Pos.CENTER);
-            salPane.setAlignment(Pos.CENTER);
-            payPane.setAlignment(Pos.CENTER);
-            posPane.setAlignment(Pos.CENTER);
-
-            // Adding controls to InvPane
-            invPane.add(lblinvsearchtxt, 0, 0);
-            invPane.add(txtinvsearch, 1, 0);
-            invPane.add(btninvadd, 6, 0);
-            invPane.add(btninvdel, 8, 0);
-            invPane.add(btninvedit, 10, 0);
-
-            //Adding Inventory Table
-            InvTable = new TableView<>();
-            InvTable.setItems(InvData);
-            TableColumn tblcinvprod = new TableColumn("Product");
-            TableColumn tblcinvpic = new TableColumn("Picture");
-            TableColumn tblcinvprice = new TableColumn("Price");
-            TableColumn tblcinvqty = new TableColumn("Quantity");
-            TableColumn tblcinvstat = new TableColumn("Status");
-            TableColumn tblcinvexp = new TableColumn("Exp. Date");
-            TableColumn tblcinvdep = new TableColumn("Department");
-            TableColumn tblcinvstore = new TableColumn("Store");
-            //InvTable.setMinWidth(primaryScene.getWidth());
-            InvTable.getColumns().addAll(tblcinvprod, tblcinvpic, tblcinvprice, tblcinvqty, tblcinvstat,
-                tblcinvexp, tblcinvdep, tblcinvstore);
-            invPane.add(InvTable, 0, 1, 10, 1);
-
-            // Adding controls to EmpPane
-            empPane.add(lblempsearchtxt, 0, 0);
-            empPane.add(cboxempstore, 1, 0);
-            empPane.add(btnempadd, 1, 1);
-            empPane.add(btnempedit, 2, 1);
-            empPane.add(btnempdel, 3, 1);
-
-            //Adding Employee Table
-            EmpTable = new TableView<>();
-            EmpTable.setItems(EmpData);
-            TableColumn tblcempeid = new TableColumn("Employee ID");
-            TableColumn tblcempname = new TableColumn("Name");
-            TableColumn tblcempphone = new TableColumn("Phone");
-            TableColumn tblcempaddy = new TableColumn("Address");
-            TableColumn tblcempsal = new TableColumn("Salary");
-            TableColumn tblcemptype = new TableColumn("Type");
-            TableColumn tblcempstore = new TableColumn("Store");
-            TableColumn tblcempdepartment = new TableColumn("Department");
-            //EmpTable.setMinWidth(primaryScene.getWidth());
-            EmpTable.getColumns().addAll(tblcempeid, tblcempname, tblcempphone, tblcempaddy, tblcempsal,
-                tblcemptype, tblcempstore, tblcempdepartment);
-            empPane.add(EmpTable, 0, 2, 10, 1);
 
 
-            // Adding controls to SupPane
-            supPane.add(txtsupsearch, 0, 0);
-            supPane.add(btnsupsrch, 1, 0);
-            supPane.add(btnsupadd, 0, 1);
-            supPane.add(btnsupedit, 1, 1);
-            supPane.add(btnsupdel, 2, 1);
-            supPane.add(btnsupvs, 0, 2);
-            supPane.add(btnsupvp, 1, 2);
+            if(validLogin = true)
+            {
+                // To not allow the tab to be closed
+                tabinv.setClosable(false);
+                tabemp.setClosable(false);
+                tabsup.setClosable(false);
+                tabexp.setClosable(false);
+                tabsale.setClosable(false);
+                tabpay.setClosable(false);
+                tabpos.setClosable(false);
 
-            //Adding Supplier Table
-            SupTable = new TableView<>();
-            SupTable.setItems(SupData);
-            TableColumn tblcsupsup = new TableColumn("Supplier");
-            TableColumn tblcsupprod = new TableColumn("Products");
-            TableColumn tblcsupaddy = new TableColumn("Address");
-            TableColumn tblcsupcname = new TableColumn("Contact Name");
-            TableColumn tblcsupphone = new TableColumn("Phone Number");
-            TableColumn tblcsupemail = new TableColumn("Email");
-            //SupTable.setMinWidth(primaryScene.getWidth());
-            SupTable.getColumns().addAll(tblcsupsup, tblcsupprod, tblcsupaddy, tblcsupcname, tblcsupphone,
-                tblcsupemail);
-            supPane.add(SupTable, 0, 3, 10, 1);
+                // Adding our GridPanes to each tab.
+                tabinv.setContent(invPane);
+                tabemp.setContent(empPane);
+                tabsup.setContent(supPane);
+                tabexp.setContent(expPane);
+                tabsale.setContent(salPane);
+                tabpay.setContent(payPane);
+                tabpos.setContent(posPane);
 
-            // Adding controls to ExpPane
-            expPane.add(cboxexpmonth, 0, 0);
-            expPane.add(cboxexpyr, 1, 0);
-            expPane.add(btnexpdate, 6, 0);
-            expPane.add(cboxexpstore, 7, 0);
-            expPane.add(btnexpstore, 8, 0);
-            expPane.add(btnexpadd, 9, 0);
+                // Setting Alignment for our panes
+                invPane.setAlignment(Pos.CENTER);
+                empPane.setAlignment(Pos.CENTER);
+                supPane.setAlignment(Pos.CENTER);
+                expPane.setAlignment(Pos.CENTER);
+                salPane.setAlignment(Pos.CENTER);
+                payPane.setAlignment(Pos.CENTER);
+                posPane.setAlignment(Pos.CENTER);
 
-            //Adding Expense Table
-            ExpTable = new TableView<>();
-            ExpTable.setItems(SupData);
-            TableColumn tblcexpexp = new TableColumn("Expenses");
-            TableColumn tblcexpam = new TableColumn("Expense Amount");
-            TableColumn tblcexpdue = new TableColumn("Due Date");
-            TableColumn tblcexpsname = new TableColumn("Store Name");
-            //SupTable.setMinWidth(primaryScene.getWidth());
-            ExpTable.getColumns().addAll(tblcexpexp, tblcexpam, tblcexpdue, tblcexpsname);
-            expPane.add(ExpTable, 0, 1, 10, 1);
+                // Adding controls to InvPane
+                invPane.add(lblinvsearchtxt, 0, 0);
+                invPane.add(txtinvsearch, 1, 0);
+                invPane.add(btninvadd, 6, 0);
+                invPane.add(btninvdel, 8, 0);
+                invPane.add(btninvedit, 10, 0);
 
-            // Adding controls to SalPane
-            salPane.add(lblsalyr, 2, 0);
-            salPane.add(cboxsalyr, 3, 0);
-            salPane.add(lblsalmonth, 4, 0);
-            salPane.add(cboxsalmonth, 5, 0);
-            salPane.add(lblsalday, 6, 0);
-            salPane.add(cboxsalday, 7, 0);
-            salPane.add(btnsaldate, 8, 0);
+                //Adding Inventory Table
+                InvTable = new TableView<>();
+                InvTable.setItems(InvData);
+                TableColumn tblcinvprod = new TableColumn("Product");
+                TableColumn tblcinvpic = new TableColumn("Picture");
+                TableColumn tblcinvprice = new TableColumn("Price");
+                TableColumn tblcinvqty = new TableColumn("Quantity");
+                TableColumn tblcinvstat = new TableColumn("Status");
+                TableColumn tblcinvexp = new TableColumn("Exp. Date");
+                TableColumn tblcinvdep = new TableColumn("Department");
+                TableColumn tblcinvstore = new TableColumn("Store");
+                //InvTable.setMinWidth(primaryScene.getWidth());
+                InvTable.getColumns().addAll(tblcinvprod, tblcinvpic, tblcinvprice, tblcinvqty, tblcinvstat,
+                    tblcinvexp, tblcinvdep, tblcinvstore);
+                invPane.add(InvTable, 0, 1, 10, 1);
 
-            //Adding Salary Table
-            SalTable = new TableView<>();
-            SalTable.setItems(SalData);
-            TableColumn tblcsalsale = new TableColumn("Sales");
-            TableColumn tblcsalsm = new TableColumn("Sales Amount");
-            TableColumn tblcsalstore = new TableColumn("Store");
-            //SupTable.setMinWidth(primaryScene.getWidth());
-            SalTable.getColumns().addAll(tblcsalsale, tblcsalsm, tblcsalstore);
-            salPane.add(SalTable, 0, 1, 10, 1);
-            salPane.add(btnsalYPER, 0, 2);
-            salPane.add(btnsalPOSR, 1, 2);
+                // Adding controls to EmpPane
+                empPane.add(lblempsearchtxt, 0, 0);
+                empPane.add(cboxempstore, 1, 0);
+                empPane.add(btnempadd, 1, 1);
+                empPane.add(btnempedit, 2, 1);
+                empPane.add(btnempdel, 3, 1);
 
-            // Adding controls to PayPane
-            payPane.add(btnpayemp, 0, 0);
-            payPane.add(lblpaystore, 0, 1);
-            payPane.add(cboxpaystore, 1, 1);
-            payPane.add(lblpaydate, 0, 2);
-            payPane.add(cboxpayday, 1, 2);
-            payPane.add(cboxpaymonth, 2, 2);
-            payPane.add(cboxpayyr, 3, 2);
-            payPane.add(btnpayedit, 1, 3);
-            payPane.add(btnpaycreate, 2, 3);
-            payPane.add(btnpayER, 3, 3);
-
-            //Adding Payroll Table
-            PayrollTable = new TableView<>();
-            PayrollTable.setItems(PayrollData);
-            TableColumn tblcpayEID = new TableColumn("Employee ID");
-            TableColumn tblcpayname = new TableColumn("Name");
-            TableColumn tblcpaycit = new TableColumn("Clock-in Time");
-            TableColumn tblcpaycot = new TableColumn("Clock-out Time");
-            TableColumn tblcpayhw = new TableColumn("Hours Worked");
-            PayrollTable.getColumns().addAll(tblcpayEID, tblcpayname, tblcpaycit, tblcpaycot, tblcpayhw);
-            //SupTable.setMinWidth(primaryScene.getWidth());
-            payPane.add(PayrollTable, 0, 4, 10, 1);
-
-            // Adding controls to POS Pane
-            posPane.add(lblPOSclub, 0, 0);
-            posPane.add(cboxPOSclub, 1, 0);
-            posPane.add(btnPOSemp, 0, 1);
-            posPane.add(btnPOSprod, 1, 1);
-
-            //Adding POS Table
-            POSTable = new TableView<>();
-            POSTable.setItems(POSData);
-            TableColumn tblcposprod = new TableColumn("Product");
-            TableColumn tblcposprice = new TableColumn("Price");
-            POSTable.getColumns().addAll(tblcposprod, tblcposprice);
-            //SupTable.setMinWidth(primaryScene.getWidth());
-            posPane.add(POSTable, 0, 3, 10, 1);
-
-            //final POS Pane controls
-            posPane.add(lblPOSEID, 0, 2);
-            posPane.add(txtPOSEID, 1, 2);
-            posPane.add(lblPOSTOT, 0, 4);
-            posPane.add(txtPOSTOT, 1, 4);
-            posPane.add(lblPOSSAV, 0, 5);
-            posPane.add(txtPOSSAV, 1, 5);
-            posPane.add(btnCheckout, 0, 6);
-            posPane.add(btnPrintReceipt, 1, 6);
+                //Adding Employee Table
+                EmpTable = new TableView<>();
+                EmpTable.setItems(EmpData);
+                TableColumn tblcempeid = new TableColumn("Employee ID");
+                TableColumn tblcempname = new TableColumn("Name");
+                TableColumn tblcempphone = new TableColumn("Phone");
+                TableColumn tblcempaddy = new TableColumn("Address");
+                TableColumn tblcempsal = new TableColumn("Salary");
+                TableColumn tblcemptype = new TableColumn("Type");
+                TableColumn tblcempstore = new TableColumn("Store");
+                TableColumn tblcempdepartment = new TableColumn("Department");
+                //EmpTable.setMinWidth(primaryScene.getWidth());
+                EmpTable.getColumns().addAll(tblcempeid, tblcempname, tblcempphone, tblcempaddy, tblcempsal,
+                    tblcemptype, tblcempstore, tblcempdepartment);
+                empPane.add(EmpTable, 0, 2, 10, 1);
 
 
-            primaryStage.setScene(primaryScene);
-            primaryStage.setTitle("Thrifty Store");
-            primaryStage.show();
-            
-            
+                // Adding controls to SupPane
+                supPane.add(txtsupsearch, 0, 0);
+                supPane.add(btnsupsrch, 1, 0);
+                supPane.add(btnsupadd, 0, 1);
+                supPane.add(btnsupedit, 1, 1);
+                supPane.add(btnsupdel, 2, 1);
+                supPane.add(btnsupvs, 0, 2);
+                supPane.add(btnsupvp, 1, 2);
+
+                //Adding Supplier Table
+                SupTable = new TableView<>();
+                SupTable.setItems(SupData);
+                TableColumn tblcsupsup = new TableColumn("Supplier");
+                TableColumn tblcsupprod = new TableColumn("Products");
+                TableColumn tblcsupaddy = new TableColumn("Address");
+                TableColumn tblcsupcname = new TableColumn("Contact Name");
+                TableColumn tblcsupphone = new TableColumn("Phone Number");
+                TableColumn tblcsupemail = new TableColumn("Email");
+                //SupTable.setMinWidth(primaryScene.getWidth());
+                SupTable.getColumns().addAll(tblcsupsup, tblcsupprod, tblcsupaddy, tblcsupcname, tblcsupphone,
+                    tblcsupemail);
+                supPane.add(SupTable, 0, 3, 10, 1);
+
+                // Adding controls to ExpPane
+                expPane.add(cboxexpmonth, 0, 0);
+                expPane.add(cboxexpyr, 1, 0);
+                expPane.add(btnexpdate, 6, 0);
+                expPane.add(cboxexpstore, 7, 0);
+                expPane.add(btnexpstore, 8, 0);
+                expPane.add(btnexpadd, 9, 0);
+
+                //Adding Expense Table
+                ExpTable = new TableView<>();
+                ExpTable.setItems(SupData);
+                TableColumn tblcexpexp = new TableColumn("Expenses");
+                TableColumn tblcexpam = new TableColumn("Expense Amount");
+                TableColumn tblcexpdue = new TableColumn("Due Date");
+                TableColumn tblcexpsname = new TableColumn("Store Name");
+                //SupTable.setMinWidth(primaryScene.getWidth());
+                ExpTable.getColumns().addAll(tblcexpexp, tblcexpam, tblcexpdue, tblcexpsname);
+                expPane.add(ExpTable, 0, 1, 10, 1);
+
+                // Adding controls to SalPane
+                salPane.add(lblsalyr, 2, 0);
+                salPane.add(cboxsalyr, 3, 0);
+                salPane.add(lblsalmonth, 4, 0);
+                salPane.add(cboxsalmonth, 5, 0);
+                salPane.add(lblsalday, 6, 0);
+                salPane.add(cboxsalday, 7, 0);
+                salPane.add(btnsaldate, 8, 0);
+
+                //Adding Salary Table
+                SalTable = new TableView<>();
+                SalTable.setItems(SalData);
+                TableColumn tblcsalsale = new TableColumn("Sales");
+                TableColumn tblcsalsm = new TableColumn("Sales Amount");
+                TableColumn tblcsalstore = new TableColumn("Store");
+                //SupTable.setMinWidth(primaryScene.getWidth());
+                SalTable.getColumns().addAll(tblcsalsale, tblcsalsm, tblcsalstore);
+                salPane.add(SalTable, 0, 1, 10, 1);
+                salPane.add(btnsalYPER, 0, 2);
+                salPane.add(btnsalPOSR, 1, 2);
+
+                // Adding controls to PayPane
+                payPane.add(btnpayemp, 0, 0);
+                payPane.add(lblpaystore, 0, 1);
+                payPane.add(cboxpaystore, 1, 1);
+                payPane.add(lblpaydate, 0, 2);
+                payPane.add(cboxpayday, 1, 2);
+                payPane.add(cboxpaymonth, 2, 2);
+                payPane.add(cboxpayyr, 3, 2);
+                payPane.add(btnpayedit, 1, 3);
+                payPane.add(btnpaycreate, 2, 3);
+                payPane.add(btnpayER, 3, 3);
+
+                //Adding Payroll Table
+                PayrollTable = new TableView<>();
+                PayrollTable.setItems(PayrollData);
+                TableColumn tblcpayEID = new TableColumn("Employee ID");
+                TableColumn tblcpayname = new TableColumn("Name");
+                TableColumn tblcpaycit = new TableColumn("Clock-in Time");
+                TableColumn tblcpaycot = new TableColumn("Clock-out Time");
+                TableColumn tblcpayhw = new TableColumn("Hours Worked");
+                PayrollTable.getColumns().addAll(tblcpayEID, tblcpayname, tblcpaycit, tblcpaycot, tblcpayhw);
+                //SupTable.setMinWidth(primaryScene.getWidth());
+                payPane.add(PayrollTable, 0, 4, 10, 1);
+
+                // Adding controls to POS Pane
+                posPane.add(lblPOSclub, 0, 0);
+                posPane.add(cboxPOSclub, 1, 0);
+                posPane.add(btnPOSemp, 0, 1);
+                posPane.add(btnPOSprod, 1, 1);
+
+                //Adding POS Table
+                POSTable = new TableView<>();
+                POSTable.setItems(POSData);
+                TableColumn tblcposprod = new TableColumn("Product");
+                TableColumn tblcposprice = new TableColumn("Price");
+                POSTable.getColumns().addAll(tblcposprod, tblcposprice);
+                //SupTable.setMinWidth(primaryScene.getWidth());
+                posPane.add(POSTable, 0, 3, 10, 1);
+
+                //final POS Pane controls
+                posPane.add(lblPOSEID, 0, 2);
+                posPane.add(txtPOSEID, 1, 2);
+                posPane.add(lblPOSTOT, 0, 4);
+                posPane.add(txtPOSTOT, 1, 4);
+                posPane.add(lblPOSSAV, 0, 5);
+                posPane.add(txtPOSSAV, 1, 5);
+                posPane.add(btnCheckout, 0, 6);
+                posPane.add(btnPrintReceipt, 1, 6);
+
+
+                primaryStage.setScene(primaryScene);
+                primaryStage.setTitle("Thrifty Store");
+                primaryStage.show();
+
+            } else {
+
+                primaryStage.setScene(loginScene);
+                primaryStage.setTitle("Thrifty Store");
+                primaryStage.show();
+            }
         });
-        
 
         
     }
@@ -438,4 +491,3 @@ public class ThriftyStoreGUI extends Application{
     }
     
 }
-
