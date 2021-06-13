@@ -42,11 +42,11 @@ INSERT INTO PRODUCT VALUES ('pro33335', 'Sour Patch', 'Candy', '1.89', '4.48');
 INSERT INTO PRODUCT VALUES ('pro33336', 'Wheat Bread', 'Bread', '1.49', '2.50');
 INSERT INTO PRODUCT VALUES ('pro33337', 'Coca-Cola', 'Soda', '0.89', '1.99');
 
-INSERT INTO EMPLOYEE VALUES ('emp11111', 'sto22222', 'Michael Williams', '420 Neff Ave #210', '443-745-2345', 'Mwilliams@gmail.com', '15000.00', 'Mwilliams', 'Williams1!', '15', 'Stocker');
-INSERT INTO EMPLOYEE VALUES ('emp11112', 'sto22223', 'Dennis Wilford', '1701 Sunbury Rd', '443-543-2342', 'Dwilford@gmail.com', '15000.00', 'Dwilford', 'Wilford1!', '15', 'Supervisor');
-INSERT INTO EMPLOYEE VALUES ('emp11113', 'sto22224', 'Aaron Jones', '1537 Mill Dam Rd', '240-432-2345', 'Ajones@gmail.com', '20000', 'Ajones', 'Jones1!', '17', 'Cashier');
-INSERT INTO EMPLOYEE VALUES ('emp11114', 'sto22225', 'Thomas Payne', '6700 Colonial Dr', '310-285-8743', 'Tpayne@gmail.com', '23000.00', 'Tpayne', 'Payne1!', '18', 'Stocker');
-INSERT INTO EMPLOYEE VALUES ('emp11115', 'sto22226', 'Eric Bender', '822 Spring Knoll Dr', '712-240-5916', 'Ebender@gmail.com', '30000.00', 'Ebender', 'Bender1!', '23', 'Manager');
+INSERT INTO EMPLOYEE VALUES ('emp11111', 'sto22222', 'Michael Williams', '420 Neff Ave #210', '443-745-2345', 'Mwilliams@gmail.com', '15000.00', 'Mwilliams', 'Williams1!', '15', 'stocker');
+INSERT INTO EMPLOYEE VALUES ('emp11112', 'sto22223', 'Dennis Wilford', '1701 Sunbury Rd', '443-543-2342', 'Dwilford@gmail.com', '15000.00', 'Dwilford', 'Wilford1!', '15', 'executive');
+INSERT INTO EMPLOYEE VALUES ('emp11113', 'sto22224', 'Aaron Jones', '1537 Mill Dam Rd', '240-432-2345', 'Ajones@gmail.com', '20000', 'Ajones', 'Jones1!', '17', 'cashier');
+INSERT INTO EMPLOYEE VALUES ('emp11114', 'sto22225', 'Thomas Payne', '6700 Colonial Dr', '310-285-8743', 'Tpayne@gmail.com', '23000.00', 'Tpayne', 'Payne1!', '18', 'cashier');
+INSERT INTO EMPLOYEE VALUES ('emp11115', 'sto22226', 'Eric Bender', '822 Spring Knoll Dr', '712-240-5916', 'Ebender@gmail.com', '30000.00', 'Ebender', 'Bender1!', '23', 'manager');
 
 INSERT INTO SUPPLIER VALUES ('sup44444', 'Nestle', '310-394-2948', 'Nestle@gmail.com', '2039 Valley Lane', '01/01/2021');
 INSERT INTO SUPPLIER VALUES ('sup44445', 'Pepsico', '410-240-2380', 'Pepsico@gmail.com', '2562 Oak Hill Road', '06/01/2020');
