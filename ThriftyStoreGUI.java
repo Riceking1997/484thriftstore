@@ -1,3 +1,4 @@
+  
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -6,8 +7,15 @@
 package Capstone;
 
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
+import static javafx.application.Application.launch;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -24,6 +32,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import oracle.jdbc.pool.OracleDataSource;
+import project.UpdateGUI;
 
 /**
  *
@@ -69,8 +79,9 @@ public class ThriftyStoreGUI extends Application{
     Button btnempadd = new Button("Add New Employee");
     Button btnempdel = new Button("Delete Employee");
     Button btnempedit = new Button("Edit Employee");
-    TableView<String> EmpTable;
-    ObservableList<String> EmpData;
+    ArrayList<Employee> EmpData = new ArrayList<>();
+    TableView<Employee> EmpTable;
+    ObservableList<Employee> EmpTableData;
     
     //Controls for SupPane
     Label lblsupsearchtxt = new Label("Search");
@@ -158,6 +169,11 @@ public class ThriftyStoreGUI extends Application{
     String UserStatus;
     Employee CurrentUser;
     Boolean validLogin;
+    
+    //Database connection variables
+    Connection dbConn;
+    Statement commStmt;
+    ResultSet dbResults;
     
     @Override
     public void start(Stage primaryStage) {
@@ -334,8 +350,26 @@ public class ThriftyStoreGUI extends Application{
                 empPane.add(btnempdel, 3, 1);
 
                 //Adding Employee Table
-                EmpTable = new TableView<>();
-                EmpTable.setItems(EmpData);
+                /*EmpTable = new TableView<>();
+                EmpTable.setItems(EmpData);*/
+                
+            EmpTable = new TableView<Employee>();
+            EmpTableData = FXCollections.observableArrayList(EmpData);
+            EmpTable.setItems(EmpTableData);
+            //send query to oracle database to retrieve employee info
+            sendDBCommand("select * from Employee");
+            try{
+            while (dbResults.next()) {
+            EmpData.add(new Employee(dbResults.getString(1), dbResults.getString(3), Double.valueOf(dbResults.getString(7)), dbResults.getString(4), dbResults.getString(6), dbResults.getString(5), dbResults.getString(11), dbResults.getString(8), dbResults.getString(9)));
+            }
+            }
+            catch (SQLException ex) {
+            Logger.getLogger(UpdateGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            for (Employee emp: EmpData) {
+                EmpTableData.add(emp);
+            }
                 TableColumn tblcempeid = new TableColumn("Employee ID");
                 TableColumn tblcempname = new TableColumn("Name");
                 TableColumn tblcempphone = new TableColumn("Phone");
@@ -345,6 +379,15 @@ public class ThriftyStoreGUI extends Application{
                 TableColumn tblcempstore = new TableColumn("Store");
                 TableColumn tblcempdepartment = new TableColumn("Department");
                 //EmpTable.setMinWidth(primaryScene.getWidth());
+                
+            tblcempeid.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeID"));
+            tblcempname.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeName"));
+            tblcempphone.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeePhone"));
+            tblcempaddy.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeAddress"));
+            tblcempsal.setCellValueFactory(new PropertyValueFactory<Employee, Double>("employeeSalary"));
+            tblcemptype.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeType"));
+            //tblcempstore.setCellValueFactory(new PropertyValueFactory<Employee, String>("emptype"));
+            //tblcempdepartment.setCellValueFactory(new PropertyValueFactory<Employee, String>(""));
                 EmpTable.getColumns().addAll(tblcempeid, tblcempname, tblcempphone, tblcempaddy, tblcempsal,
                     tblcemptype, tblcempstore, tblcempdepartment);
                 empPane.add(EmpTable, 0, 2, 10, 1);
@@ -482,11 +525,59 @@ public class ThriftyStoreGUI extends Application{
         launch(args);
     }
     
+    public void sendDBCommand(String sqlQuery)
+    {
+        // Set up your connection strings
+        // IF YOU ARE IN CIS330 NOW: use YOUR Oracle Username/Password
+        String URL = "jdbc:oracle:thin:@localhost:1521:XE";
+        String userID = "moneyuser"; // Change to YOUR Oracle username
+        String userPASS = "moneypass"; // Change to YOUR Oracle password
+        OracleDataSource ds;
+        
+        // Clear Box Testing - Print each query to check SQL syntax
+        //  sent to this method.
+        // You can comment this line out when your program is finished
+        System.out.println(sqlQuery);
+        
+        // Lets try to connect
+        try
+        {
+            // instantiate a new data source object
+            ds = new OracleDataSource();
+            // Where is the database located? Web? Local?
+            ds.setURL(URL);
+            // Send the user/pass and get an open connection.
+            dbConn = ds.getConnection(userID,userPASS);
+            // When we get results
+            //  -TYPE_SCROLL_SENSITIVE means if the database data changes we
+            //   will see our resultset update in real time.
+            //  -CONCUR_READ_ONLY means that we cannot accidentally change the
+            //   data in our database by using the .update____() methods of
+            //   the ResultSet class - TableView controls are impacted by
+            //   this setting as well.
+            commStmt = dbConn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            // We send the query to the DB. A ResultSet object is instantiated
+            //  and we are returned a reference to it, that we point to from
+            // dbResults.
+            // Because we declared dbResults at the datafield level
+            // we can see the results from anywhere in our Class.
+            dbResults = commStmt.executeQuery(sqlQuery); // Sends the Query to the DB
+            // The results are stored in a ResultSet structure object
+            // pointed to by the reference variable dbResults
+            // Because we declared this variable globally above, we can use
+            // the results in any method in the class.
+        }
+        catch (SQLException e)
+        {
+            System.out.println(e.toString());
+        }
+    }
+    
     public void testEmpLogin() {
         
         Employee emp1 = new Employee("1a", "Rick", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "cashier", "Rick1", "123");
         Employee emp2 = new Employee("3b", "Jim", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "executive", "Jim2", "123");
-        Employee emp3 = new Employee("3b", "James", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "manager", "James", "123");
+        Employee emp3 = new Employee("4b", "James", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "manager", "James", "123");
         
         WhoLoggedIn.add(emp1);
         WhoLoggedIn.add(emp2);
