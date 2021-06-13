@@ -122,8 +122,8 @@ departmentID VARCHAR(10));
 CREATE TABLE Supplier (
 supplierID VARCHAR(10) PRIMARY KEY,
 name VARCHAR(30),
-phone VARCHAR(12),
-email VARCHAR(50),
+phone NUMERIC(11),
+email VARCHAR(25),
 address VARCHAR(100),
 startDate DATE
 );
@@ -142,7 +142,3 @@ IOID VARCHAR(10) REFERENCES InventoryOrder,
 quantityOrdered NUMERIC(10),
 totalPrice NUMERIC(10, 2)
 );
-
-alter session set nls_date_format = 'mm/dd/yy';
-==================================================================================
-
