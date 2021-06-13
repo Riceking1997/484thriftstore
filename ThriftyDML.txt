@@ -68,11 +68,12 @@ INSERT INTO INVENTORYITEM VALUES ('pro33335', 'dep55553', '50', 'Fresh', '08/25/
 INSERT INTO INVENTORYITEM VALUES ('pro33336', 'dep55559', '40', 'Fresh', '09/01/2021');
 INSERT INTO INVENTORYITEM VALUES ('pro33337', 'dep55558', '30', 'Fresh', '10/01/2021');
 
-INSERT INTO EMPLOYEE VALUES ('emp11111', 'sto22222', 'Michael Williams', '443-745-2345', 'Mwilliams@gmail.com', '15000.00', 'Mwilliams', 'Williams1!', '15');
-INSERT INTO EMPLOYEE VALUES ('emp11112', 'sto22222', 'Dennis Wilford', '443-543-2342', 'Dwilford@gmail.com', '15000.00', 'Dwilford', 'Wilford1!', '15');
-INSERT INTO EMPLOYEE VALUES ('emp11113', 'sto22223', 'Aaron Jones', '240-432-2345', 'Ajones@gmail.com', '20000', 'Ajones', 'Jones1!', '17');
-INSERT INTO EMPLOYEE VALUES ('emp11114', 'sto22223', 'Thomas Payne', '310-285-8743', 'Tpayne@gmail.com', '23000.00', 'Tpayne', 'Payne1!', '18');
-INSERT INTO EMPLOYEE VALUES ('emp11115', 'sto22224', 'Eric Bender', '712-240-5916', 'Ebender@gmail.com', '30000.00', 'Ebender', 'Bender1!', '23');
+INSERT INTO EMPLOYEE VALUES ('emp11111', 'sto22222', 'Michael Williams', '420 Neff Ave #210', '443-745-2345', 'Mwilliams@gmail.com', '15000.00', 'Mwilliams', 'Williams1!', '15', 'stocker');
+INSERT INTO EMPLOYEE VALUES ('emp11112', 'sto22223', 'Dennis Wilford', '1701 Sunbury Rd', '443-543-2342', 'Dwilford@gmail.com', '15000.00', 'Dwilford', 'Wilford1!', '15', 'executive');
+INSERT INTO EMPLOYEE VALUES ('emp11113', 'sto22224', 'Aaron Jones', '1537 Mill Dam Rd', '240-432-2345', 'Ajones@gmail.com', '20000', 'Ajones', 'Jones1!', '17', 'cashier');
+INSERT INTO EMPLOYEE VALUES ('emp11114', 'sto22225', 'Thomas Payne', '6700 Colonial Dr', '310-285-8743', 'Tpayne@gmail.com', '23000.00', 'Tpayne', 'Payne1!', '18', 'cashier');
+INSERT INTO EMPLOYEE VALUES ('emp11115', 'sto22226', 'Eric Bender', '822 Spring Knoll Dr', '712-240-5916', 'Ebender@gmail.com', '30000.00', 'Ebender', 'Bender1!', '23', 'manager');
+
 
 INSERT INTO EMPLOYEEASSIGNMENT VALUES ('dep55555', 'emp11111');
 INSERT INTO EMPLOYEEASSIGNMENT VALUES ('dep55556', 'emp11112');
