@@ -16,13 +16,14 @@ public class Inventory {
     String storeID;
     int QIS;
     double salesPrice;
+    double unitCost;
     String expDate;
     String status;
     
     public Inventory(){
         
     }
-    public Inventory(String productID, String deptID, String storeID, int QIS, String status, String expDate, double salesPrice){
+    public Inventory(String productID, String deptID, String storeID, int QIS, String status, String expDate, double salesPrice, double unitCost){
         
         this.productID = productID;
         this.deptID = deptID;
@@ -31,6 +32,7 @@ public class Inventory {
         this.status = status;
         this.expDate = expDate;
         this.salesPrice = salesPrice;
+        this.unitCost = unitCost;
         
     }
     
@@ -53,6 +55,9 @@ public class Inventory {
     public double getSalesPrice(){
         return this.salesPrice;
     }
+    public double getUnitCost(){
+        return this.unitCost;
+    }
     
     public String getExpDate(){
         return this.expDate;
@@ -60,6 +65,9 @@ public class Inventory {
     
     public String getStatus(){
         return this.status;
+    }
+    public void setUnitCost(Double uC){
+        this.unitCost = uC;
     }
     
     public void setSalesPrice(Double sP){
