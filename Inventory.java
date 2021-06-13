@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Thifty;
+package Capstone;
 
 /**
  *
@@ -11,7 +11,7 @@ package Thifty;
  */
 public class Inventory {
     
-    String productID;
+    String productName;
     String deptID;
     String storeID;
     int QIS;
@@ -23,9 +23,9 @@ public class Inventory {
     public Inventory(){
         
     }
-    public Inventory(String productID, String deptID, String storeID, int QIS, String status, String expDate, double salesPrice, double unitCost){
+    public Inventory(String productName, String deptID, String storeID, int QIS, String status, String expDate, double salesPrice, double unitCost){
         
-        this.productID = productID;
+        this.productName = productName;
         this.deptID = deptID;
         this.storeID = storeID;
         this.QIS = QIS;
@@ -36,8 +36,8 @@ public class Inventory {
         
     }
     
-    public String getProductID(){
-        return this.productID;
+    public String getProductName(){
+        return this.productName;
     }
     
     public String getDeptID(){
@@ -66,6 +66,11 @@ public class Inventory {
     public String getStatus(){
         return this.status;
     }
+    
+    public void setQIS(int Q){
+        this.QIS = Q;
+    }
+    
     public void setUnitCost(Double uC){
         this.unitCost = uC;
     }
@@ -77,8 +82,8 @@ public class Inventory {
     public void setExpDate(String expD){
         this.expDate = expD;
     }
-    public void setProductID(String pID){
-        this.productID = pID;
+    public void setProductName(String pID){
+        this.productName = pID;
     }
     
     public void setDeptID(String dID){
