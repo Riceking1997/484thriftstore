@@ -66,7 +66,7 @@ INSERT INTO INVENTORYITEM VALUES ('pro33333', 'dep55553', '20', 'Fresh', '12/01/
 INSERT INTO INVENTORYITEM VALUES ('pro33334', 'dep55557', '30', 'Fresh', '08/01/2021');
 INSERT INTO INVENTORYITEM VALUES ('pro33335', 'dep55553', '50', 'Fresh', '08/25/2021');
 INSERT INTO INVENTORYITEM VALUES ('pro33336', 'dep55559', '40', 'Fresh', '09/01/2021');
-INSERT INTO INVENTORYITEM VALUES ('pro33337', 'dep55558, '30', 'Fresh', '10/01/2021');
+INSERT INTO INVENTORYITEM VALUES ('pro33337', 'dep55558', '30', 'Fresh', '10/01/2021');
 
 INSERT INTO EMPLOYEE VALUES ('emp11111', 'sto22222', 'Michael Williams', '443-745-2345', 'Mwilliams@gmail.com', '15000.00', 'Mwilliams', 'Williams1!', '15');
 INSERT INTO EMPLOYEE VALUES ('emp11112', 'sto22222', 'Dennis Wilford', '443-543-2342', 'Dwilford@gmail.com', '15000.00', 'Dwilford', 'Wilford1!', '15');
