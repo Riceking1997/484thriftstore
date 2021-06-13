@@ -42,11 +42,11 @@ INSERT INTO PURCHASEORDER VALUES ('po99993', 'cust00005', 'sto22225', 'emp11112'
 INSERT INTO PURCHASEORDER VALUES ('po99994', 'cust00004', 'sto22223', 'emp11114', '110.00', '05/12/2021');
 INSERT INTO PURCHASEORDER VALUES ('po99995', 'cust00002', 'sto22221', 'emp11115', '75.00','04/29/2021');
 
-INSERT INTO PRODUCT VALUES ('pro33333', 'Lucky Charms', 'Breakfast cereal');
-INSERT INTO PRODUCT VALUES ('pro33334', 'Hidden Valley', 'Ranch');
-INSERT INTO PRODUCT VALUES ('pro33335', 'Sour Patch', 'Candy');
-INSERT INTO PRODUCT VALUES ('pro33336', 'Wheat Bread', 'Bread');
-INSERT INTO PRODUCT VALUES ('pro33337', 'Coca-Cola', 'Soda');
+INSERT INTO PRODUCT VALUES ('pro33333', 'Lucky Charms', 'Breakfast cereal', '2.19', '3.64');
+INSERT INTO PRODUCT VALUES ('pro33334', 'Hidden Valley', 'Ranch', '1.89', '3.88');
+INSERT INTO PRODUCT VALUES ('pro33335', 'Sour Patch', 'Candy', '1.89', '4.48');
+INSERT INTO PRODUCT VALUES ('pro33336', 'Wheat Bread', 'Bread', '1.49', '2.50');
+INSERT INTO PRODUCT VALUES ('pro33337', 'Coca-Cola', 'Soda', '0.89', '1.99');
 
 INSERT INTO PURCHASEORDERITEM VALUES ('pro33333', 'po00004', '3', '15');
 INSERT INTO PURCHASEORDERITEM VALUES ('pro33335', 'po00003', '5', '20');
