@@ -15,15 +15,22 @@ public class Inventory {
     String deptID;
     String storeID;
     int QIS;
+    double salesPrice;
+    String expDate;
     String status;
     
-    public Inventory(String productID, String deptID, String storeID, int QIS, String status){
+    public Inventory(){
+        
+    }
+    public Inventory(String productID, String deptID, String storeID, int QIS, String status, String expDate, double salesPrice){
         
         this.productID = productID;
         this.deptID = deptID;
         this.storeID = storeID;
         this.QIS = QIS;
         this.status = status;
+        this.expDate = expDate;
+        this.salesPrice = salesPrice;
         
     }
     
@@ -43,10 +50,25 @@ public class Inventory {
         return this.QIS;
     }
     
+    public double getSalesPrice(){
+        return this.salesPrice;
+    }
+    
+    public String getExpDate(){
+        return this.expDate;
+    }
+    
     public String getStatus(){
         return this.status;
     }
     
+    public void setSalesPrice(Double sP){
+        this.salesPrice = sP;
+    }
+    
+    public void setExpDate(String expD){
+        this.expDate = expD;
+    }
     public void setProductID(String pID){
         this.productID = pID;
     }
