@@ -1,0 +1,55 @@
+INSERT INTO Customer VALUES('cust00000');
+INSERT INTO Customer VALUES('cust00001');
+INSERT INTO Customer VALUES('cust00002');
+INSERT INTO Customer VALUES('cust00003');
+INSERT INTO Customer VALUES('cust00004');
+INSERT INTO Customer VALUES('cust00005');
+INSERT INTO Customer VALUES('cust00006');
+INSERT INTO Customer VALUES('cust00007');
+INSERT INTO Customer VALUES('cust00008');
+INSERT INTO Customer VALUES('cust00009');
+INSERT INTO Customer VALUES('cust00010');
+
+INSERT INTO RegularCustomer VALUES('cust00000');
+INSERT INTO RegularCustomer VALUES('cust00001');
+INSERT INTO RegularCustomer VALUES('cust00002');
+INSERT INTO RegularCustomer VALUES('cust00003');
+INSERT INTO RegularCustomer VALUES('cust00004');
+
+INSERT INTO ClubMember VALUES('cust00005', 'Kristian Gutual', '01/20/2021', 'kg@gmail.com' , '571-436-2323', '123 Village Ln', '13.23');
+INSERT INTO ClubMember VALUES('cust00006', 'Michael Whitford', '04/20/2021', 'mikewhit@gmail.com' , '571-434-2513', '1263 Forrest Dr', '15.23');
+INSERT INTO ClubMember VALUES('cust00007', 'Alpha Diallo', '02/10/2021', 'alpdiallo@yahoo.com' , '301-216-2343', '6123 Harrison Rd', '19.23');
+INSERT INTO ClubMember VALUES('cust00008', 'Emmett Tran', '05/15/2021', 'emmettt@hotmail.com' , '703-431-5415', '420 High Dr', '20.14');
+INSERT INTO ClubMember VALUES('cust00009', 'Ben Wishner', '01/03/2021', 'benwish@gmail.com' , '757-123-1613', '1639 Wash St', '52.25');
+INSERT INTO ClubMember VALUES('cust00010', 'James Eric', '02/20/2020', 'jeric@outlook.com' , '250-252-1523', '6371 Post Dr', '142.23');
+
+INSERT INTO STORE VALUES ('sto22222', 'Harrisonburg', '2348 Crispy Lane', '443-482-2349', 'HarrisonburgThrifty@gmail.com');
+INSERT INTO STORE VALUES ('sto22223', 'Richmond', '5629 Marshall Lee Lane', '540-282-9743', 'RichmondThrifty@gmail.com');
+INSERT INTO STORE VALUES ('sto22224', 'Virginia Beach', '9348 Hunt Club Road', '540-493-2309', 'VAbeachThrifty@gmail.com');
+INSERT INTO STORE VALUES ('sto22225', 'Blacksburg', '2938 Oak Lane', '284-256-8237', 'BlacksburgThrifty@gmail.com');
+INSERT INTO STORE VALUES ('sto22226', 'Herndon', '4987 Ellis Lane', '320-394-2478', 'HerndonThrifty@gmail.com');
+
+INSERT INTO ExpenseBill VALUES ('bill000001', 'sto22222', 'electric', '550.99', '06/24/2021');
+INSERT INTO ExpenseBill VALUES ('bill000002', 'sto22223', 'gas', '450.99', '08/21/2021');
+INSERT INTO ExpenseBill VALUES ('bill000003', 'sto22224', 'electric', '610.99', '07/14/2021');
+INSERT INTO ExpenseBill VALUES ('bill000004', 'sto22225', 'water', '350.99', '06/22/2021');
+INSERT INTO ExpenseBill VALUES ('bill000005', 'sto22226', 'electric', '514.99', '05/25/2021');
+INSERT INTO ExpenseBill VALUES ('bill000006', 'sto22222', 'water', '421.99', '08/28/2021');
+
+INSERT INTO PRODUCT VALUES ('pro33333', 'Lucky Charms', 'Breakfast cereal', '2.19', '3.64');
+INSERT INTO PRODUCT VALUES ('pro33334', 'Hidden Valley', 'Ranch', '1.89', '3.88');
+INSERT INTO PRODUCT VALUES ('pro33335', 'Sour Patch', 'Candy', '1.89', '4.48');
+INSERT INTO PRODUCT VALUES ('pro33336', 'Wheat Bread', 'Bread', '1.49', '2.50');
+INSERT INTO PRODUCT VALUES ('pro33337', 'Coca-Cola', 'Soda', '0.89', '1.99');
+
+INSERT INTO EMPLOYEE VALUES ('emp11111', 'sto22222', 'Michael Williams', '420 Neff Ave #210', '443-745-2345', 'Mwilliams@gmail.com', '15000.00', 'Mwilliams', 'Williams1!', '15', 'Stocker');
+INSERT INTO EMPLOYEE VALUES ('emp11112', 'sto22223', 'Dennis Wilford', '1701 Sunbury Rd', '443-543-2342', 'Dwilford@gmail.com', '15000.00', 'Dwilford', 'Wilford1!', '15', 'Supervisor');
+INSERT INTO EMPLOYEE VALUES ('emp11113', 'sto22224', 'Aaron Jones', '1537 Mill Dam Rd', '240-432-2345', 'Ajones@gmail.com', '20000', 'Ajones', 'Jones1!', '17', 'Cashier');
+INSERT INTO EMPLOYEE VALUES ('emp11114', 'sto22225', 'Thomas Payne', '6700 Colonial Dr', '310-285-8743', 'Tpayne@gmail.com', '23000.00', 'Tpayne', 'Payne1!', '18', 'Stocker');
+INSERT INTO EMPLOYEE VALUES ('emp11115', 'sto22226', 'Eric Bender', '822 Spring Knoll Dr', '712-240-5916', 'Ebender@gmail.com', '30000.00', 'Ebender', 'Bender1!', '23', 'Manager');
+
+INSERT INTO SUPPLIER VALUES ('sup44444', 'Nestle', '310-394-2948', 'Nestle@gmail.com', '2039 Valley Lane', '01/01/2021');
+INSERT INTO SUPPLIER VALUES ('sup44445', 'Pepsico', '410-240-2380', 'Pepsico@gmail.com', '2562 Oak Hill Road', '06/01/2020');
+INSERT INTO SUPPLIER VALUES ('sup44446', 'Tyson', '624-243-9854', 'Tyson@gmail.com', '3085 Green Hill Road', '02/04/2019');
+INSERT INTO SUPPLIER VALUES ('sup44447', 'Mars', '384-642-5425', 'Mars@gmail.com', '9465 Britten Lane', '06/02/2020');
+INSERT INTO SUPPLIER VALUES ('sup44448', 'Danone', '340-948-0984', 'Danone@gmail.com', '8649 Center Valley Lane', '06/01/2019');
