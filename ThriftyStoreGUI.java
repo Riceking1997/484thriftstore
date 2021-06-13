@@ -20,7 +20,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
@@ -30,20 +32,20 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import oracle.jdbc.pool.OracleDataSource;
-import project.UpdateGUI;
 
 /**
  *
  * @author Diallo
  */
-public class ThriftyStoreGUI extends Application{
-    
+public class ThriftyStoreGUI extends Application {
+
 // This is a tester
 // Another push test
-
     // TabPane and its Tabs
     TabPane tbPane = new TabPane();
     Tab tabinv = new Tab("Inventory");
@@ -53,7 +55,7 @@ public class ThriftyStoreGUI extends Application{
     Tab tabsale = new Tab("Sales");
     Tab tabpay = new Tab("Payroll");
     Tab tabpos = new Tab("POS");
-    
+
     // GridPanes for each Tab
     GridPane overallPane = new GridPane();
     GridPane invPane = new GridPane();
@@ -63,16 +65,32 @@ public class ThriftyStoreGUI extends Application{
     GridPane salPane = new GridPane();
     GridPane payPane = new GridPane();
     GridPane posPane = new GridPane();
-    
+
+    // GridPane to edit a product in Inventory
+    // Also textfields and buttons for the edit a product window
+    GridPane editProductPane = new GridPane();
+    TextField editProductName = new TextField();
+    TextField editProductUnitCost = new TextField();
+    TextField editProductSalesPrice = new TextField();
+    TextField editQuantityStock = new TextField();
+    TextField editProductStatus = new TextField();
+    TextField editProductExpDate = new TextField();
+    TextField editProductStoreLocation = new TextField();
+    TextField editProductDepartment = new TextField();
+    Button editSaveBut = new Button("Save Changes->");
+    Scene ItemScene = new Scene(editProductPane, 800, 800);
+
     //Controls for InvPane
     Label lblinvsearchtxt = new Label("Search");
     TextField txtinvsearch = new TextField();
     Button btninvadd = new Button("Add Product");
     Button btninvdel = new Button("Delete Product");
     Button btninvedit = new Button("Edit Product");
-    TableView<String> InvTable;
-    ObservableList<String> InvData;
-    
+    ArrayList<Inventory> InvData = new ArrayList<>();
+    TableView<Inventory> InvTable;
+    ObservableList<Inventory> InvTableData;
+    Stage ItemStage = new Stage();
+
     //Controls for EmpPane
     Label lblempsearchtxt = new Label("Store");
     ComboBox cboxempstore = new ComboBox();
@@ -82,7 +100,7 @@ public class ThriftyStoreGUI extends Application{
     ArrayList<Employee> EmpData = new ArrayList<>();
     TableView<Employee> EmpTable;
     ObservableList<Employee> EmpTableData;
-    
+
     //Controls for SupPane
     Label lblsupsearchtxt = new Label("Search");
     TextField txtsupsearch = new TextField();
@@ -92,9 +110,10 @@ public class ThriftyStoreGUI extends Application{
     Button btnsupvs = new Button("View Shipments");
     Button btnsupvp = new Button("View Products");
     Button btnsupsrch = new Button("Search");
-    TableView<String> SupTable;
-    ObservableList<String> SupData;
-    
+    ArrayList<Supplier> SupData = new ArrayList<>();
+    TableView<Supplier> SupTable;
+    ObservableList<Supplier> SupTableData;
+
     //Controls for ExpPane
     ComboBox cboxexpmonth = new ComboBox();
     ComboBox cboxexpyr = new ComboBox();
@@ -104,7 +123,7 @@ public class ThriftyStoreGUI extends Application{
     Button btnexpadd = new Button("Add Expense");
     TableView<String> ExpTable;
     ObservableList<String> ExpData;
-    
+
     //Controls for SalPane
     ComboBox cboxsalday = new ComboBox();
     ComboBox cboxsalmonth = new ComboBox();
@@ -118,7 +137,7 @@ public class ThriftyStoreGUI extends Application{
     Button btnsalYPER = new Button("View Yearly Profit Expense Report");
     Button btnsalYTDPER = new Button("View Year To Date Profit Expense Report");
     Button btnsalPOSR = new Button("View POS Sales Report");
-    
+
     //Controls for PayrollPane
     Label lblpaysearch = new Label("Search Employee");
     Label lblpaystore = new Label("Store:");
@@ -133,7 +152,7 @@ public class ThriftyStoreGUI extends Application{
     Button btnpayER = new Button("View Employee Report");
     TableView<String> PayrollTable;
     ObservableList<String> PayrollData;
-    
+
     //Controls for POSPane
     Label lblPOSclub = new Label("Is Customer a club member");
     ComboBox cboxPOSclub = new ComboBox();
@@ -150,74 +169,96 @@ public class ThriftyStoreGUI extends Application{
     Button btnPrintReceipt = new Button("Print Receipt");
     TableView<String> POSTable;
     ObservableList<String> POSData;
-    
+
     //Creating the Menu Bar
     MenuBar mnuBar = new MenuBar();
-    
+
     //Setting up Login Pane portions
     GridPane LoginPane = new GridPane();
+    ImageView loginImage = new ImageView("images\\ThriftyShopper.png");
+    ImageView loginImage2 = new ImageView("images\\thriftyman.jpg");
     Label lblloginusr = new Label("Username ");
     Label lblloginpass = new Label("Password ");
     TextField txtloginusr = new TextField();
     TextField txtloginpass = new TextField();
     Button btnlogin = new Button("Login");
-    
-    //Employee Lists for checking who has logged in
-    ArrayList<Employee> WhoLoggedIn = new ArrayList<>();
+
     String UserNameTyped;
     String PasswordTyped;
     String UserStatus;
     Employee CurrentUser;
     Boolean validLogin;
-    
+
     //Database connection variables
     Connection dbConn;
     Statement commStmt;
     ResultSet dbResults;
-    
+
     @Override
     public void start(Stage primaryStage) {
-        
+
         validLogin = false;
+        txtloginusr.setPrefWidth(50);
+        //txtloginusr.setMaxWidth(50);
+        txtloginpass.setPrefWidth(50);
+        //txtloginpass.setMaxWidth(50);
+        loginImage.setFitHeight(200);
+        loginImage.setFitWidth(300);
+        loginImage2.setFitHeight(200);
+        loginImage2.setFitWidth(300);
 
         //Creating the Scene
-        Scene primaryScene = new Scene(overallPane,800,800);
+        Scene primaryScene = new Scene(overallPane, 800, 800);
 
         Scene loginScene = new Scene(LoginPane, 800, 800);
         LoginPane.setAlignment(Pos.CENTER);
-        LoginPane.add(lblloginusr, 0, 0);
-        LoginPane.add(txtloginusr, 0, 1);
-        LoginPane.add(lblloginpass, 1, 0);
-        LoginPane.add(txtloginpass, 1, 1);
-        LoginPane.add(btnlogin, 2, 1);
+        LoginPane.add(loginImage, 0, 0);
+        LoginPane.add(loginImage2, 1, 0);
+        LoginPane.add(lblloginusr, 0, 1);
+        LoginPane.add(txtloginusr, 0, 2);
+        LoginPane.add(lblloginpass, 1, 1);
+        LoginPane.add(txtloginpass, 1, 2);
+        LoginPane.add(btnlogin, 2, 2);
 
         primaryStage.setScene(loginScene);
         primaryStage.setTitle("Thrifty Store");
         primaryStage.show();
 
-        btnlogin.setOnAction(e -> { 
+        btnlogin.setOnAction(e -> {
 
-            //Filling in employee test list
-            testEmpLogin();
+            sendDBCommand("select * from Employee");
+            try {
+                while (dbResults.next()) {
+                    EmpData.add(new Employee(dbResults.getString(1), dbResults.getString(3), Double.valueOf(dbResults.getString(7)), dbResults.getString(4), dbResults.getString(6), dbResults.getString(5), dbResults.getString(11), dbResults.getString(8), dbResults.getString(9)));
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             //Pulling typed in username and password from textboxes
             UserNameTyped = txtloginusr.getText();
             PasswordTyped = txtloginpass.getText();
 
             //Looping through Employee list to identify user
-            for (Employee y : WhoLoggedIn) {
-                    if(y.getUsername().equals(UserNameTyped)) {
-                        UserStatus = y.getEmployeeType();
-                        CurrentUser = y;
-                    }
+            for (Employee y : EmpData) {
+                if (y.getUsername().equals(UserNameTyped) && y.getPassword().equals(PasswordTyped)) {
+                    UserStatus = y.getEmployeeType();
+                    CurrentUser = y;
                 }
+            }
 
+            if (UserStatus == null && CurrentUser == null) {
 
+                Alert invalid = new Alert(Alert.AlertType.INFORMATION, "Username and Password dont exist", ButtonType.OK);
+                invalid.show();
+                txtloginusr.clear();
+                txtloginpass.clear();
 
+            }
 
             // Adding the Tabs to the TabPane
-            if(UserStatus.equals("executive")) {
-                if(CurrentUser.password.equals(PasswordTyped)) {
+            if (UserStatus.equals("executive")) {
+                if (CurrentUser.password.equals(PasswordTyped)) {
 
                     // Setting the alignment for our "overall" pane
                     // and adding the MenuBar and TabPane to it.
@@ -240,9 +281,10 @@ public class ThriftyStoreGUI extends Application{
                 } else {
                     validLogin = false;
                     System.out.println("Invalid Log In");
+
                 }
-            } else if(UserStatus.equals("manager")) {
-                if(CurrentUser.password.equals(PasswordTyped)) {
+            } else if (UserStatus.equals("manager")) {
+                if (CurrentUser.password.equals(PasswordTyped)) {
                     // Setting the alignment for our "overall" pane
                     // and adding the MenuBar and TabPane to it.
                     overallPane.setAlignment(Pos.TOP_CENTER);
@@ -264,9 +306,10 @@ public class ThriftyStoreGUI extends Application{
                 } else {
                     validLogin = false;
                     System.out.println("Invalid Log In");
+
                 }
             } else if (UserStatus.equals("cashier")) {
-                if(CurrentUser.password.equals(PasswordTyped)) {
+                if (CurrentUser.password.equals(PasswordTyped)) {
                     // Setting the alignment for our "overall" pane
                     // and adding the MenuBar and TabPane to it.
                     overallPane.setAlignment(Pos.TOP_CENTER);
@@ -278,20 +321,21 @@ public class ThriftyStoreGUI extends Application{
                     tbPane.setMinHeight(primaryScene.getHeight());
 
                     validLogin = true;
+                    tbPane.getTabs().add(tabinv);
                     tbPane.getTabs().add(tabpay);
                     tbPane.getTabs().add(tabpos);
                 } else {
                     validLogin = false;
                     System.out.println("Invalid Log In");
+
                 }
             } else {
                 validLogin = false;
                 System.out.println("Invalid Log In");
+
             }
 
-
-            if(validLogin = true)
-            {
+            if (validLogin = true) {
                 // To not allow the tab to be closed
                 tabinv.setClosable(false);
                 tabemp.setClosable(false);
@@ -327,20 +371,97 @@ public class ThriftyStoreGUI extends Application{
                 invPane.add(btninvedit, 10, 0);
 
                 //Adding Inventory Table
-                InvTable = new TableView<>();
-                InvTable.setItems(InvData);
+                InvTable = new TableView<Inventory>();
+                InvTableData = FXCollections.observableArrayList(InvData);
+                InvTable.setItems(InvTableData);
+                sendDBCommand("select Product.*, InventoryItem.*, Department.*from Product join InventoryItem on Product.productID = InventoryItem.productID join Department on InventoryItem.departmentID = Department.departmentID");
+                try {
+                    while (dbResults.next()) {
+                        InvData.add(new Inventory(dbResults.getString(2), dbResults.getString(7), dbResults.getString(12), Integer.valueOf(dbResults.getString(8)), dbResults.getString(9), dbResults.getString(10), Double.valueOf(dbResults.getString(5)), Double.valueOf(dbResults.getString(4))));
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                for (Inventory i : InvData) {
+                    InvTableData.add(i);
+                }
+
                 TableColumn tblcinvprod = new TableColumn("Product");
                 TableColumn tblcinvpic = new TableColumn("Picture");
-                TableColumn tblcinvprice = new TableColumn("Price");
+                TableColumn tblcucost = new TableColumn("Unit Cost");
+                TableColumn tblcinvprice = new TableColumn("Sales Price");
                 TableColumn tblcinvqty = new TableColumn("Quantity");
                 TableColumn tblcinvstat = new TableColumn("Status");
-                TableColumn tblcinvexp = new TableColumn("Exp. Date");
+                TableColumn tblcinvexp = new TableColumn("Expiration Date");
+                TableColumn tblcinvstr = new TableColumn("Store");
                 TableColumn tblcinvdep = new TableColumn("Department");
-                TableColumn tblcinvstore = new TableColumn("Store");
+
+                //TableColumn tblcinvstore = new TableColumn("Store");
                 //InvTable.setMinWidth(primaryScene.getWidth());
-                InvTable.getColumns().addAll(tblcinvprod, tblcinvpic, tblcinvprice, tblcinvqty, tblcinvstat,
-                    tblcinvexp, tblcinvdep, tblcinvstore);
+                tblcinvprod.setCellValueFactory(new PropertyValueFactory<Inventory, String>("productName"));
+                tblcinvdep.setCellValueFactory(new PropertyValueFactory<Inventory, String>("deptID"));
+                tblcinvqty.setCellValueFactory(new PropertyValueFactory<Inventory, Integer>("QIS"));
+                tblcinvstr.setCellValueFactory(new PropertyValueFactory<Inventory, String>("storeID"));
+                tblcinvstat.setCellValueFactory(new PropertyValueFactory<Inventory, String>("status"));
+                tblcinvexp.setCellValueFactory(new PropertyValueFactory<Inventory, String>("expDate"));
+                tblcucost.setCellValueFactory(new PropertyValueFactory<Inventory, Double>("unitCost"));
+                tblcinvprice.setCellValueFactory(new PropertyValueFactory<Inventory, Double>("salesPrice"));
+
+                InvTable.getColumns().addAll(tblcinvprod, tblcinvpic, tblcucost, tblcinvprice, tblcinvqty, tblcinvstat, tblcinvexp,
+                        tblcinvstr, tblcinvdep);
                 invPane.add(InvTable, 0, 1, 10, 1);
+
+                // setting up gridpane for edit inventory window
+                editProductPane.setAlignment(Pos.CENTER);
+
+                Label[] editI = {new Label("Product Name:"), new Label("Unit Cost:"),
+                    new Label("Sales Price:"), new Label("QIS:"),
+                    new Label("Status:"), new Label("Exp Date:"), new Label("Store:"), new Label("Department:")};
+
+                for (int i = 0; i < 8; i++) {
+                    editProductPane.add(editI[i], 0, i);
+                }
+
+                editProductPane.add(editProductName, 1, 0);
+                editProductPane.add(editProductUnitCost, 1, 1);
+                editProductPane.add(editProductSalesPrice, 1, 2);
+                editProductPane.add(editQuantityStock, 1, 3);
+                editProductPane.add(editProductStatus, 1, 4);
+                editProductPane.add(editProductExpDate, 1, 5);
+                editProductPane.add(editProductStoreLocation, 1, 6);
+                editProductPane.add(editProductDepartment, 1, 7);
+                editProductPane.add(editSaveBut, 2, 7);
+
+                // event handlers for the inventory pane
+                btninvadd.setOnAction(eB -> {
+
+                });
+
+                btninvdel.setOnAction(eB -> {
+
+                    Inventory deleteInv;
+                    deleteInv = InvTable.getSelectionModel().getSelectedItem();
+
+                    InvTable.getItems().clear();
+
+                    InvData.remove(deleteInv);
+                    InvTable.getItems().clear();
+                    for (Inventory td : InvData) {
+                        InvTable.getItems().add(td);
+                    }
+
+                });
+                btninvedit.setOnAction(eB -> {
+
+                    Inventory editInv = new Inventory();
+                    for (Inventory td : InvData) {
+                        if (td.toString().equals(InvTable.getSelectionModel().getSelectedItem())) {
+                            editInv = td;
+                        }
+                    }
+                    EditInventory(ItemStage, editInv);
+
+                });
 
                 // Adding controls to EmpPane
                 empPane.add(lblempsearchtxt, 0, 0);
@@ -352,24 +473,22 @@ public class ThriftyStoreGUI extends Application{
                 //Adding Employee Table
                 /*EmpTable = new TableView<>();
                 EmpTable.setItems(EmpData);*/
-                
-            EmpTable = new TableView<Employee>();
-            EmpTableData = FXCollections.observableArrayList(EmpData);
-            EmpTable.setItems(EmpTableData);
-            //send query to oracle database to retrieve employee info
-            sendDBCommand("select * from Employee");
-            try{
-            while (dbResults.next()) {
-            EmpData.add(new Employee(dbResults.getString(1), dbResults.getString(3), Double.valueOf(dbResults.getString(7)), dbResults.getString(4), dbResults.getString(6), dbResults.getString(5), dbResults.getString(11), dbResults.getString(8), dbResults.getString(9)));
-            }
-            }
-            catch (SQLException ex) {
-            Logger.getLogger(UpdateGUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            for (Employee emp: EmpData) {
-                EmpTableData.add(emp);
-            }
+                EmpTable = new TableView<Employee>();
+                EmpTableData = FXCollections.observableArrayList(EmpData);
+                EmpTable.setItems(EmpTableData);
+                //send query to oracle database to retrieve employee info
+                //sendDBCommand("select * from Employee");
+                //try {
+                //    while (dbResults.next()) {
+                //        EmpData.add(new Employee(dbResults.getString(1), dbResults.getString(3), Double.valueOf(dbResults.getString(7)), dbResults.getString(4), dbResults.getString(6), dbResults.getString(5), dbResults.getString(11), dbResults.getString(8), dbResults.getString(9)));
+                //    }
+                //} catch (SQLException ex) {
+                //    Logger.getLogger(UpdateGUI.class.getName()).log(Level.SEVERE, null, ex);
+                //}
+
+                for (Employee emp : EmpData) {
+                    EmpTableData.add(emp);
+                }
                 TableColumn tblcempeid = new TableColumn("Employee ID");
                 TableColumn tblcempname = new TableColumn("Name");
                 TableColumn tblcempphone = new TableColumn("Phone");
@@ -379,19 +498,18 @@ public class ThriftyStoreGUI extends Application{
                 TableColumn tblcempstore = new TableColumn("Store");
                 TableColumn tblcempdepartment = new TableColumn("Department");
                 //EmpTable.setMinWidth(primaryScene.getWidth());
-                
-            tblcempeid.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeID"));
-            tblcempname.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeName"));
-            tblcempphone.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeePhone"));
-            tblcempaddy.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeAddress"));
-            tblcempsal.setCellValueFactory(new PropertyValueFactory<Employee, Double>("employeeSalary"));
-            tblcemptype.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeType"));
-            //tblcempstore.setCellValueFactory(new PropertyValueFactory<Employee, String>("emptype"));
-            //tblcempdepartment.setCellValueFactory(new PropertyValueFactory<Employee, String>(""));
-                EmpTable.getColumns().addAll(tblcempeid, tblcempname, tblcempphone, tblcempaddy, tblcempsal,
-                    tblcemptype, tblcempstore, tblcempdepartment);
-                empPane.add(EmpTable, 0, 2, 10, 1);
 
+                tblcempeid.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeID"));
+                tblcempname.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeName"));
+                tblcempphone.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeePhone"));
+                tblcempaddy.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeAddress"));
+                tblcempsal.setCellValueFactory(new PropertyValueFactory<Employee, Double>("employeeSalary"));
+                tblcemptype.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeType"));
+                //tblcempstore.setCellValueFactory(new PropertyValueFactory<Employee, String>("emptype"));
+                //tblcempdepartment.setCellValueFactory(new PropertyValueFactory<Employee, String>(""));
+                EmpTable.getColumns().addAll(tblcempeid, tblcempname, tblcempphone, tblcempaddy, tblcempsal,
+                        tblcemptype, tblcempstore, tblcempdepartment);
+                empPane.add(EmpTable, 0, 2, 10, 1);
 
                 // Adding controls to SupPane
                 supPane.add(txtsupsearch, 0, 0);
@@ -403,17 +521,39 @@ public class ThriftyStoreGUI extends Application{
                 supPane.add(btnsupvp, 1, 2);
 
                 //Adding Supplier Table
-                SupTable = new TableView<>();
-                SupTable.setItems(SupData);
+                SupTable = new TableView<Supplier>();
+                SupTableData = FXCollections.observableArrayList(SupData);
+                SupTable.setItems(SupTableData);
+
+                sendDBCommand("select * from Supplier");
+                try {
+                    while (dbResults.next()) {
+                        SupData.add(new Supplier(dbResults.getString(1), dbResults.getString(2), dbResults.getString(5), dbResults.getString(7), dbResults.getString(6), dbResults.getString(3), dbResults.getString(4)));
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                for (Supplier s : SupData) {
+                    SupTableData.add(s);
+                }
+
                 TableColumn tblcsupsup = new TableColumn("Supplier");
-                TableColumn tblcsupprod = new TableColumn("Products");
+                //TableColumn tblcsupprod = new TableColumn("Products");
                 TableColumn tblcsupaddy = new TableColumn("Address");
                 TableColumn tblcsupcname = new TableColumn("Contact Name");
                 TableColumn tblcsupphone = new TableColumn("Phone Number");
                 TableColumn tblcsupemail = new TableColumn("Email");
                 //SupTable.setMinWidth(primaryScene.getWidth());
-                SupTable.getColumns().addAll(tblcsupsup, tblcsupprod, tblcsupaddy, tblcsupcname, tblcsupphone,
-                    tblcsupemail);
+
+                tblcsupsup.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierName"));
+                //tblcsupprod.setCellValueFactory(new PropertyValueFactory<Supplier, String>("employeeName"));
+                tblcsupaddy.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierAddress"));
+                tblcsupcname.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierName"));
+                tblcsupphone.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactPhone"));
+                tblcsupemail.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierEmail"));
+
+                SupTable.getColumns().addAll(tblcsupsup, tblcsupaddy, tblcsupcname, tblcsupphone,
+                        tblcsupemail);
                 supPane.add(SupTable, 0, 3, 10, 1);
 
                 // Adding controls to ExpPane
@@ -426,7 +566,7 @@ public class ThriftyStoreGUI extends Application{
 
                 //Adding Expense Table
                 ExpTable = new TableView<>();
-                ExpTable.setItems(SupData);
+                //ExpTable.setItems(SupTableData);
                 TableColumn tblcexpexp = new TableColumn("Expenses");
                 TableColumn tblcexpam = new TableColumn("Expense Amount");
                 TableColumn tblcexpdue = new TableColumn("Due Date");
@@ -505,7 +645,6 @@ public class ThriftyStoreGUI extends Application{
                 posPane.add(btnCheckout, 0, 6);
                 posPane.add(btnPrintReceipt, 1, 6);
 
-
                 primaryStage.setScene(primaryScene);
                 primaryStage.setTitle("Thrifty Store");
                 primaryStage.show();
@@ -516,38 +655,36 @@ public class ThriftyStoreGUI extends Application{
                 primaryStage.setTitle("Thrifty Store");
                 primaryStage.show();
             }
-        });
+        }
+        );
 
-        
     }
-    
+
     public static void main(String[] args) {
         launch(args);
     }
-    
-    public void sendDBCommand(String sqlQuery)
-    {
+
+    public void sendDBCommand(String sqlQuery) {
         // Set up your connection strings
         // IF YOU ARE IN CIS330 NOW: use YOUR Oracle Username/Password
         String URL = "jdbc:oracle:thin:@localhost:1521:XE";
         String userID = "moneyuser"; // Change to YOUR Oracle username
         String userPASS = "moneypass"; // Change to YOUR Oracle password
         OracleDataSource ds;
-        
+
         // Clear Box Testing - Print each query to check SQL syntax
         //  sent to this method.
         // You can comment this line out when your program is finished
         System.out.println(sqlQuery);
-        
+
         // Lets try to connect
-        try
-        {
+        try {
             // instantiate a new data source object
             ds = new OracleDataSource();
             // Where is the database located? Web? Local?
             ds.setURL(URL);
             // Send the user/pass and get an open connection.
-            dbConn = ds.getConnection(userID,userPASS);
+            dbConn = ds.getConnection(userID, userPASS);
             // When we get results
             //  -TYPE_SCROLL_SENSITIVE means if the database data changes we
             //   will see our resultset update in real time.
@@ -566,22 +703,50 @@ public class ThriftyStoreGUI extends Application{
             // pointed to by the reference variable dbResults
             // Because we declared this variable globally above, we can use
             // the results in any method in the class.
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             System.out.println(e.toString());
         }
     }
-    
-    public void testEmpLogin() {
-        
-        Employee emp1 = new Employee("1a", "Rick", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "cashier", "Rick1", "123");
-        Employee emp2 = new Employee("3b", "Jim", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "executive", "Jim2", "123");
-        Employee emp3 = new Employee("4b", "James", 100.00,  "Grace st.", "a@aol.com", "999-999-9999", "manager", "James", "123");
-        
-        WhoLoggedIn.add(emp1);
-        WhoLoggedIn.add(emp2);
-        WhoLoggedIn.add(emp3);
+
+    public void EditInventory(Stage ItemStage, Inventory editInv) {
+
+        editProductName.setText(editInv.getProductName());
+        editProductUnitCost.setText(String.valueOf(editInv.getUnitCost()));
+        editProductSalesPrice.setText(String.valueOf(editInv.getSalesPrice()));
+        editQuantityStock.setText(String.valueOf(editInv.getQIS()));
+        editProductStatus.setText(editInv.getStatus());
+        editProductExpDate.setText(editInv.getExpDate());
+        editProductStoreLocation.setText(editInv.getStoreID());
+        editProductDepartment.setText(editInv.getDeptID());
+
+        Button editSaveBut = new Button("Save Changes->");
+
+        ItemStage.setScene(ItemScene);
+        ItemStage.setTitle("Edit Inventory Item");
+        ItemStage.show();
+
+        editSaveBut.setOnAction(e -> {
+
+            for (Inventory td : InvData) {
+                if (td.equals(editInv)) {
+                    td.setProductName(editProductName.getText());
+                    td.setUnitCost(Double.parseDouble(editProductUnitCost.getText()));
+                    td.setSalesPrice(Double.parseDouble(editProductSalesPrice.getText()));
+                    td.setQIS(Integer.parseInt(editQuantityStock.getText()));
+                    td.setStatus(Integer.parseInt(editProductStatus.getText()));
+                    td.setExpDate(editProductExpDate.getText());
+                    td.setStoreID(editProductStoreLocation.getText());
+                    td.setDeptID(editProductDepartment.getText());
+                }
+            }
+
+            InvTable.getItems().clear();
+            for (Inventory td : InvData) {
+                InvTable.getItems().add(td);
+            }
+
+        });
+
     }
-    
+
 }
