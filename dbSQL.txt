@@ -22,7 +22,7 @@ hourlyPay NUMERIC(10,2),
 type VARCHAR(25)
 );
 
-INSERT INTO STORE VALUES ('sto22222', 'Harrisonburg', '2348 Crispy Lane', '443-482-2349', 'HarrisonburgThrifty@gmail.com');
+INSERT INTO STORE VALUES ('sto22221', 'Harrisonburg', '2348 Crispy Lane', '443-482-2349', 'HarrisonburgThrifty@gmail.com');
 INSERT INTO STORE VALUES ('sto22222', 'Richmond', '5629 Marshall Lee Lane', '540-282-9743', 'RichmondThrifty@gmail.com');
 INSERT INTO STORE VALUES ('sto22223', 'Virginia Beach', '9348 Hunt Club Road', '540-493-2309', 'VAbeachThrifty@gmail.com');
 INSERT INTO STORE VALUES ('sto22224', 'Blacksburg', '2938 Oak Lane', '284-256-8237', 'BlacksburgThrifty@gmail.com');
