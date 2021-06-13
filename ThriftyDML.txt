@@ -100,5 +100,5 @@ INSERT INTO STOREEMPLOYEE VALUES ('emp11115', 'dep55559');
 INSERT INTO SUPPLIER VALUES ('sup44444', 'Nestle', '310-394-2948', 'Nestle@gmail.com', '2039 Valley Lane', 'Michael Turner', '01/01/2021');
 INSERT INTO SUPPLIER VALUES ('sup44445', 'Pepsico', '410-240-2380', 'Pepsico@gmail.com', '2562 Oak Hill Road','Austin Hall', '06/01/2020');
 INSERT INTO SUPPLIER VALUES ('sup44446', 'Tyson', '624-243-9854', 'Tyson@gmail.com', '3085 Green Hill Road', 'Nate Diaz', '02/04/2019');
-INSERT INTO SUPPLIER VALUES ('sup44447', 'Mars', '384-642-5425', 'Mars@gmail.com', '9465 Britten Lane', 'Deji Boston', 06/02/2020');
+INSERT INTO SUPPLIER VALUES ('sup44447', 'Mars', '384-642-5425', 'Mars@gmail.com', '9465 Britten Lane', 'Deji Boston', '06/02/2020');
 INSERT INTO SUPPLIER VALUES ('sup44448', 'Danone', '340-948-0984', 'Danone@gmail.com', '8649 Center Valley Lane', 'Bryce Short','06/01/2019');
