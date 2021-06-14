@@ -13,6 +13,7 @@ public class Employee {
     
      //ArrayList<WorkLog> worklogList;
     String empID;
+    String storeID;
     String empName;
     String username;
     String password;
@@ -26,10 +27,11 @@ public class Employee {
         
     }
     
-    public Employee(String empID, String empName, Double empSalary,  String empAddress, String empEmail, String empPhone, String empType,
-                    String username, String password){
+    public Employee(String empID, String storeID, String empName, String empAddress, String empPhone, String empEmail, Double empSalary,  
+                    String username, String password, String empType){
         
         this.empID = empID;
+        this.storeID = storeID;
         this.empName = empName;
         this.empSalary = empSalary;
         this.empAddress = empAddress;
@@ -45,6 +47,9 @@ public class Employee {
         return this.empID;
     }
     
+    public String getStoreID(){
+        return this.storeID;
+    }
     public String getEmployeeName(){
         return this.empName;
     }
@@ -73,6 +78,9 @@ public class Employee {
         this.empID = eID;
     }
     
+    public void setStoreID(String storeID) {
+        this.storeID = storeID;
+    }
     public void setEmployeeName(String eName){
         this.empName = eName;
     }
@@ -105,4 +113,3 @@ public class Employee {
         return this.password;
     }
 }
-
