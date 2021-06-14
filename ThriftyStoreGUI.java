@@ -380,7 +380,11 @@ public class ThriftyStoreGUI extends Application {
                 sendDBCommand("select Product.*, InventoryItem.*, Department.*from Product join InventoryItem on Product.productID = InventoryItem.productID join Department on InventoryItem.departmentID = Department.departmentID");
                 try {
                     while (dbResults.next()) {
-                        InvData.add(new Inventory(dbResults.getString(2), dbResults.getString(7), dbResults.getString(12), Integer.valueOf(dbResults.getString(8)), dbResults.getString(9), dbResults.getString(10), Double.valueOf(dbResults.getString(5)), Double.valueOf(dbResults.getString(4))));
+                        String imgName = "images\\" + dbResults.getString(2) + ".jpg";
+                        ImageView invImg = new ImageView(new Image(imgName));
+                        invImg.setFitHeight(50);
+                        invImg.setFitWidth(50);
+                        InvData.add(new Inventory(dbResults.getString(2), invImg, dbResults.getString(7), dbResults.getString(12), Integer.valueOf(dbResults.getString(8)), dbResults.getString(9), dbResults.getString(10), Double.valueOf(dbResults.getString(5)), Double.valueOf(dbResults.getString(4))));
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -402,6 +406,7 @@ public class ThriftyStoreGUI extends Application {
                 //TableColumn tblcinvstore = new TableColumn("Store");
                 //InvTable.setMinWidth(primaryScene.getWidth());
                 tblcinvprod.setCellValueFactory(new PropertyValueFactory<Inventory, String>("productName"));
+                tblcinvpic.setCellValueFactory(new PropertyValueFactory<Inventory, ImageView>("image"));
                 tblcinvdep.setCellValueFactory(new PropertyValueFactory<Inventory, String>("deptID"));
                 tblcinvqty.setCellValueFactory(new PropertyValueFactory<Inventory, Integer>("QIS"));
                 tblcinvstr.setCellValueFactory(new PropertyValueFactory<Inventory, String>("storeID"));
@@ -410,6 +415,8 @@ public class ThriftyStoreGUI extends Application {
                 tblcucost.setCellValueFactory(new PropertyValueFactory<Inventory, Double>("unitCost"));
                 tblcinvprice.setCellValueFactory(new PropertyValueFactory<Inventory, Double>("salesPrice"));
 
+                 //tblcinvpic.setPrefWidth(60);
+                         
                 InvTable.getColumns().addAll(tblcinvprod, tblcinvpic, tblcucost, tblcinvprice, tblcinvqty, tblcinvstat, tblcinvexp,
                         tblcinvstr, tblcinvdep);
                 invPane.add(InvTable, 0, 1, 10, 1);
@@ -489,9 +496,9 @@ public class ThriftyStoreGUI extends Application {
                 //    Logger.getLogger(UpdateGUI.class.getName()).log(Level.SEVERE, null, ex);
                 //}
 
-                /*for (Employee emp : EmpData) {
+                for (Employee emp : EmpData) {
                     EmpTableData.add(emp);
-                }*/
+                }
                 TableColumn tblcempeid = new TableColumn("Employee ID");
                 TableColumn tblcempname = new TableColumn("Name");
                 TableColumn tblcempphone = new TableColumn("Phone");
