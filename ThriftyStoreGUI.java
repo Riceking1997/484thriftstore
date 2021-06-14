@@ -489,9 +489,9 @@ public class ThriftyStoreGUI extends Application {
                 //    Logger.getLogger(UpdateGUI.class.getName()).log(Level.SEVERE, null, ex);
                 //}
 
-                for (Employee emp : EmpData) {
+                /*for (Employee emp : EmpData) {
                     EmpTableData.add(emp);
-                }
+                }*/
                 TableColumn tblcempeid = new TableColumn("Employee ID");
                 TableColumn tblcempname = new TableColumn("Name");
                 TableColumn tblcempphone = new TableColumn("Phone");
