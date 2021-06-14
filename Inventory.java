@@ -5,6 +5,8 @@
  */
 package Capstone;
 
+import javafx.scene.image.ImageView;
+
 /**
  *
  * @author trane
@@ -12,6 +14,7 @@ package Capstone;
 public class Inventory {
     
     String productName;
+    ImageView image;
     String deptID;
     String storeID;
     int QIS;
@@ -23,9 +26,10 @@ public class Inventory {
     public Inventory(){
         
     }
-    public Inventory(String productName, String deptID, String storeID, int QIS, String status, String expDate, double salesPrice, double unitCost){
+    public Inventory(String productName, ImageView img, String deptID, String storeID, int QIS, String status, String expDate, double salesPrice, double unitCost){
         
         this.productName = productName;
+        this.image = img;
         this.deptID = deptID;
         this.storeID = storeID;
         this.QIS = QIS;
@@ -38,6 +42,10 @@ public class Inventory {
     
     public String getProductName(){
         return this.productName;
+    }
+    
+    public ImageView getImage(){
+        return this.image;
     }
     
     public String getDeptID(){
@@ -65,6 +73,10 @@ public class Inventory {
     
     public String getStatus(){
         return this.status;
+    }
+    
+    public void setImage(ImageView invPic){
+        this.image = invPic;
     }
     
     public void setQIS(int Q){
