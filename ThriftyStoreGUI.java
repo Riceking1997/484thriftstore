@@ -115,10 +115,13 @@ public class ThriftyStoreGUI extends Application {
     ObservableList<Supplier> SupTableData;
 
     //Controls for ExpPane
+    Label lblexpmonth = new Label("Month");
+    Label lblexpyear = new Label("Year");
     ComboBox cboxexpmonth = new ComboBox();
     ComboBox cboxexpyr = new ComboBox();
     Button btnexpdate = new Button("Change Date");
     ComboBox cboxexpstore = new ComboBox();
+    Label lblexpstore = new Label("Store");
     Button btnexpstore = new Button("Change Store");
     Button btnexpadd = new Button("Add Expense");
     TableView<String> ExpTable;
@@ -557,12 +560,15 @@ public class ThriftyStoreGUI extends Application {
                 supPane.add(SupTable, 0, 3, 10, 1);
 
                 // Adding controls to ExpPane
-                expPane.add(cboxexpmonth, 0, 0);
-                expPane.add(cboxexpyr, 1, 0);
-                expPane.add(btnexpdate, 6, 0);
-                expPane.add(cboxexpstore, 7, 0);
-                expPane.add(btnexpstore, 8, 0);
-                expPane.add(btnexpadd, 9, 0);
+                expPane.add(lblexpmonth,0,0);
+                expPane.add(lblexpyear,1,0);
+                expPane.add(cboxexpmonth, 0, 1);
+                expPane.add(cboxexpyr, 1, 1);
+                expPane.add(btnexpdate, 6, 1);
+                expPane.add(lblexpstore,7,0);
+                expPane.add(cboxexpstore, 7, 1);
+                expPane.add(btnexpstore, 8, 1);
+                expPane.add(btnexpadd, 9, 1);
 
                 //Adding Expense Table
                 ExpTable = new TableView<>();
@@ -573,7 +579,7 @@ public class ThriftyStoreGUI extends Application {
                 TableColumn tblcexpsname = new TableColumn("Store Name");
                 //SupTable.setMinWidth(primaryScene.getWidth());
                 ExpTable.getColumns().addAll(tblcexpexp, tblcexpam, tblcexpdue, tblcexpsname);
-                expPane.add(ExpTable, 0, 1, 10, 1);
+                expPane.add(ExpTable, 0, 2, 10, 1);
 
                 // Adding controls to SalPane
                 salPane.add(lblsalyr, 2, 0);
@@ -668,8 +674,8 @@ public class ThriftyStoreGUI extends Application {
         // Set up your connection strings
         // IF YOU ARE IN CIS330 NOW: use YOUR Oracle Username/Password
         String URL = "jdbc:oracle:thin:@localhost:1521:XE";
-        String userID = "moneyuser"; // Change to YOUR Oracle username
-        String userPASS = "moneypass"; // Change to YOUR Oracle password
+        String userID = "javauser"; // Change to YOUR Oracle username
+        String userPASS = "javapass"; // Change to YOUR Oracle password
         OracleDataSource ds;
 
         // Clear Box Testing - Print each query to check SQL syntax
