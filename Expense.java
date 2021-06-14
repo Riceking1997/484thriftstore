@@ -1,9 +1,10 @@
+  
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Thifty;
+package Capstone;
 
 /**
  *
@@ -15,20 +16,20 @@ public class Expense {
     String storeID;
     String expenseType;
     Double expenseTotal;
-    String issueDate;
+    //String issueDate;
     String dueDate;
 
     public Expense() {
 
     }
 
-    public Expense(String billID, String storeID, String expenseType, Double expenseTotal, String issueDate, String dueDate) {
+    public Expense(String billID, String storeID, String expenseType, Double expenseTotal, String dueDate) {
 
         this.billID = billID;
         this.storeID = storeID;
         this.expenseType = expenseType;
         this.expenseTotal = expenseTotal;
-        this.issueDate = issueDate;
+        //this.issueDate = issueDate;
         this.dueDate = dueDate;
             
     }
@@ -49,9 +50,9 @@ public class Expense {
         return this.expenseTotal;
     }
     
-    public String getIssueDate(){
+    /*public String getIssueDate(){
         return this.issueDate;
-    }
+    }*/
     
     public String getDueDate(){
         return this.dueDate;
@@ -73,9 +74,9 @@ public class Expense {
         this.expenseTotal = eTotal;
     }
     
-    public void setIssueDate(String issDate){
+    /*public void setIssueDate(String issDate){
         this.issueDate = issDate;
-    }
+    }*/
     
     public void setDueDate(String duDate){
         this.dueDate = duDate;
