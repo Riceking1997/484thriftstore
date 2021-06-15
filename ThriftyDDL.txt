@@ -53,6 +53,7 @@ poID VARCHAR(10) PRIMARY KEY,
 customerID VARCHAR(10) REFERENCES Customer(customerID),
 storeID VARCHAR(10) REFERENCES Store(storeID),
 employeeID VARCHAR(10),
+nodiscountTotal NUMERIC(7,2),
 savings NUMERIC(10,2),
 poDate DATE);
 
