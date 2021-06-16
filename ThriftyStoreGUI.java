@@ -135,11 +135,12 @@ public class ThriftyStoreGUI extends Application {
     Label lblsalmonth = new Label("Month");
     Label lblsalday = new Label("Day");
     Label lblsalyr = new Label("Year");
-    TableView<String> SalTable;
-    ObservableList<String> SalData;
     Button btnsalYPER = new Button("View Yearly Profit Expense Report");
     Button btnsalYTDPER = new Button("View Year To Date Profit Expense Report");
     Button btnsalPOSR = new Button("View POS Sales Report");
+    ArrayList<Receipt> SalData = new ArrayList<>();
+    TableView<Receipt> SalTable;
+    ObservableList<Receipt> SalTableData;
 
     //Controls for PayrollPane
     Label lblpaysearch = new Label("Search Employee");
@@ -620,14 +621,34 @@ public class ThriftyStoreGUI extends Application {
                 salPane.add(cboxsalday, 7, 0);
                 salPane.add(btnsaldate, 8, 0);
 
-                //Adding Salary Table
+                sendDBCommand("select * from PurchaseOrder");
+                try {
+                    while (dbResults.next()){
+                        SalData.add(new Receipt(dbResults.getString(1), dbResults.getString(2), dbResults.getString(4), dbResults.getString(3), Double.valueOf(dbResults.getString(5)), Double.valueOf(dbResults.getString(6)), dbResults.getString(7)));
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                /*for(Receipt r : SalData) {
+                    SalTableData.add(r);
+                }*/
+//Remember the order you put the sqlquery and the table/list set statement                
+                //Adding Sales Table
                 SalTable = new TableView<>();
-                SalTable.setItems(SalData);
-                TableColumn tblcsalsale = new TableColumn("Sales");
-                TableColumn tblcsalsm = new TableColumn("Sales Amount");
+                SalTableData = FXCollections.observableList(SalData);
+                SalTable.setItems(SalTableData);
+                
+                TableColumn tblcsalrec = new TableColumn("Receipt");
+                TableColumn tblcsalamt = new TableColumn("Sales Amount");
                 TableColumn tblcsalstore = new TableColumn("Store");
+                
+                tblcsalrec.setCellValueFactory(new PropertyValueFactory<Receipt, String>("receiptID"));
+                tblcsalamt.setCellValueFactory(new PropertyValueFactory<Receipt, Double>("finalTotal"));
+                tblcsalstore.setCellValueFactory(new PropertyValueFactory<Receipt, String>("storeID"));
+                
                 //SupTable.setMinWidth(primaryScene.getWidth());
-                SalTable.getColumns().addAll(tblcsalsale, tblcsalsm, tblcsalstore);
+                SalTable.getColumns().addAll(tblcsalrec, tblcsalamt, tblcsalstore);
                 salPane.add(SalTable, 0, 1, 10, 1);
                 salPane.add(btnsalYPER, 0, 2);
                 salPane.add(btnsalPOSR, 1, 2);
