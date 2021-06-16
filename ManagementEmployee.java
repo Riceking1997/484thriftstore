@@ -15,9 +15,10 @@ public class ManagementEmployee extends Employee {
     boolean isManager;
    
     
-    public ManagementEmployee(String empID, String empName, Double empSalary,  String empAddress, String empEmail, String empPhone, String empType, String username, String password, boolean isManager){
+    public ManagementEmployee(String empID, String storeID, String empName, String empAddress, String empPhone, String empEmail, Double empSalary,  
+                    String username, String password, String empType, boolean isManager){
         
-        super(empID,empName,empSalary,empAddress,empEmail,empPhone,empType,username,password);
+        super(empID,storeID,empName,empAddress,empPhone,empEmail,empSalary,username,password,empType);
         setIsManager(empType);
     }
     
@@ -36,4 +37,5 @@ public class ManagementEmployee extends Employee {
     }
     
 }
+
 
