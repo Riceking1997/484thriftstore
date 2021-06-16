@@ -6,6 +6,7 @@
 package Capstone;
 
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -78,6 +79,21 @@ public class ThriftyStoreGUI extends Application {
     TextField editProductDepartment = new TextField();
     Button editSaveBut = new Button("Save Changes->");
     Scene ItemScene = new Scene(editProductPane, 800, 800);
+
+    // Gridpane to add a product in Inventory
+    // Also textfields and buttons for the add a product window
+    GridPane addProductPane = new GridPane();
+    TextField addProductName = new TextField();
+    TextField addProductUnitCost = new TextField();
+    TextField addProductSalesPrice = new TextField();
+    TextField addQuantityStock = new TextField();
+    TextField addProductStatus = new TextField();
+    TextField addProductExpDate = new TextField();
+    TextField addProductStoreLocation = new TextField();
+    TextField addProductDepartment = new TextField();
+    Button addSaveBut = new Button("Save Changes->");
+    Scene AddInvScene = new Scene(addProductPane, 800, 800);
+    Stage AddItemStage = new Stage();
 
     //Controls for InvPane
     Label lblinvsearchtxt = new Label("Search");
@@ -385,7 +401,7 @@ public class ThriftyStoreGUI extends Application {
                         ImageView invImg = new ImageView(new Image(imgName));
                         invImg.setFitHeight(50);
                         invImg.setFitWidth(50);
-                        InvData.add(new Inventory(dbResults.getString(2), invImg, dbResults.getString(7), dbResults.getString(12), Integer.valueOf(dbResults.getString(8)), dbResults.getString(9), dbResults.getString(10), Double.valueOf(dbResults.getString(5)), Double.valueOf(dbResults.getString(4))));
+                        InvData.add(new Inventory(dbResults.getString(1), dbResults.getString(2), invImg, dbResults.getString(7), dbResults.getString(12), Integer.valueOf(dbResults.getString(8)), dbResults.getString(9), dbResults.getString(10), Double.valueOf(dbResults.getString(5)), Double.valueOf(dbResults.getString(4))));
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -416,18 +432,32 @@ public class ThriftyStoreGUI extends Application {
                 tblcucost.setCellValueFactory(new PropertyValueFactory<Inventory, Double>("unitCost"));
                 tblcinvprice.setCellValueFactory(new PropertyValueFactory<Inventory, Double>("salesPrice"));
 
-                 //tblcinvpic.setPrefWidth(60);
-                         
+                //tblcinvpic.setPrefWidth(60);
                 InvTable.getColumns().addAll(tblcinvprod, tblcinvpic, tblcucost, tblcinvprice, tblcinvqty, tblcinvstat, tblcinvexp,
                         tblcinvstr, tblcinvdep);
                 invPane.add(InvTable, 0, 1, 10, 1);
 
                 // setting up gridpane for edit inventory window
                 editProductPane.setAlignment(Pos.CENTER);
+                addProductPane.setAlignment(Pos.CENTER);
 
                 Label[] editI = {new Label("Product Name:"), new Label("Unit Cost:"),
                     new Label("Sales Price:"), new Label("QIS:"),
                     new Label("Status:"), new Label("Exp Date:"), new Label("Store:"), new Label("Department:")};
+
+                for (int i = 0; i < 8; i++) {
+                    addProductPane.add(editI[i], 0, i);
+                }
+
+                addProductPane.add(addProductName, 1, 0);
+                addProductPane.add(addProductUnitCost, 1, 1);
+                addProductPane.add(addProductSalesPrice, 1, 2);
+                addProductPane.add(addQuantityStock, 1, 3);
+                addProductPane.add(addProductStatus, 1, 4);
+                addProductPane.add(addProductExpDate, 1, 5);
+                addProductPane.add(addProductStoreLocation, 1, 6);
+                addProductPane.add(addProductDepartment, 1, 7);
+                addProductPane.add(addSaveBut, 2, 7);
 
                 for (int i = 0; i < 8; i++) {
                     editProductPane.add(editI[i], 0, i);
@@ -445,6 +475,17 @@ public class ThriftyStoreGUI extends Application {
 
                 // event handlers for the inventory pane
                 btninvadd.setOnAction(eB -> {
+                    try {
+
+                        Inventory addInv = new Inventory();
+
+                        AddInventory(AddItemStage, addInv);
+                        // create new statement to execute the update query once a user enters new data
+                        Statement queryUpdate = dbConn.createStatement();
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                 });
 
@@ -456,6 +497,8 @@ public class ThriftyStoreGUI extends Application {
                     InvTable.getItems().clear();
 
                     InvData.remove(deleteInv);
+                    String byeByeP = deleteInv.getProductID();
+                    sendDBCommand("DELETE FROM InventoryItem WHERE productID = " + "'" + byeByeP + "'");
                     InvTable.getItems().clear();
                     for (Inventory td : InvData) {
                         InvTable.getItems().add(td);
@@ -522,6 +565,36 @@ public class ThriftyStoreGUI extends Application {
                         tblcemptype, tblcempstore);
                 empPane.add(EmpTable, 0, 2, 10, 1);
 
+                btnempadd.setOnAction(eB -> {
+
+                });
+
+                btnempdel.setOnAction(eB -> {
+
+                    Employee deleteEmp;
+                    deleteEmp = EmpTable.getSelectionModel().getSelectedItem();
+
+                    EmpTable.getItems().clear();
+
+                    EmpData.remove(deleteEmp);
+                    EmpTable.getItems().clear();
+                    for (Employee td : EmpData) {
+                        EmpTable.getItems().add(td);
+                    }
+
+                });
+                btnempedit.setOnAction(eB -> {
+
+                    Employee editEmp = new Employee();
+                    for (Employee td : EmpData) {
+                        if (td.toString().equals(EmpTable.getSelectionModel().getSelectedItem())) {
+                            editEmp = td;
+                        }
+                    }
+                    // EditInventory(ItemStage, editEmp);
+
+                });
+
                 // Adding controls to SupPane
                 supPane.add(txtsupsearch, 0, 0);
                 supPane.add(btnsupsrch, 1, 0);
@@ -561,19 +634,19 @@ public class ThriftyStoreGUI extends Application {
                 tblcsupaddy.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierAddress"));
                 tblcsupcname.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierName"));
                 tblcsupphone.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactPhone"));
-                tblcsupemail.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactEmail"));
+                tblcsupemail.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierEmail"));
 
                 SupTable.getColumns().addAll(tblcsupsup, tblcsupaddy, tblcsupcname, tblcsupphone,
                         tblcsupemail);
                 supPane.add(SupTable, 0, 3, 10, 1);
 
                 // Adding controls to ExpPane
-                expPane.add(lblexpmonth,0,0);
-                expPane.add(lblexpyear,1,0);
+                expPane.add(lblexpmonth, 0, 0);
+                expPane.add(lblexpyear, 1, 0);
                 expPane.add(cboxexpmonth, 0, 1);
                 expPane.add(cboxexpyr, 1, 1);
                 expPane.add(btnexpdate, 6, 1);
-                expPane.add(lblexpstore,7,0);
+                expPane.add(lblexpstore, 7, 0);
                 expPane.add(cboxexpstore, 7, 1);
                 expPane.add(btnexpstore, 8, 1);
                 expPane.add(btnexpadd, 9, 1);
@@ -581,19 +654,18 @@ public class ThriftyStoreGUI extends Application {
                 //Adding Expense Table
                 sendDBCommand("select * from Expensebill");
                 try {
-                    while (dbResults.next()){
+                    while (dbResults.next()) {
                         ExpData.add(new Expense(dbResults.getString(1), dbResults.getString(2), dbResults.getString(3), Double.valueOf(dbResults.getString(4)), dbResults.getString(5)));
-                                }
+                    }
                 } catch (SQLException ex) {
                     Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
+
                 //Adding Expense Table
                 ExpTable = new TableView<>();
                 ExpTableData = FXCollections.observableList(ExpData);
                 ExpTable.setItems(ExpTableData);
-                
-                
+
                 //ExpTable.setItems(SupTableData);
                 TableColumn tblcexpid = new TableColumn("Bill ID");
                 TableColumn tblcexpname = new TableColumn("Expenses");
@@ -601,14 +673,13 @@ public class ThriftyStoreGUI extends Application {
                 TableColumn tblcexpdue = new TableColumn("Due Date");
                 TableColumn tblcexpstore = new TableColumn("Store");
                 //SupTable.setMinWidth(primaryScene.getWidth());
-                
-                
+
                 tblcexpid.setCellValueFactory(new PropertyValueFactory<Expense, String>("billID"));
                 tblcexpname.setCellValueFactory(new PropertyValueFactory<Expense, String>("expenseType"));
                 tblcexpamt.setCellValueFactory(new PropertyValueFactory<Expense, Double>("expenseTotal"));
                 tblcexpdue.setCellValueFactory(new PropertyValueFactory<Expense, String>("dueDate"));
                 tblcexpstore.setCellValueFactory(new PropertyValueFactory<Expense, String>("storeID"));
-                
+
                 ExpTable.getColumns().addAll(tblcexpid, tblcexpname, tblcexpamt, tblcexpdue, tblcexpstore);
                 expPane.add(ExpTable, 0, 2, 10, 1);
 
@@ -623,30 +694,27 @@ public class ThriftyStoreGUI extends Application {
 
                 sendDBCommand("select * from PurchaseOrder");
                 try {
-                    while (dbResults.next()){
+                    while (dbResults.next()) {
                         SalData.add(new Receipt(dbResults.getString(1), dbResults.getString(2), dbResults.getString(4), dbResults.getString(3), Double.valueOf(dbResults.getString(5)), Double.valueOf(dbResults.getString(6)), dbResults.getString(7)));
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
-                /*for(Receipt r : SalData) {
-                    SalTableData.add(r);
-                }*/
-//Remember the order you put the sqlquery and the table/list set statement                
-                //Adding Sales Table
+
+                //Adding Salary Table
                 SalTable = new TableView<>();
                 SalTableData = FXCollections.observableList(SalData);
                 SalTable.setItems(SalTableData);
-                
+               
                 TableColumn tblcsalrec = new TableColumn("Receipt");
                 TableColumn tblcsalamt = new TableColumn("Sales Amount");
                 TableColumn tblcsalstore = new TableColumn("Store");
                 
+                
+                
                 tblcsalrec.setCellValueFactory(new PropertyValueFactory<Receipt, String>("receiptID"));
                 tblcsalamt.setCellValueFactory(new PropertyValueFactory<Receipt, Double>("finalTotal"));
                 tblcsalstore.setCellValueFactory(new PropertyValueFactory<Receipt, String>("storeID"));
-                
                 //SupTable.setMinWidth(primaryScene.getWidth());
                 SalTable.getColumns().addAll(tblcsalrec, tblcsalamt, tblcsalstore);
                 salPane.add(SalTable, 0, 1, 10, 1);
@@ -765,6 +833,37 @@ public class ThriftyStoreGUI extends Application {
         }
     }
 
+    public void AddInventory(Stage AddItemStage, Inventory addInv) {
+
+        //Button addSaveBut = new Button("Save Changes->");
+        AddItemStage.setScene(AddInvScene);
+        AddItemStage.setTitle("Add Inventory Item");
+        AddItemStage.show();
+
+        addSaveBut.setOnAction(e -> {
+
+            for (Inventory td : InvData) {
+                if (td.equals(addInv)) {
+                    td.setProductName(addProductName.getText());
+                    td.setUnitCost(Double.parseDouble(addProductUnitCost.getText()));
+                    td.setSalesPrice(Double.parseDouble(addProductSalesPrice.getText()));
+                    td.setQIS(Integer.parseInt(addQuantityStock.getText()));
+                    td.setStatus(Integer.parseInt(addProductStatus.getText()));
+                    td.setExpDate(addProductExpDate.getText());
+                    td.setStoreID(addProductStoreLocation.getText());
+                    td.setDeptID(addProductDepartment.getText());
+                }
+            }
+
+            InvTable.getItems().clear();
+            for (Inventory td : InvData) {
+                InvTable.getItems().add(td);
+            }
+
+        });
+
+    }
+
     public void EditInventory(Stage ItemStage, Inventory editInv) {
 
         editProductName.setText(editInv.getProductName());
@@ -776,8 +875,7 @@ public class ThriftyStoreGUI extends Application {
         editProductStoreLocation.setText(editInv.getStoreID());
         editProductDepartment.setText(editInv.getDeptID());
 
-        Button editSaveBut = new Button("Save Changes->");
-
+        //Button editSaveBut = new Button("Save Changes->");
         ItemStage.setScene(ItemScene);
         ItemStage.setTitle("Edit Inventory Item");
         ItemStage.show();
