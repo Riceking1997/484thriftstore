@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
  */
 public class Inventory {
     
+    String productID;
     String productName;
     ImageView image;
     String deptID;
@@ -26,8 +27,9 @@ public class Inventory {
     public Inventory(){
         
     }
-    public Inventory(String productName, ImageView img, String deptID, String storeID, int QIS, String status, String expDate, double salesPrice, double unitCost){
+    public Inventory(String productID, String productName, ImageView img, String deptID, String storeID, int QIS, String status, String expDate, double salesPrice, double unitCost){
         
+        this.productID = productID;
         this.productName = productName;
         this.image = img;
         this.deptID = deptID;
@@ -38,6 +40,10 @@ public class Inventory {
         this.salesPrice = salesPrice;
         this.unitCost = unitCost;
         
+    }
+    
+    public String getProductID(){
+        return this.productID;
     }
     
     public String getProductName(){
@@ -73,6 +79,10 @@ public class Inventory {
     
     public String getStatus(){
         return this.status;
+    }
+    
+    public void setProductID(String pID){
+        this.productID = pID;
     }
     
     public void setImage(ImageView invPic){
