@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Thifty;
+package Capstone;
 
 import java.util.ArrayList;
 
@@ -14,15 +14,16 @@ import java.util.ArrayList;
 public class Receipt {
 
     ArrayList<ReceiptItem> itemList;
-    int receiptID;
+    String receiptID;
     String customerID;
     String employeeID;
     String storeID;
     Double nodiscountTotal;
     Double savings;
+    Double finalTotal;
     String date;
 
-    public Receipt(int receiptID, String customerID, String employeeID, String storeID, Double nodiscountTotal, Double savings, String date) {
+    public Receipt(String receiptID, String customerID, String employeeID, String storeID, Double nodiscountTotal, Double savings, String date) {
 
         this.receiptID = receiptID;
         this.customerID = customerID;
@@ -30,11 +31,12 @@ public class Receipt {
         this.storeID = storeID;
         this.nodiscountTotal = nodiscountTotal;
         this.savings = savings;
+        this.finalTotal = nodiscountTotal - savings;
         this.date = date;
         
     }
     
-    public int getReceiptID(){
+    public String getReceiptID(){
         return this.receiptID;
     }
     
@@ -58,11 +60,15 @@ public class Receipt {
         return this.savings;
     }
     
+    public Double getFinalTotal(){
+        return this.finalTotal;
+    }
+    
     public String getDate(){
         return this.date;
     }
 
-    public void setReceiptID(int rID){
+    public void setReceiptID(String rID){
         this.receiptID = rID;
     }
     
