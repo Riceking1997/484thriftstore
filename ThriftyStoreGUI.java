@@ -577,6 +577,11 @@ public class ThriftyStoreGUI extends Application {
                     EmpTable.getItems().clear();
 
                     EmpData.remove(deleteEmp);
+                    String byeByeE = deleteEmp.getEmployeeID();
+                    sendDBCommand("DELETE FROM STOREEMPLOYEE WHERE employeeID = " + "'" + byeByeE + "'");
+                    sendDBCommand("DELETE FROM EMPLOYEEWORKLOG WHERE employeeID = " + "'" + byeByeE + "'");
+                    sendDBCommand("DELETE FROM EMPLOYEEASSIGNMENT WHERE employeeID = " + "'" + byeByeE + "'");
+                    sendDBCommand("DELETE FROM EMPLOYEE WHERE employeeID = " + "'" + byeByeE + "'");
                     EmpTable.getItems().clear();
                     for (Employee td : EmpData) {
                         EmpTable.getItems().add(td);
@@ -635,6 +640,67 @@ public class ThriftyStoreGUI extends Application {
                 tblcsupcname.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierName"));
                 tblcsupphone.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactPhone"));
                 tblcsupemail.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierEmail"));
+
+                //Button btnsupadd = new Button("Add Supplier");
+                //Button btnsupedit = new Button("Edit Supplier");
+                //Button btnsupdel = new Button("Delete Supplier");
+                //Button btnsupvs = new Button("View Shipments");
+                //Button btnsupvp = new Button("View Products");
+                //Button btnsupsrch = new Button("Search");
+                
+                // Event handler to add a supplier to the table
+                btnsupadd.setOnAction(eB -> {
+
+                });
+
+                // Event handler to delete a supplier selected
+                btnsupdel.setOnAction(eB -> {
+
+                    Supplier deleteSup;
+                    deleteSup = SupTable.getSelectionModel().getSelectedItem();
+
+                    SupTable.getItems().clear();
+
+                    SupData.remove(deleteSup);
+                    String byeByeS = deleteSup.getSupplierID();
+                    sendDBCommand("DELETE FROM Supplier WHERE supplierID = " + "'" + byeByeS + "'");
+                    SupTable.getItems().clear();
+                    for (Supplier td : SupData) {
+                        SupTable.getItems().add(td);
+                    }
+
+                });
+                
+                // Event handler to edit suppliers information selected
+                btnsupedit.setOnAction(eB -> {
+
+                    //Employee editEmp = new Employee();
+                    //for (Employee td : EmpData) {
+                    //    if (td.toString().equals(EmpTable.getSelectionModel().getSelectedItem())) {
+                    //        editEmp = td;
+                    //    }
+                    //}
+                    // EditInventory(ItemStage, editEmp);
+
+                });
+
+                // Event handler to see incoming shipments
+                btnsupvs.setOnAction(eB -> {
+
+                });
+
+                // Event handler to see what products certain suppliers carry/distribute
+                btnsupvp.setOnAction(eB -> {
+
+                
+
+                });
+                
+                // Event handler to search for specified supplier
+                btnsupsrch.setOnAction(eB -> {
+
+                 
+                });
 
                 SupTable.getColumns().addAll(tblcsupsup, tblcsupaddy, tblcsupcname, tblcsupphone,
                         tblcsupemail);
@@ -705,13 +771,11 @@ public class ThriftyStoreGUI extends Application {
                 SalTable = new TableView<>();
                 SalTableData = FXCollections.observableList(SalData);
                 SalTable.setItems(SalTableData);
-               
+
                 TableColumn tblcsalrec = new TableColumn("Receipt");
                 TableColumn tblcsalamt = new TableColumn("Sales Amount");
                 TableColumn tblcsalstore = new TableColumn("Store");
-                
-                
-                
+
                 tblcsalrec.setCellValueFactory(new PropertyValueFactory<Receipt, String>("receiptID"));
                 tblcsalamt.setCellValueFactory(new PropertyValueFactory<Receipt, Double>("finalTotal"));
                 tblcsalstore.setCellValueFactory(new PropertyValueFactory<Receipt, String>("storeID"));
