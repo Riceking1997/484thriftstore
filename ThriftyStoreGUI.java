@@ -250,7 +250,7 @@ public class ThriftyStoreGUI extends Application {
             sendDBCommand("select * from Employee");
             try {
                 while (dbResults.next()) {
-                    EmpData.add(new Employee(dbResults.getString(1), dbResults.getString(2), dbResults.getString(3), dbResults.getString(4), dbResults.getString(5), dbResults.getString(6), Double.valueOf(dbResults.getString(7)), dbResults.getString(8), dbResults.getString(9), dbResults.getString(11)));
+                    EmpData.add(new Employee(dbResults.getString(1), dbResults.getString(2), dbResults.getString(3), dbResults.getString(4), dbResults.getString(5), dbResults.getString(6), Double.valueOf(dbResults.getString(10)), dbResults.getString(8), dbResults.getString(9), dbResults.getString(11)));
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -510,9 +510,10 @@ public class ThriftyStoreGUI extends Application {
 
                     Inventory editInv = new Inventory();
                     for (Inventory td : InvData) {
-                        if (td.toString().equals(InvTable.getSelectionModel().getSelectedItem())) {
+                        if (td.equals(InvTable.getSelectionModel().getSelectedItem())) {
                             editInv = td;
                         }
+                        
                     }
                     EditInventory(ItemStage, editInv);
 
@@ -549,7 +550,7 @@ public class ThriftyStoreGUI extends Application {
                 TableColumn tblcempname = new TableColumn("Name");
                 TableColumn tblcempphone = new TableColumn("Phone");
                 TableColumn tblcempaddy = new TableColumn("Address");
-                TableColumn tblcempsal = new TableColumn("Salary");
+                TableColumn tblcempsal = new TableColumn("HourlyPay");
                 TableColumn tblcemptype = new TableColumn("Type");
                 TableColumn tblcempstore = new TableColumn("Store");
                 TableColumn tblcempdepartment = new TableColumn("Department");
@@ -594,7 +595,7 @@ public class ThriftyStoreGUI extends Application {
 
                     Employee editEmp = new Employee();
                     for (Employee td : EmpData) {
-                        if (td.toString().equals(EmpTable.getSelectionModel().getSelectedItem())) {
+                        if (td.equals(EmpTable.getSelectionModel().getSelectedItem())) {
                             editEmp = td;
                         }
                     }
@@ -974,10 +975,15 @@ public class ThriftyStoreGUI extends Application {
         });
 
     }
+    public Employee employeeID()
+    {
+        return EmpData.get(EmpData.size()-1);
+    }
     
     public void AddEmployee(Employee e)
     {
         EmpTable.getItems().add(e);
+        
     }
     
     
