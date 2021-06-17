@@ -645,7 +645,7 @@ public class ThriftyStoreGUI extends Application {
                 tblcsupaddy.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierAddress"));
                 tblcsupcname.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierName"));
                 tblcsupphone.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactPhone"));
-                tblcsupemail.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierEmail"));
+                tblcsupemail.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactEmail"));
 
                 //Button btnsupadd = new Button("Add Supplier");
                 //Button btnsupedit = new Button("Edit Supplier");
