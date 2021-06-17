@@ -29,6 +29,7 @@ INSERT INTO STORE VALUES ('sto22222', 'Richmond', '5629 Marshall Lee Lane', '540
 INSERT INTO STORE VALUES ('sto22223', 'Virginia Beach', '9348 Hunt Club Road', '540-493-2309', 'VAbeachThrifty@gmail.com');
 INSERT INTO STORE VALUES ('sto22224', 'Blacksburg', '2938 Oak Lane', '284-256-8237', 'BlacksburgThrifty@gmail.com');
 INSERT INTO STORE VALUES ('sto22225', 'Herndon', '4987 Ellis Lane', '320-394-2478', 'HerndonThrifty@gmail.com');
+INSERT INTO STORE VALUES ('sto22226', 'Falls Church', '1905 Lee Highway', '571-434-1234', 'Falls ChurchThrifty@gmail.com');
 
 INSERT INTO EXPENSEBILL VALUES ('bill88881', 'sto22221', 'Electric', '500.00', '07/01/2021');
 INSERT INTO EXPENSEBILL VALUES ('bill88882', 'sto22222', 'Wifi', '400.00', '07/05/2021');
