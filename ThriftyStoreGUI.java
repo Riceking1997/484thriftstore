@@ -115,6 +115,7 @@ public class ThriftyStoreGUI extends Application {
     ArrayList<Employee> EmpData = new ArrayList<>();
     TableView<Employee> EmpTable;
     ObservableList<Employee> EmpTableData;
+    
 
     //Controls for SupPane
     Label lblsupsearchtxt = new Label("Search");
@@ -530,6 +531,7 @@ public class ThriftyStoreGUI extends Application {
                 EmpTable = new TableView<Employee>();
                 EmpTableData = FXCollections.observableArrayList(EmpData);
                 EmpTable.setItems(EmpTableData);
+                
                 //send query to oracle database to retrieve employee info
                 //sendDBCommand("select * from Employee");
                 //try {
@@ -566,7 +568,7 @@ public class ThriftyStoreGUI extends Application {
                 empPane.add(EmpTable, 0, 2, 10, 1);
 
                 btnempadd.setOnAction(eB -> {
-
+                    AddEmployee tempWindow = new AddEmployee(this);
                 });
 
                 btnempdel.setOnAction(eB -> {
@@ -650,7 +652,7 @@ public class ThriftyStoreGUI extends Application {
                 
                 // Event handler to add a supplier to the table
                 btnsupadd.setOnAction(eB -> {
-
+                    AddSupplier tempWindow = new AddSupplier(this);
                 });
 
                 // Event handler to delete a supplier selected
@@ -749,6 +751,11 @@ public class ThriftyStoreGUI extends Application {
                 ExpTable.getColumns().addAll(tblcexpid, tblcexpname, tblcexpamt, tblcexpdue, tblcexpstore);
                 expPane.add(ExpTable, 0, 2, 10, 1);
 
+                // Event handler to add a supplier to the table
+                btnexpadd.setOnAction(eB -> {
+                    AddExpenses tempWindow = new AddExpenses(this);
+                }); 
+                
                 // Adding controls to SalPane
                 salPane.add(lblsalyr, 2, 0);
                 salPane.add(cboxsalyr, 3, 0);
@@ -967,5 +974,15 @@ public class ThriftyStoreGUI extends Application {
         });
 
     }
-
+    
+    public void AddEmployee(Employee e)
+    {
+        EmpTable.getItems().add(e);
+    }
+    
+    
+    public void AddSupplier(Supplier e)
+    {
+        SupTable.getItems().add(e);
+    }
 }
