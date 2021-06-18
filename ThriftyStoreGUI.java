@@ -43,7 +43,7 @@ import oracle.jdbc.pool.OracleDataSource;
  * @author Diallo
  */
 public class ThriftyStoreGUI extends Application {
-
+    AddEmployee mainReference;
 // This is a tester
 // Another push test
     // TabPane and its Tabs
@@ -158,9 +158,6 @@ public class ThriftyStoreGUI extends Application {
     ArrayList<Receipt> SalData = new ArrayList<>();
     TableView<Receipt> SalTable;
     ObservableList<Receipt> SalTableData;
-    String salday = "";
-    String salmonth = "";
-    String salyear = "";
 
     //Controls for PayrollPane
     Label lblpaysearch = new Label("Search Employee");
@@ -573,6 +570,7 @@ public class ThriftyStoreGUI extends Application {
 
                 btnempadd.setOnAction(eB -> {
                     AddEmployee tempWindow = new AddEmployee(this);
+                    
                 });
 
                 btnempdel.setOnAction(eB -> {
@@ -645,7 +643,7 @@ public class ThriftyStoreGUI extends Application {
                 tblcsupaddy.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierAddress"));
                 tblcsupcname.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierName"));
                 tblcsupphone.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactPhone"));
-                tblcsupemail.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactEmail"));
+                tblcsupemail.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierEmail"));
 
                 //Button btnsupadd = new Button("Add Supplier");
                 //Button btnsupedit = new Button("Edit Supplier");
@@ -772,77 +770,26 @@ public class ThriftyStoreGUI extends Application {
                 sendDBCommand("select * from PurchaseOrder");
                 try {
                     while (dbResults.next()) {
-                        SalData.add(new Receipt(dbResults.getString(1), dbResults.getString(2), dbResults.getString(4), dbResults.getString(3), Double.valueOf(dbResults.getString(5)), Double.valueOf(dbResults.getString(6)), dbResults.getString(7).substring(0,10)));
+                        SalData.add(new Receipt(dbResults.getString(1), dbResults.getString(2), dbResults.getString(4), dbResults.getString(3), Double.valueOf(dbResults.getString(5)), Double.valueOf(dbResults.getString(6)), dbResults.getString(7)));
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
-                /*for (Receipt r : SalData) {
-                    SalTableData.add(r);
-                }*/
-                
+
+                //Adding Salary Table
                 SalTable = new TableView<>();
                 SalTableData = FXCollections.observableList(SalData);
                 SalTable.setItems(SalTableData);
-                
-                
-                
+
                 TableColumn tblcsalrec = new TableColumn("Receipt");
                 TableColumn tblcsalamt = new TableColumn("Sales Amount");
                 TableColumn tblcsalstore = new TableColumn("Store");
-                TableColumn tblcsaldate = new TableColumn("Date");
-                
+
                 tblcsalrec.setCellValueFactory(new PropertyValueFactory<Receipt, String>("receiptID"));
                 tblcsalamt.setCellValueFactory(new PropertyValueFactory<Receipt, Double>("finalTotal"));
                 tblcsalstore.setCellValueFactory(new PropertyValueFactory<Receipt, String>("storeID"));
-                tblcsaldate.setCellValueFactory(new PropertyValueFactory<Receipt, String>("date"));
-                String[] days = {"None", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
-                ObservableList dayItems = FXCollections.observableArrayList(days);
-                cboxsalday.getItems().addAll(dayItems);
-                String[] months = {"None", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
-                ObservableList monthItems = FXCollections.observableArrayList(months);
-                cboxsalmonth.getItems().addAll(monthItems);
-                String[] years = {"None", "2019", "2020", "2021"};
-                ObservableList yearItems = FXCollections.observableArrayList(years);
-                cboxsalyr.getItems().addAll(yearItems);
-                btnsaldate.setOnAction(eD -> {
-                    
-                    salday = String.valueOf(cboxsalday.getValue());
-                    
-                    //day = String.valueOf(cboxsalday.getValue());
-                    
-                    salmonth = String.valueOf(cboxsalmonth.getValue());
-                    
-                    
-                    salyear = String.valueOf(cboxsalyr.getValue());
-                    
-                    System.out.println(salday);
-                    System.out.println(salmonth);
-                    System.out.println(salyear);
-                    SalTableData.removeAll();
-                    ArrayList<Receipt> dateData = new ArrayList<>();
-                    for (Receipt r : SalData) {
-                        if (r.date.equals(salyear+"-"+salmonth+"-"+salday)) {
-                            dateData.add(r);
-                            
-                        }
-                        else if (r.date.substring(0, 7).equals(salyear+"-"+salmonth) && salday.equals("None")) {
-                            dateData.add(r);
-                            
-                        }                       
-                        else if (r.date.substring(0, 4).contains(salyear) && salmonth.equals("None") && salday.equals("None")) {
-                            dateData.add(r);
-                        }
-                        else if (salyear.equals("None") && salmonth.equals("None") && salday.equals("None")) {
-                            dateData.add(r);
-                        }
-                    }
-                    SalTableData = FXCollections.observableList(dateData);
-                    SalTable.setItems(SalTableData);
-                });
-                //SupTable.setMinWidth(primaryScene.getWidth());               
-                SalTable.getColumns().addAll(tblcsalrec, tblcsalamt, tblcsalstore, tblcsaldate);
+                //SupTable.setMinWidth(primaryScene.getWidth());
+                SalTable.getColumns().addAll(tblcsalrec, tblcsalamt, tblcsalstore);
                 salPane.add(SalTable, 0, 1, 10, 1);
                 salPane.add(btnsalYPER, 0, 2);
                 salPane.add(btnsalPOSR, 1, 2);
@@ -959,6 +906,8 @@ public class ThriftyStoreGUI extends Application {
         }
     }
 
+    
+
     public void AddInventory(Stage AddItemStage, Inventory addInv) {
 
         //Button addSaveBut = new Button("Save Changes->");
@@ -1037,8 +986,10 @@ public class ThriftyStoreGUI extends Application {
     public void AddEmployee(Employee e)
     {
         EmpTable.getItems().add(e);
-        
+        EmpData.add(e);
     }
+    
+    
     
     
     public void AddSupplier(Supplier e)
