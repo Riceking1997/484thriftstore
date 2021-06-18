@@ -135,20 +135,21 @@ public class ThriftyStoreGUI extends Application {
     Label lblexpyear = new Label("Year");
     ComboBox cboxexpmonth = new ComboBox();
     ComboBox cboxexpyr = new ComboBox();
-    Button btnexpdate = new Button("Change Date");
+    Button btnexpdate = new Button("View Date");
     ComboBox cboxexpstore = new ComboBox();
     Label lblexpstore = new Label("Store");
-    Button btnexpstore = new Button("Change Store");
+    Button btnexpstore = new Button("View Store");
     Button btnexpadd = new Button("Add Expense");
     ArrayList<Expense> ExpData = new ArrayList<>();
     TableView<Expense> ExpTable;
     ObservableList<Expense> ExpTableData;
+    ArrayList<String> ExpStoreData = new ArrayList<>();
 
     //Controls for SalPane
     ComboBox cboxsalday = new ComboBox();
     ComboBox cboxsalmonth = new ComboBox();
     ComboBox cboxsalyr = new ComboBox();
-    Button btnsaldate = new Button("Change Date");
+    Button btnsaldate = new Button("View Date");
     Label lblsalmonth = new Label("Month");
     Label lblsalday = new Label("Day");
     Label lblsalyr = new Label("Year");
@@ -158,9 +159,7 @@ public class ThriftyStoreGUI extends Application {
     ArrayList<Receipt> SalData = new ArrayList<>();
     TableView<Receipt> SalTable;
     ObservableList<Receipt> SalTableData;
-    String salday = "";
-    String salmonth = "";
-    String salyear = "";
+    
 
     //Controls for PayrollPane
     Label lblpaysearch = new Label("Search Employee");
@@ -212,7 +211,19 @@ public class ThriftyStoreGUI extends Application {
     String UserStatus;
     Employee CurrentUser;
     Boolean validLogin;
-
+    
+    //combobox variables
+    String[] months = {"None", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
+    String[] years = {"None", "2019", "2020", "2021"};
+    String[] days = {"None", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
+    ObservableList monthItems = FXCollections.observableArrayList(months);
+    ObservableList yearItems = FXCollections.observableArrayList(years);
+    ObservableList dayItems = FXCollections.observableArrayList(days);
+    String strday = "";
+    String strmonth = "";
+    String stryear = "";
+    String strstore = "";
+    
     //Database connection variables
     Connection dbConn;
     Statement commStmt;
@@ -728,16 +739,30 @@ public class ThriftyStoreGUI extends Application {
                 sendDBCommand("select * from Expensebill");
                 try {
                     while (dbResults.next()) {
-                        ExpData.add(new Expense(dbResults.getString(1), dbResults.getString(2), dbResults.getString(3), Double.valueOf(dbResults.getString(4)), dbResults.getString(5)));
+                        ExpData.add(new Expense(dbResults.getString(1), dbResults.getString(2), dbResults.getString(3), Double.valueOf(dbResults.getString(4)), dbResults.getString(5).substring(0, 10)));
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
+                ExpStoreData.add("None");
+                //Query for store IDs
+                sendDBCommand("select *from Store");
+                try {
+                    while (dbResults.next()) {
+                        ExpStoreData.add(dbResults.getString(1));
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                ObservableList storeItems = FXCollections.observableArrayList(ExpStoreData);
+                cboxexpstore.setItems(storeItems);
+                cboxexpstore.setValue("None");
                 //Adding Expense Table
                 ExpTable = new TableView<>();
                 ExpTableData = FXCollections.observableList(ExpData);
                 ExpTable.setItems(ExpTableData);
+                
 
                 //ExpTable.setItems(SupTableData);
                 TableColumn tblcexpid = new TableColumn("Bill ID");
@@ -752,6 +777,43 @@ public class ThriftyStoreGUI extends Application {
                 tblcexpamt.setCellValueFactory(new PropertyValueFactory<Expense, Double>("expenseTotal"));
                 tblcexpdue.setCellValueFactory(new PropertyValueFactory<Expense, String>("dueDate"));
                 tblcexpstore.setCellValueFactory(new PropertyValueFactory<Expense, String>("storeID"));
+                
+                //String[] months = {"None", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
+                //ObservableList monthItems = FXCollections.observableArrayList(months);
+                cboxexpmonth.getItems().addAll(monthItems);
+                cboxexpmonth.setValue("None");
+                //String[] years = {"None", "2019", "2020", "2021"};
+                //ObservableList yearItems = FXCollections.observableArrayList(years);
+                cboxexpyr.getItems().addAll(yearItems);
+                cboxexpyr.setValue("None");
+                
+                btnexpdate.setOnAction(eE -> {
+                    strmonth = String.valueOf(cboxexpmonth.getValue());
+                    
+                    
+                    stryear = String.valueOf(cboxexpyr.getValue());
+                    
+                    strstore = String.valueOf(cboxexpstore.getValue());
+                    System.out.println(strday);
+                    System.out.println(strmonth);
+                    System.out.println(stryear);
+                    ExpTableData.removeAll();
+                    ArrayList<Expense> dateData = new ArrayList<>();
+                    for (Expense exp : ExpData) {
+                        if (exp.dueDate.substring(0, 7).equals(stryear+"-"+strmonth) && strstore.equals("None")) {
+                            dateData.add(exp);
+                            
+                        }                       
+                        else if (exp.dueDate.substring(0, 4).contains(stryear) && strmonth.equals("None") && strstore.equals("None")) {
+                            dateData.add(exp);
+                        }
+                        else if (stryear.equals("None") && strmonth.equals("None") && strstore.equals("None")) {
+                            dateData.add(exp);
+                        }
+                    }
+                    ExpTableData = FXCollections.observableList(dateData);
+                    ExpTable.setItems(ExpTableData);
+                });               
 
                 ExpTable.getColumns().addAll(tblcexpid, tblcexpname, tblcexpamt, tblcexpdue, tblcexpstore);
                 expPane.add(ExpTable, 0, 2, 10, 1);
@@ -778,8 +840,8 @@ public class ThriftyStoreGUI extends Application {
                 } catch (SQLException ex) {
                     Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
-                //Adding Salary Table
+                
+                //Adding Sales Table
                 SalTable = new TableView<>();
                 SalTableData = FXCollections.observableList(SalData);
                 SalTable.setItems(SalTableData);
@@ -794,44 +856,47 @@ public class ThriftyStoreGUI extends Application {
                 tblcsalstore.setCellValueFactory(new PropertyValueFactory<Receipt, String>("storeID"));
                 tblcsaldate.setCellValueFactory(new PropertyValueFactory<Receipt, String>("date"));
                 
-                String[] days = {"None", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
-                ObservableList dayItems = FXCollections.observableArrayList(days);
+                //String[] days = {"None", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
+                
                 cboxsalday.getItems().addAll(dayItems);
-                String[] months = {"None", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
-                ObservableList monthItems = FXCollections.observableArrayList(months);
+                cboxsalday.setValue("None");
+                //String[] months = {"None", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
+                
                 cboxsalmonth.getItems().addAll(monthItems);
-                String[] years = {"None", "2019", "2020", "2021"};
-                ObservableList yearItems = FXCollections.observableArrayList(years);
+                cboxsalmonth.setValue("None");
+                //String[] years = {"None", "2019", "2020", "2021"};
+                
                 cboxsalyr.getItems().addAll(yearItems);
+                cboxsalyr.setValue("None");
                 btnsaldate.setOnAction(eD -> {
                     
-                    salday = String.valueOf(cboxsalday.getValue());
+                    strday = String.valueOf(cboxsalday.getValue());
                     
                     //day = String.valueOf(cboxsalday.getValue());
                     
-                    salmonth = String.valueOf(cboxsalmonth.getValue());
+                    strmonth = String.valueOf(cboxsalmonth.getValue());
                     
                     
-                    salyear = String.valueOf(cboxsalyr.getValue());
+                    stryear = String.valueOf(cboxsalyr.getValue());
                     
-                    System.out.println(salday);
-                    System.out.println(salmonth);
-                    System.out.println(salyear);
+                    System.out.println(strday);
+                    System.out.println(strmonth);
+                    System.out.println(stryear);
                     SalTableData.removeAll();
                     ArrayList<Receipt> dateData = new ArrayList<>();
                     for (Receipt r : SalData) {
-                        if (r.date.equals(salyear+"-"+salmonth+"-"+salday)) {
+                        if (r.date.equals(stryear+"-"+strmonth+"-"+strday)) {
                             dateData.add(r);
                             
                         }
-                        else if (r.date.substring(0, 7).equals(salyear+"-"+salmonth) && salday.equals("None")) {
+                        else if (r.date.substring(0, 7).equals(stryear+"-"+strmonth) && strday.equals("None")) {
                             dateData.add(r);
                             
                         }                       
-                        else if (r.date.substring(0, 4).contains(salyear) && salmonth.equals("None") && salday.equals("None")) {
+                        else if (r.date.substring(0, 4).contains(stryear) && strmonth.equals("None") && strday.equals("None")) {
                             dateData.add(r);
                         }
-                        else if (salyear.equals("None") && salmonth.equals("None") && salday.equals("None")) {
+                        else if (stryear.equals("None") && strmonth.equals("None") && strday.equals("None")) {
                             dateData.add(r);
                         }
                     }
