@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Capstone;
+package Thifty;
 
 
 import java.io.IOException;
@@ -25,6 +25,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -179,8 +180,8 @@ public class ThriftyStoreGUI extends Application {
     //Controls for POSPane
     Label lblPOSclub = new Label("Is Customer a club member");
     ComboBox cboxPOSclub = new ComboBox();
-    Button btnPOSemp = new Button("Search Employee");
-    Label lblPOSEID = new Label("Employee ID");
+    Button btnPOScust = new Button("Search Club Member");
+    Label lblPOSEID = new Label("Club Member ID");
     TextField txtPOSEID = new TextField();
     Label lblPOSTOT = new Label("Total Price");
     TextField txtPOSTOT = new TextField();
@@ -188,10 +189,33 @@ public class ThriftyStoreGUI extends Application {
     TextField txtPOSSAV = new TextField();
     Button btnPOSprod = new Button("Add Product");
     ComboBox cboxPOSprod = new ComboBox();
+    Button btnPOSdelprod = new Button("Delete Product");
     Button btnCheckout = new Button("Checkout");
     Button btnPrintReceipt = new Button("Print Receipt");
-    TableView<String> POSTable;
-    ObservableList<String> POSData;
+    ArrayList<Inventory> POSDataArr = new ArrayList<>();
+    ArrayList<ClubMember> POSCustArr = new ArrayList<>();
+    TableView<Inventory> POSTable;
+    ObservableList<Inventory> POSData;
+    Stage POSaddprodStage = new Stage();
+    Stage POSsrchcustStage = new Stage();
+    
+    //Controls for POSAddProdPane
+    GridPane AddPOSProdPane = new GridPane();
+    TextField txtPOSaddprod = new TextField();
+    Button btnPOSaddprodsrch = new Button("Search Product");
+    Button btnPOSaddprod = new Button("Add Product");
+    ListView POSaddprodlst = new ListView();
+    ObservableList<Inventory> POSInvProducts;
+    Scene POSProdScene = new Scene(AddPOSProdPane, 800, 800);
+    
+    //Controls POSSrchCustPane
+    GridPane POSSrchCustPane = new GridPane();
+    TextField txtPOSCustSrch = new TextField();
+    Button butPOSCustSrch =  new Button("Search Club Members");
+    Button butPOSCustSel =  new Button("Select Club Member");
+    ListView lstPOScust = new ListView();
+    ObservableList<ClubMember> POSCustData;
+    Scene POSCustScene = new Scene(POSSrchCustPane, 800, 800);
 
     //Creating the Menu Bar
     MenuBar mnuBar = new MenuBar();
@@ -933,18 +957,30 @@ public class ThriftyStoreGUI extends Application {
                 //SupTable.setMinWidth(primaryScene.getWidth());
                 payPane.add(PayrollTable, 0, 4, 10, 1);
 
-                // Adding controls to POS Pane
+               // Adding controls to POS Pane
                 posPane.add(lblPOSclub, 0, 0);
                 posPane.add(cboxPOSclub, 1, 0);
-                posPane.add(btnPOSemp, 0, 1);
+                posPane.add(btnPOScust, 0, 1);
                 posPane.add(btnPOSprod, 1, 1);
+                posPane.add(btnPOSdelprod, 2, 1);
+                
+                //Setting up POS Pane Combobox
+                cboxPOSclub.getItems().add("yes");
+                cboxPOSclub.getItems().add("no");
 
                 //Adding POS Table
                 POSTable = new TableView<>();
-                POSTable.setItems(POSData);
+                POSData = FXCollections.observableArrayList(InvData);
+                //POSTable.setItems(POSData);
                 TableColumn tblcposprod = new TableColumn("Product");
                 TableColumn tblcposprice = new TableColumn("Price");
-                POSTable.getColumns().addAll(tblcposprod, tblcposprice);
+                TableColumn tblcposclubprice = new TableColumn("Club Price");
+                
+                tblcposprod.setCellValueFactory(new PropertyValueFactory<Inventory, String>("productName"));
+                tblcposprice.setCellValueFactory(new PropertyValueFactory<Inventory, String>("salesPrice"));
+                tblcposclubprice.setCellValueFactory(new PropertyValueFactory<Inventory, String>("clubPrice"));
+                
+                POSTable.getColumns().addAll(tblcposprod, tblcposprice, tblcposclubprice);
                 //SupTable.setMinWidth(primaryScene.getWidth());
                 posPane.add(POSTable, 0, 3, 10, 1);
 
@@ -957,6 +993,56 @@ public class ThriftyStoreGUI extends Application {
                 posPane.add(txtPOSSAV, 1, 5);
                 posPane.add(btnCheckout, 0, 6);
                 posPane.add(btnPrintReceipt, 1, 6);
+                
+                // setting up gridpane alignment for POS add product pane
+                AddPOSProdPane.setAlignment(Pos.CENTER);
+                
+                //POS add prod pane controls
+                AddPOSProdPane.add(txtPOSaddprod, 0, 0);
+                AddPOSProdPane.add(btnPOSaddprodsrch, 1, 0);
+                AddPOSProdPane.add(btnPOSaddprod, 2, 0);
+                AddPOSProdPane.add(POSaddprodlst, 0, 1, 4, 1);
+                
+                //Filling the product listview
+                POSInvProducts = FXCollections.observableArrayList(InvData);
+                POSaddprodlst.setItems(POSInvProducts);
+                
+                // setting up gridpane alignment for POS search customer pane
+                POSSrchCustPane.setAlignment(Pos.CENTER);
+                
+                //POS cust pane controls
+                POSSrchCustPane.add(txtPOSCustSrch, 0, 0);
+                POSSrchCustPane.add(butPOSCustSrch, 1, 0);
+                POSSrchCustPane.add(butPOSCustSel, 2, 0);
+                POSSrchCustPane.add(lstPOScust, 0, 1, 3, 1);
+                
+                //Filling the Customer Arraylist
+                sendDBCommand("select * from ClubMember");
+                try {
+                    while (dbResults.next()){
+                        POSCustArr.add(new ClubMember(dbResults.getString(1), dbResults.getString(2), dbResults.getString(3), dbResults.getString(4), dbResults.getString(5), 
+                            dbResults.getString(6), Double.valueOf(dbResults.getString(7))));
+                                }
+                } catch (SQLException ex) {
+                    Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                //Filling the customer listview
+                POSCustData = FXCollections.observableArrayList(POSCustArr);
+                lstPOScust.setItems(POSCustData);       
+                        
+                //Event handlers for POS pane
+                btnPOSprod.setOnAction(eB -> {
+                    
+                    System.out.println("yuh its here");
+                    AddPOSProd(POSaddprodStage);
+                    
+                });
+                btnPOScust.setOnAction (eB -> {
+                    
+                    SrchPOSCust(POSsrchcustStage);
+                    
+                });
 
                 primaryStage.setScene(primaryScene);
                 primaryStage.setTitle("Thrifty Store");
@@ -1110,5 +1196,104 @@ public class ThriftyStoreGUI extends Application {
     public void AddSupplier(Supplier e)
     {
         SupTable.getItems().add(e);
+    }
+    
+        public void AddPOSProd(Stage POSaddprodStage) {
+        
+        System.out.println("yuh its here");
+        
+        POSaddprodStage.setScene(POSProdScene);
+        POSaddprodStage.setTitle("Add a Product");
+        POSaddprodStage.show();
+        
+        //event handlers
+        btnPOSaddprod.setOnAction(eB -> {
+            
+            //POSData.add(POSaddprodlst.getSelectionModel().getSelectedItem());
+            //System.out.print(POSaddprodlst.getSelectionModel().getSelectedItem());
+            //Search Inventory 
+            int count = 0;
+            Inventory tempinv = (Inventory)POSaddprodlst.getSelectionModel().getSelectedItem();
+            /**for (Inventory td : InvData) {
+                if(td.equals(tempinv));
+                {
+                    System.out.println("This text:" + td.toString());
+                    System.out.println("Is the same as: " + tempinv.toString());
+                    POSDataArr.add(td);
+                    count++;
+                    System.out.println(count);
+                }
+            }**/
+            POSDataArr.add(tempinv);
+            
+            System.out.println(POSDataArr.size());
+            
+            
+            POSTable.getItems().clear();
+            for (Inventory td : POSDataArr) { 
+                POSTable.getItems().add(td);
+            }
+            
+            //Determing transaction totals depending on club member statud
+            double totsum = 0;
+            double savsum = 0;
+            if((!cboxPOSclub.getSelectionModel().isEmpty()) && cboxPOSclub.getSelectionModel().getSelectedItem().toString().equals("yes"))
+            {
+                for (Inventory td : POSDataArr) { 
+                    totsum += td.getClubPrice();
+                    savsum += (td.getSalesPrice() - td.getClubPrice());
+                }
+                txtPOSTOT.setText(String.valueOf(totsum));
+                txtPOSSAV.setText(String.valueOf(savsum));
+            } else {
+                for (Inventory td : POSDataArr) { 
+                    totsum += td.getSalesPrice();
+                }
+                txtPOSTOT.setText(String.valueOf(totsum));
+                txtPOSSAV.setText(String.valueOf(savsum));
+            }
+        });
+        
+        cboxPOSclub.setOnAction(eB -> {
+            
+            //Determing transaction totals depending on club member statud
+            double totsum = 0;
+            double savsum = 0;
+            if((!cboxPOSclub.getSelectionModel().isEmpty()) && cboxPOSclub.getSelectionModel().getSelectedItem().toString().equals("yes"))
+            {
+                for (Inventory td : POSDataArr) { 
+                    totsum += td.getClubPrice();
+                    savsum += (td.getSalesPrice() - td.getClubPrice());
+                }
+                txtPOSTOT.setText(String.valueOf(totsum));
+                txtPOSSAV.setText(String.valueOf(savsum));
+            } else {
+                for (Inventory td : POSDataArr) { 
+                    totsum += td.getSalesPrice();
+                }
+                txtPOSTOT.setText(String.valueOf(totsum));
+                txtPOSSAV.setText(String.valueOf(savsum));
+            }
+        
+        });
+    }
+    
+    public void SrchPOSCust(Stage POSsrchcustStage) {
+        
+        POSsrchcustStage.setScene(POSCustScene);
+        POSsrchcustStage.setTitle("Search for Product");
+        POSsrchcustStage.show();
+        
+        lstPOScust.getItems().clear();
+        for (ClubMember cm : POSCustArr) { 
+            lstPOScust.getItems().add(cm);
+        }
+        
+        butPOSCustSel.setOnAction(eB -> {
+            
+            ClubMember tempcm = (ClubMember)lstPOScust.getSelectionModel().getSelectedItem();
+            txtPOSEID.setText(tempcm.getCustomerID());
+            
+        });
     }
 }
