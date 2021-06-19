@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Capstone;
+package Thifty;
 
 import javafx.scene.image.ImageView;
 
@@ -20,6 +20,7 @@ public class Inventory {
     String storeID;
     int QIS;
     double salesPrice;
+    double clubPrice;
     double unitCost;
     String expDate;
     String status;
@@ -39,6 +40,7 @@ public class Inventory {
         this.expDate = expDate;
         this.salesPrice = salesPrice;
         this.unitCost = unitCost;
+        this.clubPrice = ((int)((salesPrice*(.9)) * 100))/100;
         
     }
     
@@ -127,6 +129,14 @@ public class Inventory {
         
     }
     
+    public double getClubPrice(){
+        return this.clubPrice;
+    }
+    
+    public void setClubPrice(double clubPrice){
+        this.clubPrice = (int)(clubPrice*100)/100;
+    }
+    
     public void addQIS(int shipment){
         this.QIS += shipment;
     }
@@ -135,6 +145,9 @@ public class Inventory {
         this.QIS -= sale;
     }
     
-    
+    @Override
+    public String toString() {
+        return "Store: " + storeID + "\tProduct Name: " + productName + "\t(" + QIS + ") ";
+    }
     
 }
