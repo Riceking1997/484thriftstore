@@ -75,4 +75,10 @@ public class ClubMember extends Customer {
     public void setTotalSaved(Double sav){
         this.totalSaved += sav;
     }
+    
+    @Override
+    public String toString() {
+        return "Member ID: " + this.customerID + "\t" + "Name: " + this.memberName + 
+                "\t" + "Phone: " + this.memberPhone;
+    }
 }
