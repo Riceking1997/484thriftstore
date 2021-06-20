@@ -192,6 +192,7 @@ public class ThriftyStoreGUI extends Application {
     Button btnPOSdelprod = new Button("Delete Product");
     Button btnCheckout = new Button("Checkout");
     Button btnPrintReceipt = new Button("Print Receipt");
+    Button btnCancelOrder = new Button("Cancel Transaction");
     ArrayList<Inventory> POSDataArr = new ArrayList<>();
     ArrayList<ClubMember> POSCustArr = new ArrayList<>();
     TableView<Inventory> POSTable;
@@ -993,6 +994,7 @@ public class ThriftyStoreGUI extends Application {
                 posPane.add(txtPOSSAV, 1, 5);
                 posPane.add(btnCheckout, 0, 6);
                 posPane.add(btnPrintReceipt, 1, 6);
+                posPane.add(btnCancelOrder, 2, 6);
                 
                 // setting up gridpane alignment for POS add product pane
                 AddPOSProdPane.setAlignment(Pos.CENTER);
@@ -1041,6 +1043,42 @@ public class ThriftyStoreGUI extends Application {
                 btnPOScust.setOnAction (eB -> {
                     
                     SrchPOSCust(POSsrchcustStage);
+                    
+                });
+                btnCheckout.setOnAction (eB -> {
+                    
+                    //SrchPOSCust(POSsrchcustStage);
+                    
+                });
+                btnCancelOrder.setOnAction (eB -> {
+                    
+                    cboxPOSclub.getSelectionModel().clearSelection();
+                    txtPOSEID.clear();
+                    
+                    //To return inventory values to original
+                    for (Inventory td : POSDataArr) {
+                        td.addQIS(1);
+                    }
+                    POSDataArr.clear();
+                    //Updating Productlst Table
+                    POSaddprodlst.getItems().clear();
+                    for (Inventory td : InvData) {
+                    POSaddprodlst.getItems().add(td);
+                    }
+                    //To update Inventory TabPane table
+                    InvTable.getItems().clear();
+                    for (Inventory td : InvData) {
+                        InvTable.getItems().add(td);
+                    }
+
+                    
+                    POSTable.getItems().clear();
+                    txtPOSTOT.clear();
+                    txtPOSSAV.clear();
+                    
+                    
+                    
+                    
                     
                 });
 
@@ -1198,7 +1236,7 @@ public class ThriftyStoreGUI extends Application {
         SupTable.getItems().add(e);
     }
     
-        public void AddPOSProd(Stage POSaddprodStage) {
+    public void AddPOSProd(Stage POSaddprodStage) {
         
         System.out.println("yuh its here");
         
@@ -1212,45 +1250,66 @@ public class ThriftyStoreGUI extends Application {
             //POSData.add(POSaddprodlst.getSelectionModel().getSelectedItem());
             //System.out.print(POSaddprodlst.getSelectionModel().getSelectedItem());
             //Search Inventory 
-            int count = 0;
             Inventory tempinv = (Inventory)POSaddprodlst.getSelectionModel().getSelectedItem();
-            /**for (Inventory td : InvData) {
-                if(td.equals(tempinv));
+            if(tempinv.getQIS() > 0) {
+                tempinv.removeQIS(1);
+
+
+
+                POSDataArr.add(tempinv);
+
+                //To update POS list inventory values
+                //POSaddprodlst.getItems().clear();
+                for (Inventory td : InvData) { 
+                    if(td.equals(tempinv)) {
+                        td = tempinv;
+                        System.out.println("matching inv found!");
+                    }
+                }
+                POSaddprodlst.getItems().clear();
+                for (Inventory td : InvData) {
+                    POSaddprodlst.getItems().add(td);
+                }
+
+                //To update Inventory TabPane table
+                InvTable.getItems().clear();
+                for (Inventory td : InvData) {
+                    InvTable.getItems().add(td);
+                }
+
+
+                POSTable.getItems().clear();
+                for (Inventory td : POSDataArr) { 
+                    POSTable.getItems().add(td);
+                }
+
+                //Determing transaction totals depending on club member statud
+                double totsum = 0;
+                double savsum = 0;
+                if((!cboxPOSclub.getSelectionModel().isEmpty()) && cboxPOSclub.getSelectionModel().getSelectedItem().toString().equals("yes"))
                 {
-                    System.out.println("This text:" + td.toString());
-                    System.out.println("Is the same as: " + tempinv.toString());
-                    POSDataArr.add(td);
-                    count++;
-                    System.out.println(count);
+                    for (Inventory td : POSDataArr) { 
+                        totsum += td.getClubPrice();
+                        savsum += (td.getSalesPrice() - td.getClubPrice());
+                    }
+                    totsum = ((int)(totsum*100))/100;
+                    savsum = ((int)(savsum*100))/100;
+                    txtPOSTOT.setText(String.valueOf(totsum));
+                    txtPOSSAV.setText(String.valueOf(savsum));
+                } else {
+                    for (Inventory td : POSDataArr) { 
+                        totsum += td.getSalesPrice();
+                    }
+                    totsum = ((int)(totsum*100))/100;
+                    savsum = ((int)(savsum*100))/100;
+                    txtPOSTOT.setText(String.valueOf(totsum));
+                    txtPOSSAV.setText(String.valueOf(savsum));
                 }
-            }**/
-            POSDataArr.add(tempinv);
-            
-            System.out.println(POSDataArr.size());
-            
-            
-            POSTable.getItems().clear();
-            for (Inventory td : POSDataArr) { 
-                POSTable.getItems().add(td);
-            }
-            
-            //Determing transaction totals depending on club member statud
-            double totsum = 0;
-            double savsum = 0;
-            if((!cboxPOSclub.getSelectionModel().isEmpty()) && cboxPOSclub.getSelectionModel().getSelectedItem().toString().equals("yes"))
-            {
-                for (Inventory td : POSDataArr) { 
-                    totsum += td.getClubPrice();
-                    savsum += (td.getSalesPrice() - td.getClubPrice());
-                }
-                txtPOSTOT.setText(String.valueOf(totsum));
-                txtPOSSAV.setText(String.valueOf(savsum));
+
             } else {
-                for (Inventory td : POSDataArr) { 
-                    totsum += td.getSalesPrice();
-                }
-                txtPOSTOT.setText(String.valueOf(totsum));
-                txtPOSSAV.setText(String.valueOf(savsum));
+                //Have a message to user signifying lack of inventory
+                //The println is a temporary solution
+                System.out.println("No more inventory.");
             }
         });
         
