@@ -37,7 +37,7 @@ public class AddSupplier  {
     TextField txtSupID = new TextField();
     TextField txtSupplier = new TextField();
     TextField txtSupAddress = new TextField();
-    TextField txtSupStartDate = new TextField();
+    DatePicker txtSupStartDate = new DatePicker();
     TextField txtSupContactName = new TextField();
     TextField txtSupContactPhone = new TextField();
     TextField txtSupContactEmail = new TextField();
@@ -45,6 +45,9 @@ public class AddSupplier  {
     Button btnAddSupplier = new Button("Add ->");
     ArrayList<Supplier> SupData = new ArrayList<>();
     
+    String lastSupID;
+    int idDigits;
+    String newSupID;
     
     public AddSupplier(ThriftyStoreGUI parentReference){
         mainReference = parentReference;
@@ -52,21 +55,21 @@ public class AddSupplier  {
         
         
         primaryPane.add(lblAdd,0,0);
-        primaryPane.add(lblSupID,0,1);
-        primaryPane.add(txtSupID,1,1);
-        primaryPane.add(lblSupplier,0,2);
-        primaryPane.add(txtSupplier,1,2);
-        primaryPane.add(lblSupAddress,0,3);
-        primaryPane.add(txtSupAddress,1,3);
-        primaryPane.add(lblSupStartDate,0,4);
-        primaryPane.add(txtSupStartDate,1,4);
-        primaryPane.add(lblSupContactName,0,5);
-        primaryPane.add(txtSupContactName,1,5);
-        primaryPane.add(lblSupContactPhone,0,6);
-        primaryPane.add(txtSupContactPhone,1,6);
-        primaryPane.add(lblSupContactEmail,0,7);
-        primaryPane.add(txtSupContactEmail,1,7);
-        primaryPane.add(btnAddSupplier,1,8);
+        //primaryPane.add(lblSupID,0,1);
+        //primaryPane.add(txtSupID,1,1);
+        primaryPane.add(lblSupplier,0,1);
+        primaryPane.add(txtSupplier,1,1);
+        primaryPane.add(lblSupAddress,0,2);
+        primaryPane.add(txtSupAddress,1,2);
+        primaryPane.add(lblSupStartDate,0,3);
+        primaryPane.add(txtSupStartDate,1,3);
+        primaryPane.add(lblSupContactName,0,4);
+        primaryPane.add(txtSupContactName,1,4);
+        primaryPane.add(lblSupContactPhone,0,5);
+        primaryPane.add(txtSupContactPhone,1,5);
+        primaryPane.add(lblSupContactEmail,0,6);
+        primaryPane.add(txtSupContactEmail,1,6);
+        primaryPane.add(btnAddSupplier,1,7);
         
         primaryPane.setAlignment(Pos.CENTER);
         
@@ -77,12 +80,36 @@ public class AddSupplier  {
         primaryStage.setTitle("Add New Supplier");
         primaryStage.show();
         
+        lastSupID = mainReference.SupplierID().getSupplierID();
+        idDigits = Integer.parseInt(lastSupID.substring(3));
+        idDigits++;
+        newSupID = "sup" + idDigits;
+        System.out.println(newSupID);
+        
         btnAddSupplier.setOnAction(e -> {
-            SupData.add(new Supplier(txtSupID.getText(),txtSupplier.getText(),txtSupAddress.getText()
-                    ,txtSupStartDate.getText(),txtSupContactName.getText(),txtSupContactPhone.getText()
+            SupData.add(new Supplier(newSupID,txtSupplier.getText(),txtSupAddress.getText()
+                    ,txtSupStartDate.getValue().toString(),txtSupContactName.getText(),txtSupContactPhone.getText()
                     ,txtSupContactEmail.getText()));
-            
+            System.out.println(SupData.get(0).getStartDate());
             mainReference.AddSupplier(SupData.get(0));
+            
+            String day = String.valueOf(txtSupStartDate.getValue().getDayOfMonth()); //Day in int
+            String month = txtSupStartDate.getValue().getMonth().toString();
+            String year = String.valueOf(txtSupStartDate.getValue().getYear());
+            String date = day + "/" + month + "/" + year;
+            
+            String sql = "INSERT INTO JAVAUSER.SUPPLIER (SUPPLIERID,NAME,PHONE,EMAIL,ADDRESS,CONTACTNAME,STARTDATE) VALUES ('";
+            sql += newSupID + "', '";
+            sql += txtSupplier.getText() + "', '";
+            sql += txtSupContactPhone.getText() + "', '";
+            sql += txtSupContactEmail.getText() + "', '";
+            sql += txtSupAddress.getText() + "', '";
+            sql += txtSupContactName.getText() + "', '";
+            sql += date + "')";
+            
+            mainReference.sendDBCommand(sql);
+            
+            primaryStage.close();
         });
         
         
