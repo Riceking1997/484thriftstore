@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Thifty;
+package Capstone;
 
 
 import java.io.IOException;
@@ -1222,10 +1222,22 @@ public class ThriftyStoreGUI extends Application {
         return EmpData.get(EmpData.size()-1);
     }
     
+    
+    public Expense ExpenseID()
+    {
+        return ExpData.get(ExpData.size()-1);
+    }
+    
     public void AddEmployee(Employee e)
     {
         EmpTable.getItems().add(e);
         EmpData.add(e);
+    }
+    
+    public void AddExpense(Expense e)
+    {
+        ExpTable.getItems().add(e);
+        //ExpData.add(e);
     }
     
     
