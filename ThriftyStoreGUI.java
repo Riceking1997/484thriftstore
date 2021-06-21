@@ -680,7 +680,7 @@ public class ThriftyStoreGUI extends Application {
                 tblcsupsup.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierName"));
                 //tblcsupprod.setCellValueFactory(new PropertyValueFactory<Supplier, String>("employeeName"));
                 tblcsupaddy.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierAddress"));
-                tblcsupcname.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierName"));
+                tblcsupcname.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactName"));
                 tblcsupphone.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactPhone"));
                 tblcsupemail.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactEmail"));
 
@@ -1228,6 +1228,11 @@ public class ThriftyStoreGUI extends Application {
         return ExpData.get(ExpData.size()-1);
     }
     
+    public Supplier SupplierID()
+    {
+        return SupData.get(SupData.size()-1);
+    }
+    
     public void AddEmployee(Employee e)
     {
         EmpTable.getItems().add(e);
@@ -1239,9 +1244,6 @@ public class ThriftyStoreGUI extends Application {
         ExpTable.getItems().add(e);
         //ExpData.add(e);
     }
-    
-    
-    
     
     public void AddSupplier(Supplier e)
     {
