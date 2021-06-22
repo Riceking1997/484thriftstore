@@ -502,6 +502,8 @@ public class ThriftyStoreGUI extends Application {
 
                 // setting up gridpane for edit inventory window
                 editProductPane.setAlignment(Pos.CENTER);
+                editEmployeePane.setAlignment(Pos.CENTER);
+                editSupplierPane.setAlignment(Pos.CENTER);
                 addProductPane.setAlignment(Pos.CENTER);
 
                 Label[] editI = {new Label("Product Name:"), new Label("Unit Cost:"),
@@ -696,7 +698,7 @@ public class ThriftyStoreGUI extends Application {
                             editEmp = td;
                         }
                     }
-                    EditInventory(ItemStage, editEmp);
+                    EditEmployee(ItemStage, editEmp);
 
                 });
 
@@ -1219,7 +1221,7 @@ public class ThriftyStoreGUI extends Application {
                     td.setUnitCost(Double.parseDouble(addProductUnitCost.getText()));
                     td.setSalesPrice(Double.parseDouble(addProductSalesPrice.getText()));
                     td.setQIS(Integer.parseInt(addQuantityStock.getText()));
-                    td.setStatus(Integer.parseInt(addProductStatus.getText()));
+                    td.setStatus(addProductStatus.getText());
                     td.setExpDate(addProductExpDate.getText());
                     td.setStoreID(addProductStoreLocation.getText());
                     td.setDeptID(addProductDepartment.getText());
