@@ -118,7 +118,13 @@ public class Inventory {
         this.storeID = sID;
     }
     
-    public void setStatus(int currQIS){
+    public void setStatus(String stat){
+        
+      this.status = stat;
+        
+    }
+    
+     public void changeStatus(int currQIS){
         
         if(currQIS != 0){
             this.status = "In-Stock";
