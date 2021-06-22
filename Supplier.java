@@ -22,6 +22,10 @@ public class Supplier {
     String contactPhone;
     String contactEmail;
 
+    public Supplier(){
+        
+    }
+    
     public Supplier(String supplierID, String supplierName, String supplierAddress, String startDate, String contactName, String contactPhone, String contactEmail) {
 
         this.supplierID = supplierID;
