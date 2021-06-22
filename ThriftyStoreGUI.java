@@ -78,8 +78,31 @@ public class ThriftyStoreGUI extends Application {
     TextField editProductExpDate = new TextField();
     TextField editProductStoreLocation = new TextField();
     TextField editProductDepartment = new TextField();
-    Button editSaveBut = new Button("Save Changes->");
+    Button editProductSaveBut = new Button("Save Changes->");
     Scene ItemScene = new Scene(editProductPane, 800, 800);
+    
+     // GridPane to edit an Employee on staff
+    // Also textfields and buttons for the edit employee window
+    GridPane editEmployeePane = new GridPane();
+    TextField editEmployeeName = new TextField();
+    TextField editEmployeePhone = new TextField();
+    TextField editEmployeeAddress = new TextField();
+    TextField editEmployeeHourlyPay = new TextField();
+    TextField editEmployeeType = new TextField();
+    TextField editEmployeeStore = new TextField();
+    Button editEmployeeSaveBut = new Button("Save Changes->");
+    Scene EmpScene = new Scene(editEmployeePane, 800, 800);
+   
+    // GridPane to edit a Suppliers Information
+    // Also textfields and buttons for the edit supplier window
+    GridPane editSupplierPane = new GridPane();
+    TextField editSupplierName = new TextField();
+    TextField editSupplierAddress = new TextField();
+    TextField editContactName = new TextField();
+    TextField editContactNumber = new TextField();
+    TextField editContactEmail = new TextField();
+    Button editSupplierSaveBut = new Button("Save Changes->");
+    Scene SupScene = new Scene(editSupplierPane, 800, 800);
 
     // Gridpane to add a product in Inventory
     // Also textfields and buttons for the add a product window
@@ -484,6 +507,15 @@ public class ThriftyStoreGUI extends Application {
                 Label[] editI = {new Label("Product Name:"), new Label("Unit Cost:"),
                     new Label("Sales Price:"), new Label("QIS:"),
                     new Label("Status:"), new Label("Exp Date:"), new Label("Store:"), new Label("Department:")};
+                
+                Label[] editE = {new Label("Employee Name:"), new Label("Employee Phone:"),
+                    new Label("Employee Address:"), new Label("Hourly Pay:"),
+                    new Label("Employee Type:"), new Label("Store Location:")};
+                
+                Label[] editS = {new Label("Supplier Name:"), new Label("Supplier Address:"),
+                    new Label("Contact Name:"), new Label("Contact Number:"),
+                    new Label("Contact Email:")};
+
 
                 for (int i = 0; i < 8; i++) {
                     addProductPane.add(editI[i], 0, i);
@@ -498,7 +530,7 @@ public class ThriftyStoreGUI extends Application {
                 addProductPane.add(addProductStoreLocation, 1, 6);
                 addProductPane.add(addProductDepartment, 1, 7);
                 addProductPane.add(addSaveBut, 2, 7);
-
+                
                 for (int i = 0; i < 8; i++) {
                     editProductPane.add(editI[i], 0, i);
                 }
@@ -511,7 +543,32 @@ public class ThriftyStoreGUI extends Application {
                 editProductPane.add(editProductExpDate, 1, 5);
                 editProductPane.add(editProductStoreLocation, 1, 6);
                 editProductPane.add(editProductDepartment, 1, 7);
-                editProductPane.add(editSaveBut, 2, 7);
+                editProductPane.add(editProductSaveBut, 2, 7);
+                
+                for (int i = 0; i < 6; i++) {
+                    editEmployeePane.add(editE[i], 0, i);
+                }
+
+                editEmployeePane.add(editEmployeeName, 1, 0);
+                editEmployeePane.add(editEmployeePhone, 1, 1);
+                editEmployeePane.add(editEmployeeAddress, 1, 2);
+                editEmployeePane.add(editEmployeeHourlyPay, 1, 3);
+                editEmployeePane.add(editEmployeeType, 1, 4);
+                editEmployeePane.add(editEmployeeStore, 1, 5);
+                editEmployeePane.add(editEmployeeSaveBut, 2, 5);
+                
+                for (int i = 0; i < 5; i++) {
+                    editSupplierPane.add(editS[i], 0, i);
+                }
+
+                editSupplierPane.add(editSupplierName, 1, 0);
+                editSupplierPane.add(editSupplierAddress, 1, 1);
+                editSupplierPane.add(editContactName, 1, 2);
+                editSupplierPane.add(editContactNumber, 1, 3);
+                editSupplierPane.add(editContactEmail, 1, 4);
+                editSupplierPane.add(editSupplierSaveBut, 2, 4);
+
+               
 
                 // event handlers for the inventory pane
                 btninvadd.setOnAction(eB -> {
@@ -639,7 +696,7 @@ public class ThriftyStoreGUI extends Application {
                             editEmp = td;
                         }
                     }
-                    // EditInventory(ItemStage, editEmp);
+                    EditInventory(ItemStage, editEmp);
 
                 });
 
@@ -716,14 +773,14 @@ public class ThriftyStoreGUI extends Application {
                 
                 // Event handler to edit suppliers information selected
                 btnsupedit.setOnAction(eB -> {
-
-                    //Employee editEmp = new Employee();
-                    //for (Employee td : EmpData) {
-                    //    if (td.toString().equals(EmpTable.getSelectionModel().getSelectedItem())) {
-                    //        editEmp = td;
-                    //    }
-                    //}
-                    // EditInventory(ItemStage, editEmp);
+                    
+                     Supplier editSup = new Supplier();
+                     for (Supplier td : SupData) {
+                        if (td.equals(SupTable.getSelectionModel().getSelectedItem())) {
+                            editSup = td;
+                        }
+                    }
+                    EditSupplier(ItemStage, editSup);
 
                 });
 
@@ -1194,7 +1251,7 @@ public class ThriftyStoreGUI extends Application {
         ItemStage.setTitle("Edit Inventory Item");
         ItemStage.show();
 
-        editSaveBut.setOnAction(e -> {
+        editProductSaveBut.setOnAction(e -> {
 
             for (Inventory td : InvData) {
                 if (td.equals(editInv)) {
@@ -1202,7 +1259,7 @@ public class ThriftyStoreGUI extends Application {
                     td.setUnitCost(Double.parseDouble(editProductUnitCost.getText()));
                     td.setSalesPrice(Double.parseDouble(editProductSalesPrice.getText()));
                     td.setQIS(Integer.parseInt(editQuantityStock.getText()));
-                    td.setStatus(Integer.parseInt(editProductStatus.getText()));
+                    td.setStatus(editProductStatus.getText());
                     td.setExpDate(editProductExpDate.getText());
                     td.setStoreID(editProductStoreLocation.getText());
                     td.setDeptID(editProductDepartment.getText());
@@ -1214,9 +1271,105 @@ public class ThriftyStoreGUI extends Application {
                 InvTable.getItems().add(td);
             }
 
+            String updateInv = "UPDATE JAVAUSER." + "InventoryItem" + " SET departmentID = '";
+            updateInv += editProductDepartment.getText() + "',";
+            updateInv += " quantityInStock = '" + Integer.parseInt(editQuantityStock.getText()) + "',";
+            updateInv += " status = '" + editProductStatus.getText() + "',";
+            updateInv += " expirationDate = '" + editProductExpDate.getText().substring(0, 11) + "'"
+                    + " WHERE productID = \'"
+                    + editInv.getProductID() + "\'";
+
+            sendDBCommand(updateInv);
+
+        });
+    }
+    
+    public void EditEmployee(Stage ItemStage, Employee editEmp) {
+
+        editEmployeeName.setText(editEmp.getEmployeeName());
+        editEmployeePhone.setText(editEmp.getEmployeePhone());
+        editEmployeeAddress.setText(editEmp.getEmployeeAddress());
+        editEmployeeHourlyPay.setText(String.valueOf(editEmp.getEmployeeSalary()));
+        editEmployeeType.setText(editEmp.getEmployeeType());
+        editEmployeeStore.setText(editEmp.getStoreID());
+
+        //Button editSaveBut = new Button("Save Changes->");
+        ItemStage.setScene(EmpScene);
+        ItemStage.setTitle("Edit Employee Information");
+        ItemStage.show();
+
+        editEmployeeSaveBut.setOnAction(e -> {
+
+            for (Employee td : EmpData) {
+                if (td.equals(editEmp)) {
+                    td.setEmployeeName(editEmployeeName.getText());
+                    td.setEmployeePhone(editEmployeePhone.getText());
+                    td.setEmployeeAddress(editEmployeeAddress.getText());
+                    td.setEmployeeSalary(Double.parseDouble(editEmployeeHourlyPay.getText()));
+                    td.setEmployeeType(editEmployeeType.getText());
+                    td.setStoreID(editEmployeeStore.getText());
+                }
+            }
+
+            EmpTable.getItems().clear();
+            for (Employee td : EmpData) {
+                EmpTable.getItems().add(td);
+            }
+
+            String updateEmp = "UPDATE JAVAUSER." + "Employee" + " SET name = '";
+            updateEmp += editEmployeeName.getText() + "',";
+            updateEmp += " quantityInStock = '" + Integer.parseInt(editQuantityStock.getText()) + "',";
+            updateEmp += " status = '" + editProductStatus.getText() + "',";
+            updateEmp += " expirationDate = '" + editProductExpDate.getText().substring(0, 11) + "'"
+                    + " WHERE employeeID = \'"
+                    + editEmp.getEmployeeID() + "\'";
+
+            sendDBCommand(updateEmp);
+
         });
 
     }
+
+    public void EditSupplier(Stage ItemStage, Supplier editSup) {
+
+        editSupplierName.setText(editSup.getSupplierName());
+        editSupplierAddress.setText(editSup.getSupplierAddress());
+        editContactName.setText(editSup.getContactName());
+        editContactNumber.setText(editSup.getContactPhone());
+        editContactEmail.setText(editSup.getContactEmail());
+
+        //Button editSaveBut = new Button("Save Changes->");
+        ItemStage.setScene(SupScene);
+        ItemStage.setTitle("Edit Supplier Information");
+        ItemStage.show();
+
+        editSupplierSaveBut.setOnAction(e -> {
+            for (Supplier td : SupData) {
+                if (td.equals(editSup)) {
+                    td.setSupplierName(editSupplierName.getText());
+                    td.setSupplierAddress(editSupplierAddress.getText());
+                    td.setContactName(editContactName.getText());
+                    td.setContactPhone(editContactNumber.getText());
+                    td.setContactEmail(editContactEmail.getText());
+
+                }
+            }
+            SupTable.getItems().clear();
+            for (Supplier td : SupData) {
+                SupTable.getItems().add(td);
+            }
+            //       String updateInv = "UPDATE JAVAUSER." + "InventoryItem" + " SET departmentID = '";
+            //       updateInv += editProductDepartment.getText() + "',";
+            //       updateInv += " quantityInStock = '" + Integer.parseInt(editQuantityStock.getText()) + "',";
+            //       updateInv += " status = '" + editProductStatus.getText() + "',";
+            //       updateInv += " expirationDate = '" + editProductExpDate.getText().substring(0, 11) + "'"
+            //               + " WHERE productID = \'"
+            //               + editInv.getProductID() + "\'";
+            //       sendDBCommand(updateInv);
+
+        });
+    }
+    
     public Employee employeeID()
     {
         return EmpData.get(EmpData.size()-1);
