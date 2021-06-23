@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Thifty;
+package Thifty2;
 
 /**
  *
@@ -11,12 +11,12 @@ package Thifty;
  */
 public class ReceiptItem {
     
-    int receiptID;
+    String receiptID;
     String productID;
-    Double quantityPurchased;
-    Double totalPrice;
+    int quantityPurchased;
+    double totalPrice;
     
-    public ReceiptItem(int receiptID, String productID, Double quantityPurchased, Double totalPrice){
+    public ReceiptItem(String receiptID, String productID, int quantityPurchased, double totalPrice){
         
         this.receiptID = receiptID;
         this.productID = productID;
@@ -25,7 +25,7 @@ public class ReceiptItem {
         
     }
     
-    public int getReceiptID(){
+    public String getReceiptID(){
         return this.receiptID;
     }
     
@@ -33,15 +33,15 @@ public class ReceiptItem {
         return this.productID;
     }
     
-    public Double getQuantityPurchased(){
+    public int getQuantityPurchased(){
         return this.quantityPurchased;
     }
     
-    public Double getTotalPrice(){
+    public double getTotalPrice(){
         return this.totalPrice;
     }
     
-    public void setReceiptID(int rID){
+    public void setReceiptID(String rID){
         this.receiptID = rID;
     }
     
@@ -49,13 +49,13 @@ public class ReceiptItem {
         this.productID = pID;
     }
     
-    public void setQuantityPurchased(Double qPurchased){
+    public void setQuantityPurchased(int qPurchased){
         this.quantityPurchased = qPurchased;
     }
     
-    public void setTotalPrice(Double tPrice, Double qPurch, Double sellPrice){
+    public void setTotalPrice(int qPurch, double sellPrice){
         
-        tPrice = qPurch * sellPrice;
+        double tPrice = qPurch * sellPrice;
         this.totalPrice = tPrice;
     }
 }
