@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Thifty;
+package Thifty2;
 
 import java.util.ArrayList;
 
@@ -21,11 +21,11 @@ public class Supplier {
     String contactName;
     String contactPhone;
     String contactEmail;
-
-    public Supplier(){
+    
+    public Supplier() {
         
     }
-    
+  
     public Supplier(String supplierID, String supplierName, String supplierAddress, String startDate, String contactName, String contactPhone, String contactEmail) {
 
         this.supplierID = supplierID;
