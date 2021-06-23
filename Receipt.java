@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Capstone;
+package Thifty2;
 
 import java.util.ArrayList;
 
@@ -94,5 +94,9 @@ public class Receipt {
     
     public void setDate(String time){
         this.date = time;
+    }
+    
+    public void setItemList(ArrayList<ReceiptItem> List) {
+        this.itemList = List;
     }
 }
