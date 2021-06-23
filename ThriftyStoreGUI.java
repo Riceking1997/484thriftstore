@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Capstone;
+package Thifty2;
 
 
 import java.io.IOException;
@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -240,6 +242,12 @@ public class ThriftyStoreGUI extends Application {
     ListView lstPOScust = new ListView();
     ObservableList<ClubMember> POSCustData;
     Scene POSCustScene = new Scene(POSSrchCustPane, 800, 800);
+    
+        //For generating Receipt IDs and Customer IDs
+    /** MAKE SURE TO FILL THIS ARRAY WITH CUSTOMERS FROM DB AT START **/
+    ArrayList<Customer> poscust = new ArrayList<>();
+    int RecIDCount = 10000;
+    int CustIDCount = 10000;
 
     //Creating the Menu Bar
     MenuBar mnuBar = new MenuBar();
@@ -1017,7 +1025,7 @@ public class ThriftyStoreGUI extends Application {
                 //SupTable.setMinWidth(primaryScene.getWidth());
                 payPane.add(PayrollTable, 0, 4, 10, 1);
 
-               // Adding controls to POS Pane
+                              // Adding controls to POS Pane
                 posPane.add(lblPOSclub, 0, 0);
                 posPane.add(cboxPOSclub, 1, 0);
                 posPane.add(btnPOScust, 0, 1);
@@ -1054,6 +1062,8 @@ public class ThriftyStoreGUI extends Application {
                 posPane.add(btnCheckout, 0, 6);
                 posPane.add(btnPrintReceipt, 1, 6);
                 posPane.add(btnCancelOrder, 2, 6);
+                
+                txtPOSEID.editableProperty().setValue(false);
                 
                 // setting up gridpane alignment for POS add product pane
                 AddPOSProdPane.setAlignment(Pos.CENTER);
@@ -1104,9 +1114,59 @@ public class ThriftyStoreGUI extends Application {
                     SrchPOSCust(POSsrchcustStage);
                     
                 });
+                // To make sure that Receipt and Customer IDs have accurate values
+                if(SalData.get(SalData.size()-1).getReceiptID().equals("po99995")) {
+                    //when there haven't been any pos sales yet
+                } else {
+                    //when there have been a few pos sales
+                    RecIDCount = Integer.parseInt(SalData.get(SalData.size()-1).getReceiptID().substring(3, 7)) + 1;
+                }
+                if((poscust.isEmpty()) || (poscust.get(poscust.size()-1).equals("cust00010"))) {
+                    //when there haven't been any pos sales yet
+                } else {
+                    //when there have been a few pos sales
+                    CustIDCount = Integer.parseInt(poscust.get(poscust.size()-1).getCustomerID().substring(5, 9)) + 1;
+                }
                 btnCheckout.setOnAction (eB -> {
                     
-                    //SrchPOSCust(POSsrchcustStage);
+                    if(!POSTable.getItems().isEmpty()) {
+                    //Arraylist to temporarily store the reciept items before adding
+                    //them to the created reciept.
+                    ArrayList<ReceiptItem> tempitems = new ArrayList<>();
+                    String temprecid = "po" + RecIDCount;
+                    RecIDCount++;
+                    String tempcustid = "cust" + CustIDCount;
+                    CustIDCount++;
+                    String temprecempid = CurrentUser.getEmployeeID();
+                    String tempStoreid = CurrentUser.getStoreID();
+                    Double tempndtot = Double.parseDouble(txtPOSSAV.getText()) + Double.parseDouble(txtPOSTOT.getText());
+                    Double tempsav = Double.parseDouble(txtPOSSAV.getText());
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");  
+                    LocalDateTime now = LocalDateTime.now();  
+                    Receipt tempreceipt = new Receipt(temprecid, tempcustid, temprecempid, tempStoreid, tempndtot, tempsav, now.toString().substring(0, 10));
+                    for (Inventory td : POSDataArr) {
+                        if (cboxPOSclub.getSelectionModel().getSelectedItem().equals("no")) {
+                        tempitems.add(new ReceiptItem(tempreceipt.getReceiptID(), td.getProductID(), 1, td.getSalesPrice()));
+                        } else {
+                        tempitems.add(new ReceiptItem(tempreceipt.getReceiptID(), td.getProductID(), 1, td.getClubPrice()));  
+                        }
+                    }
+                    tempreceipt.setItemList(tempitems);
+                    
+                    //adding the newly created receipt to the sales tab
+                    SalData.add(tempreceipt);
+                    } else {
+                        //Prompt the user to enter items into POS.
+                    }
+                    
+                    //Clearing combobox selection and ID textbox value
+                    cboxPOSclub.getSelectionModel().clearSelection();
+                    txtPOSEID.clear();
+                    POSTable.getItems().clear();
+                    txtPOSTOT.clear();
+                    txtPOSSAV.clear();
+                    POSDataArr.clear();
+                    
                     
                 });
                 btnCancelOrder.setOnAction (eB -> {
@@ -1133,11 +1193,30 @@ public class ThriftyStoreGUI extends Application {
                     
                     POSTable.getItems().clear();
                     txtPOSTOT.clear();
-                    txtPOSSAV.clear();
+                    txtPOSSAV.clear();   
+                });
+                
+                btnPOSdelprod.setOnAction (eB -> {
                     
+                    //to remove the selected item and add it back into inventory.
+                    Inventory tempdel = POSTable.getSelectionModel().getSelectedItem();
+                    POSTable.getItems().remove(POSTable.getSelectionModel().getSelectedItem());
+                    POSDataArr.remove(POSDataArr.indexOf(tempdel));
                     
+                    //to refresh the add product list to display the proper 
+                    //inventory values
+                    POSaddprodlst.getItems().clear();
+                    for (Inventory td : InvData) {
+                        if(td.equals(tempdel))
+                            td.addQIS(1);
+                        POSaddprodlst.getItems().add(td);
+                    }
                     
-                    
+                    //to refresh the POS table after the item is deleted.
+                    POSTable.getItems().clear();
+                    for (Inventory td : POSDataArr) { 
+                        POSTable.getItems().add(td);
+                    }
                     
                 });
 
@@ -1521,6 +1600,8 @@ public class ThriftyStoreGUI extends Application {
             
             ClubMember tempcm = (ClubMember)lstPOScust.getSelectionModel().getSelectedItem();
             txtPOSEID.setText(tempcm.getCustomerID());
+            if(!lstPOScust.getSelectionModel().isEmpty())
+                cboxPOSclub.getSelectionModel().select(0);
             
         });
     }
