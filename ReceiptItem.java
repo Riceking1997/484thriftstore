@@ -1,9 +1,10 @@
+  
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Thifty2;
+package Capstone;
 
 /**
  *
@@ -13,15 +14,22 @@ public class ReceiptItem {
     
     String receiptID;
     String productID;
-    int quantityPurchased;
+    String storeID;
+    double quantityPurchased;
     double totalPrice;
+    String date;
     
-    public ReceiptItem(String receiptID, String productID, int quantityPurchased, double totalPrice){
+    public ReceiptItem(){
+        
+    }
+    public ReceiptItem(String receiptID, String productID, String storeID, double quantityPurchased, double totalPrice, String date){
         
         this.receiptID = receiptID;
         this.productID = productID;
+        this.storeID = storeID;
         this.quantityPurchased = quantityPurchased;
         this.totalPrice = totalPrice;
+        this.date = date;
         
     }
     
@@ -33,12 +41,20 @@ public class ReceiptItem {
         return this.productID;
     }
     
-    public int getQuantityPurchased(){
+    public String getStoreID() {
+        return this.storeID;
+    }
+    
+    public double getQuantityPurchased(){
         return this.quantityPurchased;
     }
     
     public double getTotalPrice(){
         return this.totalPrice;
+    }
+    
+    public String getDate() {
+        return this.date;
     }
     
     public void setReceiptID(String rID){
@@ -49,13 +65,21 @@ public class ReceiptItem {
         this.productID = pID;
     }
     
-    public void setQuantityPurchased(int qPurchased){
+    public void setStoreID(String storeID) {
+        this.storeID = storeID;
+    }
+    
+    public void setQuantityPurchased(double qPurchased){
         this.quantityPurchased = qPurchased;
     }
     
-    public void setTotalPrice(int qPurch, double sellPrice){
+    public void setTotalPrice(double tPrice, double qPurch, double sellPrice){
         
-        double tPrice = qPurch * sellPrice;
+        tPrice = qPurch * sellPrice;
         this.totalPrice = tPrice;
+    }
+    
+    public void setDate(String date) {
+        this.date = date;
     }
 }
