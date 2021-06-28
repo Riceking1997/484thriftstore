@@ -3,14 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Thifty2;
+package Capstone;
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -22,6 +26,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -33,6 +41,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -135,6 +144,7 @@ public class ThriftyStoreGUI extends Application {
     //Controls for EmpPane
     Label lblempsearchtxt = new Label("Store");
     ComboBox cboxempstore = new ComboBox();
+    Button btnviewempstore = new Button("View by Store");
     Button btnempadd = new Button("Add New Employee");
     Button btnempdel = new Button("Delete Employee");
     Button btnempedit = new Button("Edit Employee");
@@ -161,17 +171,22 @@ public class ThriftyStoreGUI extends Application {
     Label lblexpyear = new Label("Year");
     ComboBox cboxexpmonth = new ComboBox();
     ComboBox cboxexpyr = new ComboBox();
-    Button btnexpdate = new Button("View Date");
+    Button btnexpview = new Button("View Expenses");
     ComboBox cboxexpstore = new ComboBox();
     Label lblexpstore = new Label("Store");
     Button btnexpstore = new Button("View Store");
     Button btnexpadd = new Button("Add Expense");
+    Label lblexptotal = new Label("Total Expenses: ");
+    TextField txtexptotal = new TextField();
+    double exptotal = 0;
     ArrayList<Expense> ExpData = new ArrayList<>();
     TableView<Expense> ExpTable;
     ObservableList<Expense> ExpTableData;
     ArrayList<String> ExpStoreData = new ArrayList<>();
 
     //Controls for SalPane
+    Button btnGraph = new Button("Show Graph");
+    Button btnProfReport = new Button("Print Profit Report");
     ComboBox cboxsalday = new ComboBox();
     ComboBox cboxsalmonth = new ComboBox();
     ComboBox cboxsalyr = new ComboBox();
@@ -180,11 +195,47 @@ public class ThriftyStoreGUI extends Application {
     Label lblsalday = new Label("Day");
     Label lblsalyr = new Label("Year");
     Button btnsalYPER = new Button("View Yearly Profit Expense Report");
-    Button btnsalYTDPER = new Button("View Year To Date Profit Expense Report");
+    //Button btnsalYTDPER = new Button("View Year To Date Profit Expense Report");
     Button btnsalPOSR = new Button("View POS Sales Report");
+    Label lblsaltotal = new Label("Total Sales: ");
+    TextField txtsaltotal = new TextField();
+    double saltotal = 0;
+    double fYearSales = 0;
+    double sYearSales = 0;
+    double tYearSales = 0;
+    double ytdSales = 0;
+    double fYearExp = 0;
+    double sYearExp = 0;
+    double tYearExp = 0;
+    double ytdExp = 0;
+    double fProfit;
+    double sProfit;
+    double tProfit;
+    double ytdProfit;
+    String salesReport;
     ArrayList<Receipt> SalData = new ArrayList<>();
     TableView<Receipt> SalTable;
     ObservableList<Receipt> SalTableData;
+    ArrayList<ReceiptItem> prodData = new ArrayList<>();
+    TableView<ReceiptItem> prodTable;
+    ObservableList<ReceiptItem> prodTableData;
+    Label lblYear = new Label("Year: ");
+    ComboBox cbxYear = new ComboBox();
+    Label lblMonth = new Label("Month: ");
+    ComboBox cbxMonth = new ComboBox();
+    Label lblDay = new Label("Day: ");
+    ComboBox cbxDay = new ComboBox();
+    Label lblStore = new Label("Store");
+    ComboBox cbxStore = new ComboBox();
+    Button btnviewprod = new Button("View Products");
+    Label lblmostpur = new Label("Most Purchased: ");
+    TextField txtmostpur = new TextField();
+    Label lblquant = new Label("Quantity: ");
+    TextField txtquant = new TextField();
+    Label lblsalesamt = new Label("Sales Amount: ");
+    TextField txtsalesamt = new TextField();
+    Button btnprodGraph = new Button("Show Graph");
+    Button btnprodReport = new Button("Print Report");
     
 
     //Controls for PayrollPane
@@ -632,6 +683,22 @@ public class ThriftyStoreGUI extends Application {
                 empPane.add(btnempedit, 2, 1);
                 empPane.add(btnempdel, 3, 1);
 
+                ExpStoreData.add("None");
+                //Query for store IDs
+                sendDBCommand("select *from Store");
+                try {
+                    while (dbResults.next()) {
+                        ExpStoreData.add(dbResults.getString(1));
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                ObservableList storeItems = FXCollections.observableArrayList(ExpStoreData);
+                
+                cboxempstore.getItems().addAll(storeItems);
+                cboxempstore.setValue("None");
+                
                 //Adding Employee Table
                 /*EmpTable = new TableView<>();
                 EmpTable.setItems(EmpData);*/
@@ -708,6 +775,17 @@ public class ThriftyStoreGUI extends Application {
                     }
                     EditEmployee(ItemStage, editEmp);
 
+                });
+                btnviewempstore.setOnAction(eS -> {
+                    EmpTableData.clear();
+                   for (Employee emp : EmpData) {
+                       if (emp.storeID.equals(cboxempstore.getValue())){
+                           EmpTableData.add(emp);
+                       }
+                       else if(cboxempstore.getValue().equals("None")){
+                           EmpTableData.add(emp);
+                       }
+                   } 
                 });
 
                 // Adding controls to SupPane
@@ -816,16 +894,20 @@ public class ThriftyStoreGUI extends Application {
                         tblcsupemail);
                 supPane.add(SupTable, 0, 3, 10, 1);
 
+                
+
                 // Adding controls to ExpPane
-                expPane.add(lblexpmonth, 0, 0);
-                expPane.add(lblexpyear, 1, 0);
-                expPane.add(cboxexpmonth, 0, 1);
-                expPane.add(cboxexpyr, 1, 1);
-                expPane.add(btnexpdate, 6, 1);
+                expPane.add(lblexpmonth, 1, 0);
+                expPane.add(lblexpyear, 0, 0);
+                expPane.add(cboxexpmonth, 1, 1);
+                expPane.add(cboxexpyr, 0, 1);
+                expPane.add(btnexpview, 8, 1);
                 expPane.add(lblexpstore, 7, 0);
                 expPane.add(cboxexpstore, 7, 1);
-                expPane.add(btnexpstore, 8, 1);
+                //expPane.add(btnexpstore, 8, 1);
                 expPane.add(btnexpadd, 9, 1);
+                expPane.add(lblexptotal, 0, 3);
+                expPane.add(txtexptotal, 1, 3);
 
                 //Adding Expense Table
                 sendDBCommand("select * from Expensebill");
@@ -838,7 +920,7 @@ public class ThriftyStoreGUI extends Application {
                 }
                 ExpStoreData.add("None");
                 //Query for store IDs
-                sendDBCommand("select *from Store");
+                sendDBCommand("select * from Store");
                 try {
                     while (dbResults.next()) {
                         ExpStoreData.add(dbResults.getString(1));
@@ -847,13 +929,23 @@ public class ThriftyStoreGUI extends Application {
                     Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
-                ObservableList storeItems = FXCollections.observableArrayList(ExpStoreData);
+                //ObservableList storeItems = FXCollections.observableArrayList(ExpStoreData);
                 cboxexpstore.setItems(storeItems);
                 cboxexpstore.setValue("None");
+                
+                btnexpadd.setOnAction(eB -> {
+                    AddExpenses tempWindow = new AddExpenses(this);
+                }); 
+                
                 //Adding Expense Table
                 ExpTable = new TableView<>();
                 ExpTableData = FXCollections.observableList(ExpData);
                 ExpTable.setItems(ExpTableData);
+                
+                for (Expense exp : ExpData) {
+                    exptotal += exp.expenseTotal;
+                }
+                txtexptotal.setText(String.valueOf(exptotal));
                 
 
                 //ExpTable.setItems(SupTableData);
@@ -879,24 +971,41 @@ public class ThriftyStoreGUI extends Application {
                 cboxexpyr.getItems().addAll(yearItems);
                 cboxexpyr.setValue("None");
                 
-                btnexpdate.setOnAction(eE -> {
+                btnexpview.setOnAction(eE -> {
                     strmonth = String.valueOf(cboxexpmonth.getValue());
                     
                     
                     stryear = String.valueOf(cboxexpyr.getValue());
                     
                     strstore = String.valueOf(cboxexpstore.getValue());
+                    
+                    double viewtotal = 0;
                     System.out.println(strday);
                     System.out.println(strmonth);
                     System.out.println(stryear);
                     ExpTableData.removeAll();
                     ArrayList<Expense> dateData = new ArrayList<>();
                     for (Expense exp : ExpData) {
-                        if (exp.dueDate.substring(0, 7).equals(stryear+"-"+strmonth) && strstore.equals("None")) {
+                        if (exp.dueDate.substring(0, 7).equals(stryear+"-"+strmonth) && exp.storeID.equals(strstore)) {
+                            dateData.add(exp);
+                        }
+                        else if (exp.dueDate.substring(0, 7).equals(stryear+"-"+strmonth) && strstore.equals("None")) {
                             dateData.add(exp);
                             
-                        }                       
+                        }
+                        else if (exp.storeID.equals(strstore) && stryear.equals("None") && strmonth.equals("None")) {
+                            dateData.add(exp);
+                        }
+                        else if (exp.dueDate.substring(0, 4).equals(stryear) && exp.storeID.equals(strstore) && strmonth.equals("None")) {
+                            dateData.add(exp);
+                        }
                         else if (exp.dueDate.substring(0, 4).contains(stryear) && strmonth.equals("None") && strstore.equals("None")) {
+                            dateData.add(exp);
+                        }
+                        else if (exp.dueDate.substring(5, 7).equals(strmonth) && stryear.equals("None") && strstore.equals("None")) {
+                            dateData.add(exp);
+                        }
+                        else if (exp.dueDate.substring(5, 7).equals(strmonth) && exp.storeID.equals(strstore) && stryear.equals("None")) {
                             dateData.add(exp);
                         }
                         else if (stryear.equals("None") && strmonth.equals("None") && strstore.equals("None")) {
@@ -905,15 +1014,17 @@ public class ThriftyStoreGUI extends Application {
                     }
                     ExpTableData = FXCollections.observableList(dateData);
                     ExpTable.setItems(ExpTableData);
+                    for (Expense exp : dateData) {
+                        viewtotal += exp.expenseTotal;
+                    }
+                    txtexptotal.setText(String.valueOf(viewtotal));
+                    
                 });               
 
                 ExpTable.getColumns().addAll(tblcexpid, tblcexpname, tblcexpamt, tblcexpdue, tblcexpstore);
                 expPane.add(ExpTable, 0, 2, 10, 1);
 
-                // Event handler to add a supplier to the table
-                btnexpadd.setOnAction(eB -> {
-                    AddExpenses tempWindow = new AddExpenses(this);
-                }); 
+                
                 
                 // Adding controls to SalPane
                 salPane.add(lblsalyr, 2, 0);
@@ -923,6 +1034,8 @@ public class ThriftyStoreGUI extends Application {
                 salPane.add(lblsalday, 6, 0);
                 salPane.add(cboxsalday, 7, 0);
                 salPane.add(btnsaldate, 8, 0);
+                salPane.add(lblsaltotal, 0, 3);
+                salPane.add(txtsaltotal, 1, 3);
 
                 sendDBCommand("select * from PurchaseOrder");
                 try {
@@ -948,6 +1061,10 @@ public class ThriftyStoreGUI extends Application {
                 tblcsalstore.setCellValueFactory(new PropertyValueFactory<Receipt, String>("storeID"));
                 tblcsaldate.setCellValueFactory(new PropertyValueFactory<Receipt, String>("date"));
                 
+                for (Receipt r : SalData) {
+                    saltotal += r.finalTotal;
+                }
+                txtsaltotal.setText(String.valueOf(saltotal));
                 //String[] days = {"None", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
                 
                 cboxsalday.getItems().addAll(dayItems);
@@ -971,6 +1088,8 @@ public class ThriftyStoreGUI extends Application {
                     
                     stryear = String.valueOf(cboxsalyr.getValue());
                     
+                    double viewtotal = 0;
+                    
                     System.out.println(strday);
                     System.out.println(strmonth);
                     System.out.println(stryear);
@@ -988,18 +1107,393 @@ public class ThriftyStoreGUI extends Application {
                         else if (r.date.substring(0, 4).contains(stryear) && strmonth.equals("None") && strday.equals("None")) {
                             dateData.add(r);
                         }
+                        else if (r.date.substring(5, 10).equals(strmonth+"-"+strday) && stryear.equals("None")) {
+                            dateData.add(r);
+                        }
+                        else if (r.date.substring(5, 7).equals(strmonth) && stryear.equals("None") && strday.equals("None")) {
+                            dateData.add(r);
+                        }
                         else if (stryear.equals("None") && strmonth.equals("None") && strday.equals("None")) {
                             dateData.add(r);
                         }
                     }
                     SalTableData = FXCollections.observableList(dateData);
                     SalTable.setItems(SalTableData);
+                    for (Receipt r : dateData) {
+                        viewtotal += r.finalTotal;
+                    }
+                    txtsaltotal.setText(String.valueOf(viewtotal));
                 });
                 //SupTable.setMinWidth(primaryScene.getWidth());
                 SalTable.getColumns().addAll(tblcsalrec, tblcsalamt, tblcsalstore, tblcsaldate);
                 salPane.add(SalTable, 0, 1, 10, 1);
-                salPane.add(btnsalYPER, 0, 2);
-                salPane.add(btnsalPOSR, 1, 2);
+                salPane.add(btnsalYPER, 0, 4);
+                salPane.add(btnsalPOSR, 1, 4);
+                btnsalYPER.setOnAction(eP -> {
+                    
+                    LocalDate tempDate;
+                    LocalDate currentDate = LocalDate.now();
+                    System.out.println(currentDate);
+                    LocalDate lastyrDate = currentDate.minusYears(1);
+                    System.out.println(lastyrDate);
+                    salesReport = "Total Revenue\n" + "---------------\n";
+                    ArrayList<String> profitData = new ArrayList<>();
+                    TextArea lstExpenses = new TextArea();
+                    for (Receipt r : SalData) {
+                        if (r.date.substring(0, 4).equals("2019")) {
+                            fYearSales += r.finalTotal;
+                        }
+                        if (r.date.substring(0, 4).equals("2020")) {
+                            sYearSales += r.finalTotal;
+                        }
+                        if (r.date.substring(0, 4).equals("2021")) {
+                            tYearSales += r.finalTotal;
+                        }
+                    }
+                    for (Receipt r : SalData) {
+                        tempDate = LocalDate.parse(r.date);
+                        if (tempDate.isAfter(lastyrDate)) {
+                            ytdSales += r.finalTotal;
+                        }                        
+                    }
+                    salesReport += "2019 : $" + fYearSales +"\n";
+                    salesReport += "2020 : $" + sYearSales +"\n";
+                    salesReport += "2021 : $" + tYearSales +"\n";
+                    salesReport += " YTD : $" + ytdSales +"\n";
+                    salesReport += "\n";
+                    for (Expense exp : ExpData) {
+                        if (exp.dueDate.substring(0, 4).equals("2019")){
+                            fYearExp += exp.expenseTotal;
+                        }
+                        if (exp.dueDate.substring(0, 4).equals("2020")){
+                            sYearExp += exp.expenseTotal;
+                        }
+                        if (exp.dueDate.substring(0, 4).equals("2021")){
+                            tYearExp += exp.expenseTotal;
+                        }
+                    }
+                    for (Expense exp : ExpData) {
+                        tempDate = LocalDate.parse(exp.dueDate);
+                        if (tempDate.isAfter(lastyrDate)) {
+                            ytdExp += exp.expenseTotal;
+                        }                        
+                    }
+                    salesReport += "Total Expenses\n" + "---------------\n";
+                    salesReport += "2019 : $" + fYearExp +"\n";
+                    salesReport += "2020 : $" + sYearExp +"\n";
+                    salesReport += "2021 : $" + tYearExp +"\n";
+                    salesReport += " YTD : $" + ytdExp +"\n";
+                    salesReport += "\n";
+                    fProfit = fYearSales - fYearExp;
+                    sProfit = sYearSales - sYearExp;
+                    tProfit = tYearSales - tYearExp;
+                    ytdProfit = ytdSales - ytdExp;
+                    String strFProfit = "";
+                    String strSProfit = "";
+                    String strTProfit = "";
+                    String strYTDProfit = "";
+                    if (fProfit < 0){
+                        strFProfit += "("+String.valueOf(fProfit).substring(1)+")";
+                    }
+                    else {
+                        strFProfit += String.valueOf(fProfit);
+                    }
+                    if (sProfit < 0){
+                        strSProfit += "("+String.valueOf(sProfit).substring(1)+")";
+                    }
+                    else {
+                        strSProfit += String.valueOf(sProfit);
+                    }
+                    if (tProfit < 0){
+                        strTProfit += "("+String.valueOf(tProfit).substring(1)+")";
+                    }
+                    else {
+                        strTProfit += String.valueOf(tProfit);
+                    }
+                    if (ytdProfit < 0){
+                        strYTDProfit += "("+String.valueOf(ytdProfit).substring(1)+")";
+                    }
+                    else {
+                        strYTDProfit += String.valueOf(ytdProfit);
+                    }
+                    salesReport += "Profit/(Loss)\n" + "---------------\n";
+                    salesReport += "2019 : $" + strFProfit +"\n";
+                    salesReport += "2020 : $" + strSProfit +"\n";
+                    salesReport += "2021 : $" + strTProfit +"\n";
+                    salesReport += " YTD : $" + strYTDProfit +"\n";
+                    lstExpenses.setText(salesReport);
+                    profitData.add(txtsaltotal.getText());
+                    /*for(String s : profitData) {
+                        lstExpenses.setText()
+                    }*/
+                    
+                    
+                    GridPane listPane = new GridPane();
+                    
+                    listPane.add(lstExpenses, 0, 0, 2, 1);
+                    listPane.add(btnGraph, 0, 1);
+                    listPane.add(btnProfReport, 1, 1);
+                    listPane.setAlignment(Pos.CENTER);
+                    
+                    Scene listScene = new Scene(listPane, 700, 700);
+                    Stage listStage = new Stage();
+                    listStage.setScene(listScene);
+                    listStage.show();
+                });
+                btnGraph.setOnAction(eG -> {
+                    final CategoryAxis xAxis = new CategoryAxis();
+                    final NumberAxis yAxis = new NumberAxis();
+                    final BarChart<String,Number> bc = 
+                        new BarChart<String,Number>(xAxis,yAxis);
+                    bc.setTitle("Profit/Expenses");
+                    xAxis.setLabel("Dollar Amount");
+                    yAxis.setLabel("Year");
+                    XYChart.Series series1 = new XYChart.Series();
+                    series1.setName("Sales");
+                    XYChart.Series series2 = new XYChart.Series();
+                    series2.setName("Expenses");
+                    XYChart.Series series3 = new XYChart.Series();
+                    series3.setName("Profit");
+                    series1.getData().add(new XYChart.Data("2019", fYearSales));
+                    series2.getData().add(new XYChart.Data("2019", fYearExp));
+                    series3.getData().add(new XYChart.Data("2019", fProfit));
+                    
+                    series1.getData().add(new XYChart.Data("2020", sYearSales));
+                    series2.getData().add(new XYChart.Data("2020", sYearExp));
+                    series3.getData().add(new XYChart.Data("2020", sProfit));
+                    
+                    series1.getData().add(new XYChart.Data("2021", tYearSales));
+                    series2.getData().add(new XYChart.Data("2021", tYearExp));
+                    series3.getData().add(new XYChart.Data("2021", tProfit));
+                    
+                    series1.getData().add(new XYChart.Data("YTD", ytdSales));
+                    series2.getData().add(new XYChart.Data("YTD", ytdExp));
+                    series3.getData().add(new XYChart.Data("YTD", ytdProfit));
+                    
+                    Stage stage = new Stage(); 
+                    stage.setTitle("Bar Chart");
+                    stage.setScene(new Scene(bc, 500, 400));
+                    bc.getData().addAll(series1, series2, series3);
+                    stage.show();
+                });
+                btnProfReport.setOnAction(eR -> {
+                    File file = new File("profit.txt");
+                    try {
+                        PrintWriter output = new PrintWriter(file);
+                        
+                        output.print(salesReport);
+                        
+                        output.close();
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                });
+                        
+                btnsalPOSR.setOnAction( eP -> {
+                    ArrayList<ReceiptItem> dateData = new ArrayList<>();
+                    
+                    sendDBCommand("select PurchaseOrder.*, PurchaseOrderItem.* from PurchaseOrder join PurchaseOrderItem on PurchaseOrder.POID = PurchaseOrderItem.POID");
+                    try {
+                        while (dbResults.next()) {
+                            prodData.add(new ReceiptItem(dbResults.getString(1), dbResults.getString(8), dbResults.getString(3), Double.valueOf(dbResults.getString(10)), Double.valueOf(dbResults.getString(11)), dbResults.getString(7).substring(0, 10)));
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                            
+                    prodTable = new TableView<>();
+                    prodTableData = FXCollections.observableList(prodData);
+                    prodTable.setItems(prodTableData);
+                    
+                    TableColumn tblcprodID = new TableColumn("Product ID");
+                    TableColumn tblcprodPO = new TableColumn("Receipt");
+                    TableColumn tblcprodStr = new TableColumn("Store");
+                    TableColumn tblcprodQ = new TableColumn("Quantity");
+                    TableColumn tblcprodTtl = new TableColumn("Total Sales");
+                    TableColumn tblcprodDate = new TableColumn("Date");
+                    
+                    tblcprodID.setCellValueFactory(new PropertyValueFactory<ReceiptItem, String>("productID"));
+                    tblcprodPO.setCellValueFactory(new PropertyValueFactory<ReceiptItem, String>("receiptID"));
+                    tblcprodStr.setCellValueFactory(new PropertyValueFactory<ReceiptItem, String>("storeID"));
+                    tblcprodQ.setCellValueFactory(new PropertyValueFactory<ReceiptItem, Double>("quantityPurchased"));
+                    tblcprodTtl.setCellValueFactory(new PropertyValueFactory<ReceiptItem, Double>("totalPrice"));
+                    tblcprodDate.setCellValueFactory(new PropertyValueFactory<ReceiptItem, String>("date"));
+                    
+                    prodTable.getColumns().addAll(tblcprodID, tblcprodPO, tblcprodStr, tblcprodQ, tblcprodTtl, tblcprodDate);
+                    
+                    GridPane prodPane = new GridPane();
+                    prodPane.add(lblYear, 0, 0);
+                    prodPane.add(cbxYear, 1, 0);
+                    prodPane.add(lblMonth, 2, 0);
+                    prodPane.add(cbxMonth, 3, 0);
+                    prodPane.add(lblDay, 4, 0);
+                    prodPane.add(cbxDay, 5, 0);
+                    prodPane.add(lblStore, 6, 0);
+                    prodPane.add(cbxStore, 7, 0);
+                    prodPane.add(btnviewprod, 8, 0);
+                    prodPane.add(prodTable, 0, 1, 9, 1);
+                    prodPane.add(lblmostpur, 0, 2);
+                    prodPane.add(txtmostpur, 1, 2);
+                    prodPane.add(lblquant, 0, 3);
+                    prodPane.add(txtquant, 1, 3);
+                    prodPane.add(lblsalesamt, 0, 4);
+                    prodPane.add(txtsalesamt, 1, 4);
+                    prodPane.add(btnprodGraph, 3, 2);
+                    prodPane.add(btnprodReport, 3, 3);
+                    prodPane.setAlignment(Pos.CENTER);
+                        
+                    cbxYear.getItems().addAll(yearItems);
+                    cbxYear.setValue("None");
+                    cbxMonth.getItems().addAll(monthItems);
+                    cbxMonth.setValue("None");
+                    cbxDay.getItems().addAll(dayItems);
+                    cbxDay.setValue("None");
+                    cbxStore.setItems(storeItems);
+                    cbxStore.setValue("None");
+                    double max = 0;
+                    for (ReceiptItem r : prodData) {
+                        if (r.quantityPurchased > max){
+                            max = r.quantityPurchased;
+                            txtmostpur.setText(r.productID);
+                            txtquant.setText(String.valueOf(r.quantityPurchased));
+                            txtsalesamt.setText(String.valueOf(r.totalPrice));
+                        }
+                    }
+                    for (ReceiptItem r : prodData) {
+                        dateData.add(r);
+                    }
+                    Scene prodScene = new Scene(prodPane, 600, 600);
+                    Stage prodStage = new Stage();
+                    prodStage.setScene(prodScene);
+                    prodStage.show();
+                    
+                    btnviewprod.setOnAction(eZ -> {
+                    
+                    strday = String.valueOf(cbxDay.getValue());
+                    
+                    
+                    strmonth = String.valueOf(cbxMonth.getValue());
+                    
+                    
+                    stryear = String.valueOf(cbxYear.getValue());
+                    
+                    strstore = String.valueOf(cbxStore.getValue());
+                    
+                    prodTableData.removeAll();
+                    dateData.clear();
+                    
+                    for (ReceiptItem r : prodData) {
+                        if (r.date.equals(stryear+"-"+strmonth+"-"+strday) && strstore.equals("None")) {
+                            dateData.add(r);
+                            
+                        }
+                        else if (r.date.equals(stryear+"-"+strmonth+"-"+strday) && r.storeID.equals(strstore)) {
+                            dateData.add(r);
+                        }
+                        else if (r.date.substring(0, 7).equals(stryear+"-"+strmonth) && strday.equals("None") && strstore.equals("None")) {
+                            dateData.add(r);   
+                        }
+                        else if (r.date.substring(0, 7).equals(stryear+"-"+strmonth) && strday.equals("None") && r.storeID.equals(strstore)) {
+                            dateData.add(r);   
+                        } 
+                        else if (r.date.substring(0, 4).equals(stryear) && strmonth.equals("None") && strday.equals("None") && strstore.equals("None")) {
+                            dateData.add(r);
+                        }
+                        else if (r.date.substring(0, 4).equals(stryear) && strmonth.equals("None") && strday.equals("None") && r.storeID.equals(strstore)) {
+                            dateData.add(r);
+                        }
+                        else if (r.date.substring(0, 4).equals(stryear) && strmonth.equals("None") && r.date.substring(8, 10).equals(strday) && strstore.equals("None")){
+                            dateData.add(r);
+                        }
+                        else if (r.date.substring(0, 4).equals(stryear) && strmonth.equals("None") && r.date.substring(8, 10).equals(strday) && r.storeID.equals(strstore)){
+                            dateData.add(r);
+                        }
+                        else if (r.date.substring(5, 10).equals(strmonth+"-"+strday) && stryear.equals("None") && strstore.equals("None")) {
+                            dateData.add(r);
+                        }
+                        else if (r.date.substring(5, 10).equals(strmonth+"-"+strday) && stryear.equals("None") && r.storeID.equals(strstore)) {
+                            dateData.add(r);
+                        }
+                        else if (r.date.substring(5, 7).equals(strmonth) && stryear.equals("None") && strday.equals("None") && strstore.equals("None")) {
+                            dateData.add(r);
+                        }
+                        else if (r.date.substring(5, 7).equals(strmonth) && stryear.equals("None") && strday.equals("None") && r.storeID.equals(strstore)) {
+                            dateData.add(r);
+                        }
+                        else if (stryear.equals("None") && strmonth.equals("None") && strday.equals("None") && strstore.equals("None")) {
+                            dateData.add(r);
+                        }
+                        else if (stryear.equals("None") && strmonth.equals("None") && strday.equals("None") && r.storeID.equals(strstore)) {
+                            dateData.add(r);
+                        }
+                    }
+                    prodTableData = FXCollections.observableList(dateData);
+                    prodTable.setItems(prodTableData);
+                    double newMax = 0;
+                    for (ReceiptItem r : dateData) {
+                        if (r.quantityPurchased > newMax){
+                            newMax = r.quantityPurchased;
+                            txtmostpur.setText(r.productID);
+                            txtquant.setText(String.valueOf(r.quantityPurchased));
+                            txtsalesamt.setText(String.valueOf(r.totalPrice));
+                        }
+                    }
+                    });
+                    btnprodGraph.setOnAction(eGP -> {
+                    final CategoryAxis xAxis = new CategoryAxis();
+                    final NumberAxis yAxis = new NumberAxis();
+                    final BarChart<String,Number> pbc = 
+                        new BarChart<String,Number>(xAxis,yAxis);
+                    pbc.setTitle("POS Report");
+                    xAxis.setLabel("Product");
+                    yAxis.setLabel("Amount");
+                    XYChart.Series series1 = new XYChart.Series();
+                    series1.setName("Quantity Sold");
+                    XYChart.Series series2 = new XYChart.Series();
+                    series2.setName("Dollars in Sales");
+                        for (ReceiptItem r : dateData) {
+                            series1.getData().add(new XYChart.Data(r.productID, r.quantityPurchased));
+                            series2.getData().add(new XYChart.Data(r.productID, r.totalPrice));
+                        }
+                        Stage stage = new Stage(); 
+                    stage.setTitle("Bar Chart");
+                    stage.setScene(new Scene(pbc, 500, 400));
+                    pbc.getData().addAll(series1, series2);
+                    stage.show();
+                    });
+                    btnprodReport.setOnAction(eB -> {
+                        String rpMost = txtmostpur.getText();
+                        String rpQuant = txtquant.getText();                       
+                        String rpAmount = txtsalesamt.getText();
+                        File file = new File("posreport.txt");
+                        try {
+                            PrintWriter output = new PrintWriter(file);
+                            output.println("Products Purchased and Quantity");
+                            output.println("-------------");
+                            for (ReceiptItem r : dateData) {
+                                output.println(r.productID + " : " + r.quantityPurchased);
+                            }
+                            output.println("Most Purchased Product");
+                            output.println("-------------");
+                            output.println(rpMost+"\n");
+                            output.println("Quantity");
+                            output.println("-------------");
+                            output.println(rpQuant+"\n");
+                            output.println("Sales Amount");
+                            output.println("-------------");
+                            output.println(rpAmount+"\n");
+                            
+                            output.close();
+                            
+                            
+                            
+                        } catch (FileNotFoundException ex) {
+                            Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
+                    });
+                });
 
                 // Adding controls to PayPane
                 payPane.add(btnpayemp, 0, 0);
@@ -1146,9 +1640,9 @@ public class ThriftyStoreGUI extends Application {
                     Receipt tempreceipt = new Receipt(temprecid, tempcustid, temprecempid, tempStoreid, tempndtot, tempsav, now.toString().substring(0, 10));
                     for (Inventory td : POSDataArr) {
                         if (cboxPOSclub.getSelectionModel().getSelectedItem().equals("no")) {
-                        tempitems.add(new ReceiptItem(tempreceipt.getReceiptID(), td.getProductID(), 1, td.getSalesPrice()));
+                        tempitems.add(new ReceiptItem(tempreceipt.getReceiptID(), td.getProductID(), tempreceipt.storeID, 1, td.getSalesPrice(), now.toString().substring(0, 10)));
                         } else {
-                        tempitems.add(new ReceiptItem(tempreceipt.getReceiptID(), td.getProductID(), 1, td.getClubPrice()));  
+                        tempitems.add(new ReceiptItem(tempreceipt.getReceiptID(), td.getProductID(), tempreceipt.storeID, 1, td.getClubPrice(), now.toString().substring(0, 10)));  
                         }
                     }
                     tempreceipt.setItemList(tempitems);
@@ -1475,8 +1969,8 @@ public class ThriftyStoreGUI extends Application {
     
     public void AddExpense(Expense e)
     {
-        ExpTable.getItems().add(e);
-        //ExpData.add(e);
+        //ExpTable.getItems().add(e);
+        ExpData.add(e);
     }
     
     public void AddSupplier(Supplier e)
