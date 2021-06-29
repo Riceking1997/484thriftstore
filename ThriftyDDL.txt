@@ -57,6 +57,7 @@ poDate DATE);
 
 CREATE TABLE Product (
 productID VARCHAR(10) PRIMARY KEY,
+supplierID VARCHAR(10) REFERENCES Supplier(supplierID),
 productName VARCHAR(20),
 productDescription VARCHAR(30), 
 unitCost NUMERIC(10,2),
@@ -123,15 +124,15 @@ startDate DATE
 
 CREATE TABLE InventoryOrder (
 IOID VARCHAR(10) PRIMARY KEY,
-supplierID VARCHAR(10) REFERENCES Supplier,
-billID VARCHAR(10) REFERENCES ExpenseBill,
+supplierID VARCHAR(10) REFERENCES Supplier(supplierID),
+billID VARCHAR(10) REFERENCES ExpenseBill(billID),
 totalPrice NUMERIC(10, 2),
 orderDate DATE
 );
 
 CREATE TABLE InventoryOrderItem (
-productID VARCHAR(10) REFERENCES Product,
-IOID VARCHAR(10) REFERENCES InventoryOrder,
+productID VARCHAR(10) REFERENCES Product(productID),
+IOID VARCHAR(10) REFERENCES InventoryOrder(IOID),
 quantityOrdered NUMERIC(10),
 totalPrice NUMERIC(10, 2)
 );
