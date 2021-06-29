@@ -511,7 +511,8 @@ public class ThriftyStoreGUI extends Application {
                 invPane.add(btninvadd, 6, 0);
                 invPane.add(btninvdel, 8, 0);
                 invPane.add(btninvedit, 10, 0);
-
+                
+                
                 //Adding Inventory Table
                 InvTable = new TableView<Inventory>();
                 InvTableData = FXCollections.observableArrayList(InvData);
@@ -519,11 +520,11 @@ public class ThriftyStoreGUI extends Application {
                 sendDBCommand("select Product.*, InventoryItem.*, Department.*from Product join InventoryItem on Product.productID = InventoryItem.productID join Department on InventoryItem.departmentID = Department.departmentID");
                 try {
                     while (dbResults.next()) {
-                        String imgName = "images\\" + dbResults.getString(2) + ".jpg";
+                        String imgName = "images\\" + dbResults.getString(3) + ".jpg";
                         ImageView invImg = new ImageView(new Image(imgName));
                         invImg.setFitHeight(50);
                         invImg.setFitWidth(50);
-                        InvData.add(new Inventory(dbResults.getString(1), dbResults.getString(2), invImg, dbResults.getString(7), dbResults.getString(12), Integer.valueOf(dbResults.getString(8)), dbResults.getString(9), dbResults.getString(10), Double.valueOf(dbResults.getString(5)), Double.valueOf(dbResults.getString(4))));
+                        InvData.add(new Inventory(dbResults.getString(1), dbResults.getString(3), invImg, dbResults.getString(8), dbResults.getString(13), Integer.valueOf(dbResults.getString(9)), dbResults.getString(10), dbResults.getString(11), Double.valueOf(dbResults.getString(6)), Double.valueOf(dbResults.getString(5))));
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -633,18 +634,7 @@ public class ThriftyStoreGUI extends Application {
 
                 // event handlers for the inventory pane
                 btninvadd.setOnAction(eB -> {
-                    try {
-
-                        Inventory addInv = new Inventory();
-
-                        AddInventory(AddItemStage, addInv);
-                        // create new statement to execute the update query once a user enters new data
-                        Statement queryUpdate = dbConn.createStatement();
-
-                    } catch (SQLException ex) {
-                        Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
+                    AddInventory tempWindow = new AddInventory(this);
                 });
 
                 btninvdel.setOnAction(eB -> {
@@ -1645,7 +1635,7 @@ public class ThriftyStoreGUI extends Application {
                         tempitems.add(new ReceiptItem(tempreceipt.getReceiptID(), td.getProductID(), tempreceipt.storeID, 1, td.getClubPrice(), now.toString().substring(0, 10)));  
                         }
                     }
-                    tempreceipt.setItemList(tempitems);
+                    //tempreceipt.setItemList(tempitems);
                     
                     //adding the newly created receipt to the sales tab
                     SalData.add(tempreceipt);
@@ -1961,6 +1951,7 @@ public class ThriftyStoreGUI extends Application {
         return SupData.get(SupData.size()-1);
     }
     
+    //public Inventory 
     public void AddEmployee(Employee e)
     {
         EmpTable.getItems().add(e);
@@ -1971,8 +1962,13 @@ public class ThriftyStoreGUI extends Application {
     {
         //ExpTable.getItems().add(e);
         ExpData.add(e);
+        
     }
     
+    public void AddInventory(Inventory e)
+    {
+        InvData.add(e);
+    }
     public void AddSupplier(Supplier e)
     {
         SupTable.getItems().add(e);
