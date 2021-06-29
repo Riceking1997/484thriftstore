@@ -107,6 +107,7 @@ public class ThriftyStoreGUI extends Application {
     // GridPane to edit a Suppliers Information
     // Also textfields and buttons for the edit supplier window
     GridPane editSupplierPane = new GridPane();
+    GridPane viewSupplierPane = new GridPane();
     TextField editSupplierName = new TextField();
     TextField editSupplierAddress = new TextField();
     TextField editContactName = new TextField();
@@ -114,6 +115,7 @@ public class ThriftyStoreGUI extends Application {
     TextField editContactEmail = new TextField();
     Button editSupplierSaveBut = new Button("Save Changes->");
     Scene SupScene = new Scene(editSupplierPane, 800, 800);
+    Scene ProScene = new Scene(viewSupplierPane, 800, 800);
 
     // Gridpane to add a product in Inventory
     // Also textfields and buttons for the add a product window
