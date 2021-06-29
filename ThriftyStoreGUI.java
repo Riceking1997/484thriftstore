@@ -165,6 +165,9 @@ public class ThriftyStoreGUI extends Application {
     ArrayList<Supplier> SupData = new ArrayList<>();
     TableView<Supplier> SupTable;
     ObservableList<Supplier> SupTableData;
+    ArrayList<Product> ProData = new ArrayList<>();
+    TableView<Product> ProTable;
+    ObservableList<Product> ProTableData;
 
     //Controls for ExpPane
     Label lblexpmonth = new Label("Month");
@@ -869,8 +872,21 @@ public class ThriftyStoreGUI extends Application {
 
                 // Event handler to see what products certain suppliers carry/distribute
                 btnsupvp.setOnAction(eB -> {
+                    
+                    sendDBCommand("select * from Product");
+                    try {
+                        while (dbResults.next()) {
+                            ProData.add(new Product(dbResults.getString(1), dbResults.getString(2), dbResults.getString(3), dbResults.getString(4), Double.parseDouble(dbResults.getString(5)), Double.parseDouble(dbResults.getString(6))));
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
-                
+                    ProTable = new TableView<Product>();
+                    ProTableData = FXCollections.observableArrayList(ProData);
+                    ProTable.setItems(ProTableData);
+
+                    ViewProducts(ItemStage);
 
                 });
                 
@@ -1883,9 +1899,10 @@ public class ThriftyStoreGUI extends Application {
 
             String updateEmp = "UPDATE JAVAUSER." + "Employee" + " SET name = '";
             updateEmp += editEmployeeName.getText() + "',";
-            updateEmp += " quantityInStock = '" + Integer.parseInt(editQuantityStock.getText()) + "',";
-            updateEmp += " status = '" + editProductStatus.getText() + "',";
-            updateEmp += " expirationDate = '" + editProductExpDate.getText().substring(0, 11) + "'"
+            updateEmp += " Address = '" + editEmployeeAddress.getText() + "',";
+            updateEmp += " phone = '" + editEmployeePhone.getText() + "',";
+            updateEmp += " hourlyPay = '" + Double.parseDouble(editEmployeeHourlyPay.getText()) + "',";
+            updateEmp += " type = '" + editEmployeeType.getText() + "'"
                     + " WHERE employeeID = \'"
                     + editEmp.getEmployeeID() + "\'";
 
@@ -1923,16 +1940,32 @@ public class ThriftyStoreGUI extends Application {
             for (Supplier td : SupData) {
                 SupTable.getItems().add(td);
             }
-            //       String updateInv = "UPDATE JAVAUSER." + "InventoryItem" + " SET departmentID = '";
-            //       updateInv += editProductDepartment.getText() + "',";
-            //       updateInv += " quantityInStock = '" + Integer.parseInt(editQuantityStock.getText()) + "',";
-            //       updateInv += " status = '" + editProductStatus.getText() + "',";
-            //       updateInv += " expirationDate = '" + editProductExpDate.getText().substring(0, 11) + "'"
-            //               + " WHERE productID = \'"
-            //               + editInv.getProductID() + "\'";
-            //       sendDBCommand(updateInv);
+            String updateSup = "UPDATE JAVAUSER." + "Supplier" + " SET name = '";
+            updateSup += editSupplierName.getText() + "',";
+            updateSup += " phone = '" + editContactNumber.getText() + "',";
+            updateSup += " email = '" + editContactEmail.getText() + "',";
+            updateSup += " address = '" + editSupplierAddress.getText() + "',";
+            updateSup += " contactName = '" + editContactName.getText() + "'"
+                    + " WHERE supplierID = \'"
+                    + editSup.getSupplierID() + "\'";
+            sendDBCommand(updateSup);
+        
 
         });
+    }
+    
+     public void ViewProducts(Stage ItemStage) {
+        
+        ItemStage.setScene(ProScene);
+        ItemStage.setTitle("View Products By Supplier");
+        ItemStage.show();
+        
+        ListView<Product> lst = new ListView<>();
+        
+          for (Product td : ProData) {
+                lst.getItems().add(td);
+            }
+
     }
     
     public Employee employeeID()
