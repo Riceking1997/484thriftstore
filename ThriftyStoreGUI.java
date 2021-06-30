@@ -2684,6 +2684,7 @@ public class ThriftyStoreGUI extends Application {
                 pps.add(new PayPeriod(EPsd, EPed));
 
                 cboxpp.getItems().clear();
+                cboxpp.getItems().add("All");
                 for (PayPeriod z : pps) {
                     cboxpp.getItems().add(z.toString());
                 }
@@ -2741,6 +2742,7 @@ public class ThriftyStoreGUI extends Application {
                 pps.add(tempPeriod);
             }
             cboxpp.getItems().clear();
+            cboxpp.getItems().add("All");
             for (PayPeriod z : pps) {
                 cboxpp.getItems().add(z.toString());
             }
