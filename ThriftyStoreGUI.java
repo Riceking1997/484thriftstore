@@ -589,7 +589,7 @@ public class ThriftyStoreGUI extends Application {
                 invPane.add(txtinvsearch, 1, 0);
                 invPane.add(btninvadd, 6, 0);
                 invPane.add(btninvdel, 8, 0);
-                invPane.add(btninvedit, 10, 0);
+                invPane.add(btninvedit, 9, 0);
                 
                 
                 //Adding Inventory Table
