@@ -53,7 +53,8 @@ public class AddInventory {
         primaryPane = new GridPane();
 
         mainReference.sendDBCommand("Select * from Product");
-
+        
+        // adds database results into product arraylist
         try {
             while (mainReference.dbResults.next()) {
                 cbProducts.add(new Product(mainReference.dbResults.getString(1), mainReference.dbResults.getString(2), mainReference.dbResults.getString(3), mainReference.dbResults.getString(4), Double.valueOf(mainReference.dbResults.getString(5)), Double.valueOf(mainReference.dbResults.getString(6))));
@@ -61,15 +62,17 @@ public class AddInventory {
         } catch (SQLException ex) {
             Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
+        // adds product names into combobox
         for (int i = 0; i < cbProducts.size(); i++) {
             cbInvProd.getItems().add(cbProducts.get(i).getProductName());
         }
-
+        
+        // adds stores into combobox
         cbInvStore.getItems().addAll("sto22221", "sto22222", "sto22223", "sto22224", "sto22225", "sto22226");
 
         
-
+        // adds departments into combobox
         cbInvStore.setOnAction(eb -> {
             
             String choice = cbInvStore.getSelectionModel().getSelectedItem().toString();
@@ -88,6 +91,7 @@ public class AddInventory {
             }
         });
         
+        // adds image names into combobox
         cbInvImage.getItems().addAll("eggs","flour","fruit","orange juice","rice","cheese","honey","soup","butter","steak","chicken","no picture");
         cbInvProd.setMinWidth(180);
         cbInvDep.setMinWidth(180);
@@ -160,8 +164,24 @@ public class AddInventory {
                     Double.valueOf(txtInvSalesPrice.getText()), Double.valueOf(txtUnitCost.getText()))
                     );
              mainReference.AddInventory(addedInventory.get(0));
-                    
-
+             
+            String day = String.valueOf(dpInvExpiration.getValue().getDayOfMonth()); //Day in int
+            String month = dpInvExpiration.getValue().getMonth().toString();
+            String year = String.valueOf(dpInvExpiration.getValue().getYear());
+            
+            System.out.println(day + "/" + month + "/" + year);
+            
+            String date = day + "/" + month + "/" + year;
+             
+             String sql = "INSERT INTO JAVAUSER.INVENTORYITEM (PRODUCTID,DEPARTMENTID,QUANTITYINSTOCK,STATUS,EXPIRATIONDATE) VALUES ('";
+             sql += prodID + "', '";
+             sql += cbInvDep.getSelectionModel().getSelectedItem().toString() + "', '";
+             sql += Integer.valueOf(txtInvQuantity.getText()) + "', '";
+             sql += txtInvStatus.getText() + "', '";
+             sql += date + "')";
+             
+             mainReference.sendDBCommand(sql);
+             
              primaryStage.close();
             
             
