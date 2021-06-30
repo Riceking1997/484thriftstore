@@ -1995,8 +1995,8 @@ public class ThriftyStoreGUI extends Application {
     
     public void AddExpense(Expense e)
     {
-        //ExpTable.getItems().add(e);
-        ExpData.add(e);
+        ExpTable.getItems().add(e);
+        //ExpData.add(e);
         
     }
     
