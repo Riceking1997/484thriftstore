@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Capstone;
+package Thifty3;
 
 /**
  *
@@ -17,11 +17,12 @@ public class Employee {
     String empName;
     String username;
     String password;
-    Double empSalary;
+    Double empHrPay;
     String empAddress;
     String empEmail;
     String empPhone;
     String empType;
+    String depID;
     
     public Employee(){
         
@@ -33,13 +34,14 @@ public class Employee {
         this.empID = empID;
         this.storeID = storeID;
         this.empName = empName;
-        this.empSalary = empSalary;
+        this.empHrPay = empSalary;
         this.empAddress = empAddress;
         this.empEmail = empEmail;
         this.empPhone = empPhone;
         this.empType = empType;
         this.username = username;
         this.password = password;
+        this.depID = "";
         
     }
     
@@ -54,8 +56,8 @@ public class Employee {
         return this.empName;
     }
     
-    public Double getEmployeeSalary(){
-        return this.empSalary;
+    public Double getEmpHrPay(){
+        return this.empHrPay;
     }
     
     public String getEmployeeAddress(){
@@ -74,6 +76,14 @@ public class Employee {
         return this.empType;
     }
     
+    public String getdepID(){
+        return this.depID;
+    }
+    
+    public String setdepID(String dpid){
+        return this.depID = dpid;
+    }
+    
     public void setEmployeeID(String eID){
         this.empID = eID;
     }
@@ -85,8 +95,8 @@ public class Employee {
         this.empName = eName;
     }
     
-    public void setEmployeeSalary(Double eSalary){
-        this.empSalary = eSalary;
+    public void setEmpHrPay(Double eSalary){
+        this.empHrPay = eSalary;
     }
     
     public void setEmployeeAddress(String eAddress){
@@ -111,5 +121,9 @@ public class Employee {
     
     public String getPassword(){
         return this.password;
+    }
+    
+    public String toString(){
+        return this.empName + " (" + this.empType + " )" + " " + this.storeID + " " + this.depID;
     }
 }
