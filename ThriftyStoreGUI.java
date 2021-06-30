@@ -599,10 +599,24 @@ public class ThriftyStoreGUI extends Application {
                 sendDBCommand("select Product.*, InventoryItem.*, Department.*from Product join InventoryItem on Product.productID = InventoryItem.productID join Department on InventoryItem.departmentID = Department.departmentID");
                 try {
                     while (dbResults.next()) {
-                        String imgName = "images\\" + dbResults.getString(3) + ".jpg";
+                        File tmpDir = new File("src\\images\\" + dbResults.getString(3) + ".jpg");
+                        System.out.println(tmpDir.getAbsolutePath());
+                        boolean exists = tmpDir.exists();
+                        String imgName = new String();
+                        
+                        if (exists)
+                        {
+                        imgName = "images\\" + dbResults.getString(3) + ".jpg";
+                        }
+                        else
+                        {
+                        imgName = "images\\no picture.jpg";
+                        }
+                        
                         ImageView invImg = new ImageView(new Image(imgName));
                         invImg.setFitHeight(50);
                         invImg.setFitWidth(50);
+                        
                         InvData.add(new Inventory(dbResults.getString(1), dbResults.getString(3), invImg, dbResults.getString(8), dbResults.getString(13), Integer.valueOf(dbResults.getString(9)), dbResults.getString(10), dbResults.getString(11), Double.valueOf(dbResults.getString(6)), Double.valueOf(dbResults.getString(5))));
                     }
                 } catch (SQLException ex) {
