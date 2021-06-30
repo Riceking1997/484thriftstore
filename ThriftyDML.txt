@@ -16,18 +16,18 @@ INSERT INTO Customer VALUES('cust10008');
 INSERT INTO Customer VALUES('cust10009');
 INSERT INTO Customer VALUES('cust10010');
 
-INSERT INTO ClubMember VALUES('cust00005', 'Kristian Gutual', '01/20/2021', 'kg@gmail.com' , '571-436-2323', '123 Village Ln', '13.23');
-INSERT INTO ClubMember VALUES('cust00006', 'Michael Whitford', '04/20/2021', 'mikewhit@gmail.com' , '571-434-2513', '1263 Forrest Dr', '15.23');
-INSERT INTO ClubMember VALUES('cust00007', 'Alpha Diallo', '02/10/2021', 'alpdiallo@yahoo.com' , '301-216-2343', '6123 Harrison Rd', '19.23');
-INSERT INTO ClubMember VALUES('cust00008', 'Emmett Tran', '05/15/2021', 'emmettt@hotmail.com' , '703-431-5415', '420 High Dr', '20.14');
-INSERT INTO ClubMember VALUES('cust00009', 'Ben Wishner', '01/03/2021', 'benwish@gmail.com' , '757-123-1613', '1639 Wash St', '52.25');
-INSERT INTO ClubMember VALUES('cust00010', 'James Eric', '02/20/2020', 'jeric@outlook.com' , '250-252-1523', '6371 Post Dr', '142.23');
+INSERT INTO ClubMember VALUES('cust10000', 'Kristian Gutual', '01/20/2021', 'kg@gmail.com' , '571-436-2323', '123 Village Ln', '13.23');
+INSERT INTO ClubMember VALUES('cust10001', 'Michael Whitford', '04/20/2021', 'mikewhit@gmail.com' , '571-434-2513', '1263 Forrest Dr', '15.23');
+INSERT INTO ClubMember VALUES('cust10002', 'Alpha Diallo', '02/10/2021', 'alpdiallo@yahoo.com' , '301-216-2343', '6123 Harrison Rd', '19.23');
+INSERT INTO ClubMember VALUES('cust10003', 'Emmett Tran', '05/15/2021', 'emmettt@hotmail.com' , '703-431-5415', '420 High Dr', '20.14');
+INSERT INTO ClubMember VALUES('cust10004', 'Ben Wishner', '01/03/2021', 'benwish@gmail.com' , '757-123-1613', '1639 Wash St', '52.25');
+INSERT INTO ClubMember VALUES('cust10005', 'James Eric', '02/20/2020', 'jeric@outlook.com' , '250-252-1523', '6371 Post Dr', '142.23');
 
-INSERT INTO RegularCustomer VALUES('cust00000');
-INSERT INTO RegularCustomer VALUES('cust00001');
-INSERT INTO RegularCustomer VALUES('cust00002');
-INSERT INTO RegularCustomer VALUES('cust00003');
-INSERT INTO RegularCustomer VALUES('cust00004');
+INSERT INTO RegularCustomer VALUES('cust10006');
+INSERT INTO RegularCustomer VALUES('cust10007');
+INSERT INTO RegularCustomer VALUES('cust10008');
+INSERT INTO RegularCustomer VALUES('cust10009');
+INSERT INTO RegularCustomer VALUES('cust10010');
 
 INSERT INTO STORE VALUES ('sto22221', 'Harrisonburg', '2348 Crispy Lane', '443-482-2349', 'HarrisonburgThrifty@gmail.com');
 INSERT INTO STORE VALUES ('sto22222', 'Richmond', '5629 Marshall Lee Lane', '540-282-9743', 'RichmondThrifty@gmail.com');
