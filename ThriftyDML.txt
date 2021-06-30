@@ -4,17 +4,17 @@ INSERT INTO SUPPLIER VALUES ('sup44446', 'Tyson', '624-243-9854', 'Tyson@gmail.c
 INSERT INTO SUPPLIER VALUES ('sup44447', 'Mars', '384-642-5425', 'Mars@gmail.com', '9465 Britten Lane', 'Deji Boston', '06/02/2020');
 INSERT INTO SUPPLIER VALUES ('sup44448', 'Danone', '340-948-0984', 'Danone@gmail.com', '8649 Center Valley Lane', 'Bryce Short','06/01/2019');
 
-INSERT INTO Customer VALUES('cust00000');
-INSERT INTO Customer VALUES('cust00001');
-INSERT INTO Customer VALUES('cust00002');
-INSERT INTO Customer VALUES('cust00003');
-INSERT INTO Customer VALUES('cust00004');
-INSERT INTO Customer VALUES('cust00005');
-INSERT INTO Customer VALUES('cust00006');
-INSERT INTO Customer VALUES('cust00007');
-INSERT INTO Customer VALUES('cust00008');
-INSERT INTO Customer VALUES('cust00009');
-INSERT INTO Customer VALUES('cust00010');
+INSERT INTO Customer VALUES('cust10000');
+INSERT INTO Customer VALUES('cust10001');
+INSERT INTO Customer VALUES('cust10002');
+INSERT INTO Customer VALUES('cust10003');
+INSERT INTO Customer VALUES('cust10004');
+INSERT INTO Customer VALUES('cust10005');
+INSERT INTO Customer VALUES('cust10006');
+INSERT INTO Customer VALUES('cust10007');
+INSERT INTO Customer VALUES('cust10008');
+INSERT INTO Customer VALUES('cust10009');
+INSERT INTO Customer VALUES('cust10010');
 
 INSERT INTO ClubMember VALUES('cust00005', 'Kristian Gutual', '01/20/2021', 'kg@gmail.com' , '571-436-2323', '123 Village Ln', '13.23');
 INSERT INTO ClubMember VALUES('cust00006', 'Michael Whitford', '04/20/2021', 'mikewhit@gmail.com' , '571-434-2513', '1263 Forrest Dr', '15.23');
