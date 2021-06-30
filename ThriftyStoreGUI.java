@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Capstone;
+package Thifty3;
 
 
 import java.io.File;
@@ -246,17 +246,78 @@ public class ThriftyStoreGUI extends Application {
     //Controls for PayrollPane
     Label lblpaysearch = new Label("Search Employee");
     Label lblpaystore = new Label("Store:");
-    Label lblpaydate = new Label("Date:");
+    Label lblpaydep = new Label("Department:");
+    Label lblpaydate = new Label("Pay Period:");
+    Label lblpayempsort = new Label("Selected Employee:");
+    TextField txtpayempsort = new TextField();
     ComboBox cboxpaystore = new ComboBox();
+    ComboBox cboxpaydep = new ComboBox();
     ComboBox cboxpayday = new ComboBox();
     ComboBox cboxpaymonth = new ComboBox();
     ComboBox cboxpayyr = new ComboBox();
+    ComboBox cboxpp = new ComboBox();
     Button btnpayemp = new Button("Search Employee");
+    Button btnpayclearemp = new Button("Clear Employee");
     Button btnpayedit = new Button("Edit Payroll Item");
     Button btnpaycreate = new Button("Create Payroll Item");
-    Button btnpayER = new Button("View Employee Report");
-    TableView<String> PayrollTable;
-    ObservableList<String> PayrollData;
+    Button btnupdatePR = new Button("Update");
+    TableView<WorkLog> PayrollTable;
+    ObservableList<WorkLog> PayrollData;
+    ArrayList<WorkLog> PayData = new ArrayList<>();
+    Stage PayESStage = new Stage();
+    Stage PayCPStage = new Stage();
+    Stage PayEPStage = new Stage();
+    
+    //Controls for the search employees Pane
+    GridPane PayESPane = new GridPane();
+    Label lblESstore = new Label("Store:");
+    Label lblESdep = new Label("Department:");
+    ComboBox cboxESstore = new ComboBox();
+    ComboBox cboxESdep = new ComboBox();
+    Button btnESupdate = new Button("Update");
+    ListView lstES = new ListView();
+    ObservableList<Employee> lstESemp;
+    Scene PayESScene = new Scene(PayESPane, 800, 800);
+    
+    //Controls for Edit Payroll Pane
+    GridPane PayEPpane = new GridPane();
+    Label lblEPeid = new Label("Employee ID:");
+    Label lblEPwid = new Label("Worklog ID:");
+    Label lblEPsid = new Label("Store ID:");
+    Label lblEPdid = new Label("Department ID:");
+    Label lblEPsd = new Label("Start Date:");
+    Label lblEPed = new Label("End Date:");
+    Label lblEPpr = new Label("Pay Rate:");
+    Label lblEPhw = new Label("Hours Worked:");
+    ComboBox cboxEPeid = new ComboBox();
+    ComboBox cboxEPsid = new ComboBox();
+    ComboBox cboxEPdid = new ComboBox();
+    TextField txtEPsd = new TextField();
+    TextField txtEPed = new TextField();
+    TextField txtEPpr = new TextField();
+    TextField txtEPhw = new TextField();
+    Button btnEP = new Button("Update");
+    Scene PayEPScene = new Scene(PayEPpane, 800, 800);
+    
+    //Controls for Create Payroll Pane
+    GridPane PayCPpane = new GridPane();
+    Label lblCPeid = new Label("Employee ID:");
+    Label lblCPwid = new Label("Worklog ID:");
+    Label lblCPsid = new Label("Store ID:");
+    Label lblCPdid = new Label("Department ID:");
+    Label lblCPsd = new Label("Start Date:");
+    Label lblCPed = new Label("End Date:");
+    Label lblCPpr = new Label("Pay Rate:");
+    Label lblCPhw = new Label("Hours Worked:");
+    ComboBox cboxCPeid = new ComboBox();
+    ComboBox cboxCPsid = new ComboBox();
+    ComboBox cboxCPdid = new ComboBox();
+    TextField txtCPsd = new TextField();
+    TextField txtCPed = new TextField();
+    TextField txtCPpr = new TextField();
+    TextField txtCPhw = new TextField();
+    Button btnCP = new Button("Create");
+    Scene PayCPScene = new Scene(PayCPpane, 800, 800);
 
     //Controls for POSPane
     Label lblPOSclub = new Label("Is Customer a club member");
@@ -299,12 +360,22 @@ public class ThriftyStoreGUI extends Application {
     ObservableList<ClubMember> POSCustData;
     Scene POSCustScene = new Scene(POSSrchCustPane, 800, 800);
     
-        //For generating Receipt IDs and Customer IDs
+    //For generating Receipt IDs and Customer IDs
     /** MAKE SURE TO FILL THIS ARRAY WITH CUSTOMERS FROM DB AT START **/
     ArrayList<Customer> poscust = new ArrayList<>();
     int RecIDCount = 10000;
     int CustIDCount = 10000;
 
+    //For generating WorkLog IDs
+    int WLIDCount = 600;
+    boolean onetime = true;
+    
+    //To match employees with a department
+    ArrayList<EmployeeAssignment> depass = new ArrayList<>();
+    
+    //To keep track of each pay period
+    ArrayList<PayPeriod> pps = new ArrayList<>();
+    
     //Creating the Menu Bar
     MenuBar mnuBar = new MenuBar();
 
@@ -509,6 +580,9 @@ public class ThriftyStoreGUI extends Application {
                 salPane.setAlignment(Pos.CENTER);
                 payPane.setAlignment(Pos.CENTER);
                 posPane.setAlignment(Pos.CENTER);
+                PayESPane.setAlignment(Pos.CENTER);
+                PayEPpane.setAlignment(Pos.CENTER);
+                PayCPpane.setAlignment(Pos.CENTER);
 
                 // Adding controls to InvPane
                 invPane.add(lblinvsearchtxt, 0, 0);
@@ -1505,27 +1579,373 @@ public class ThriftyStoreGUI extends Application {
 
                 // Adding controls to PayPane
                 payPane.add(btnpayemp, 0, 0);
+                payPane.add(btnpayclearemp, 1, 0);
+                payPane.add(lblpayempsort, 2, 0);
+                payPane.add(txtpayempsort, 3, 0);
                 payPane.add(lblpaystore, 0, 1);
                 payPane.add(cboxpaystore, 1, 1);
+                payPane.add(lblpaydep, 2, 1);
+                payPane.add(cboxpaydep, 3, 1);
                 payPane.add(lblpaydate, 0, 2);
-                payPane.add(cboxpayday, 1, 2);
-                payPane.add(cboxpaymonth, 2, 2);
-                payPane.add(cboxpayyr, 3, 2);
+                payPane.add(cboxpp, 1, 2);
+                //payPane.add(cboxpaymonth, 2, 2);
+                //payPane.add(cboxpayyr, 3, 2);
+                payPane.add(btnupdatePR, 0, 3);
                 payPane.add(btnpayedit, 1, 3);
                 payPane.add(btnpaycreate, 2, 3);
-                payPane.add(btnpayER, 3, 3);
+                
+                //Making the select employee textbox uneditable
+                txtpayempsort.editableProperty().setValue(false);
+                
+                //Filling in PayPane Comboboxes
+                cboxpaystore.getItems().add("All");
+                cboxpaystore.getItems().add("sto22221");
+                cboxpaystore.getItems().add("sto22222");
+                cboxpaystore.getItems().add("sto22223");
+                cboxpaystore.getItems().add("sto22224");
+                cboxpaystore.getItems().add("sto22225");
+                cboxpaystore.getItems().add("sto22226");
+                //Will set the department table to fill on the store selected event.
+                cboxpayday.getItems().addAll(dayItems);
+                cboxpayday.setValue("None");
+                cboxpaymonth.getItems().addAll(monthItems);
+                cboxpaymonth.setValue("None");
+                cboxpayyr.getItems().addAll(yearItems);
+                cboxpayyr.setValue("None");
+                // Event handler for store cbox to set dep cbox
+                cboxpaystore.setOnAction(eB -> {
+                    
+                    cboxpaydep.getItems().clear();
+                    cboxpaydep.getItems().add("All");
+                    String tempsnum = (String)cboxpaystore.getSelectionModel().getSelectedItem();
+                    if(tempsnum.equals("sto22221")) {
+                        cboxpaydep.getItems().add("dep55555");
+                        cboxpaydep.getItems().add("dep55556");
+                        cboxpaydep.getItems().add("dep55554");
+                    } else if(tempsnum.equals("sto22222")) {
+                        cboxpaydep.getItems().add("dep55557");
+                        cboxpaydep.getItems().add("dep55558");
+                    } else if(tempsnum.equals("sto22223")) {
+                        cboxpaydep.getItems().add("dep55559");
+                    } else if(tempsnum.equals("sto22224")) {
+                        cboxpaydep.getItems().add("dep55553");
+                    }
+                    
+                });
 
                 //Adding Payroll Table
-                PayrollTable = new TableView<>();
+                PayrollTable = new TableView<WorkLog>();
+                PayrollData = FXCollections.observableList(PayData);
                 PayrollTable.setItems(PayrollData);
+                
+                //Recording every employee assignment
+                sendDBCommand("select * from EMPLOYEEASSIGNMENT");
+                try {
+                    while (dbResults.next()) {
+                        depass.add(new EmployeeAssignment(dbResults.getString(1), dbResults.getString(2)));
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                //Adding "all" to the periods combobox
+                cboxpp.getItems().add("All");
+                
+                //Filling in the table
+                sendDBCommand("select * from EMPLOYEEWORKLOG");
+                try {
+                    while (dbResults.next()) {
+                        String templid = dbResults.getString(1);
+                        //System.out.print(templid);
+                        String tempeid = dbResults.getString(2);
+                        String tempsdate = dbResults.getString(3);
+                        String tempedate = dbResults.getString(4);
+                        String tempDID = "";
+                        double temphpay = 0;
+                        double temphwk = 0;
+                        //to match department
+                        for (EmployeeAssignment z : depass) {
+                            if(z.getEmployeeID().equals(tempeid))
+                                tempDID = z.getDepartmentID();
+                                
+                        }
+                        //use employee arraylist to match eid
+                        for (Employee td : EmpData) {
+                            if(td.getEmployeeID().equals(tempeid))
+                                temphpay = td.getEmpHrPay();
+                            //To add departments to employees that match
+                            for (EmployeeAssignment z : depass) {
+                                if(z.getEmployeeID().equals(td.getEmployeeID()))
+                                    td.setdepID(z.getDepartmentID());
+                            }
+                        }
+                        boolean periodexists = false;
+                        for (PayPeriod p : pps) {
+                            if(p.toString().equals(tempsdate + " - " + tempedate))
+                            {
+                                periodexists = true;
+                            }
+                        }
+                        if(periodexists == false) {
+                            pps.add(new PayPeriod(tempsdate, tempedate));
+                        }
+                        PayData.add(new WorkLog(templid, tempeid, tempDID, tempsdate, tempedate, temphpay, temphwk));
+                        
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                for (PayPeriod z : pps) {
+                    cboxpp.getItems().add(z.toString());
+                }
+
+                
                 TableColumn tblcpayEID = new TableColumn("Employee ID");
-                TableColumn tblcpayname = new TableColumn("Name");
-                TableColumn tblcpaycit = new TableColumn("Clock-in Time");
-                TableColumn tblcpaycot = new TableColumn("Clock-out Time");
-                TableColumn tblcpayhw = new TableColumn("Hours Worked");
-                PayrollTable.getColumns().addAll(tblcpayEID, tblcpayname, tblcpaycit, tblcpaycot, tblcpayhw);
+                TableColumn tblcpayWID = new TableColumn("Worklog ID");
+                TableColumn tblcpaySID = new TableColumn("Store ID");
+                TableColumn tblcpayDID = new TableColumn("Department ID");
+                TableColumn tblcpaySD = new TableColumn("Start Date");
+                TableColumn tblcpayED = new TableColumn("End Date");
+                TableColumn tblcpayHP = new TableColumn("Pay Rate");
+                TableColumn tblcpayHW = new TableColumn("Hours Worked");
+                TableColumn tblcpayTP = new TableColumn("Total Pay");
+                
+                //tblcpayEID.setCellValueFactory(new PropertyValueFactory<>("empID"));
+                
+                tblcpayEID.setCellValueFactory(new PropertyValueFactory<WorkLog, String>("EmployeeID"));
+                tblcpayWID.setCellValueFactory(new PropertyValueFactory<WorkLog, String>("WorkLogID"));
+                tblcpaySID.setCellValueFactory(new PropertyValueFactory<WorkLog, String>("StoreID"));
+                tblcpayDID.setCellValueFactory(new PropertyValueFactory<WorkLog, String>("departmentID"));
+                tblcpaySD.setCellValueFactory(new PropertyValueFactory<WorkLog, String>("StartDate"));
+                tblcpayED.setCellValueFactory(new PropertyValueFactory<WorkLog, String>("EndDate"));
+                tblcpayHP.setCellValueFactory(new PropertyValueFactory<WorkLog, Double>("HourlyPay"));
+                tblcpayHW.setCellValueFactory(new PropertyValueFactory<WorkLog, Double>("HoursWorked"));
+                tblcpayTP.setCellValueFactory(new PropertyValueFactory<WorkLog, Double>("TotalPay"));
+                
+                
+                PayrollTable.getColumns().addAll(tblcpayEID, tblcpayWID, tblcpaySID, tblcpayDID, 
+                        tblcpaySD, tblcpayED, tblcpayHP, tblcpayHW, tblcpayTP);
                 //SupTable.setMinWidth(primaryScene.getWidth());
                 payPane.add(PayrollTable, 0, 4, 10, 1);
+                
+                //Controls for Add Employee Payroll Pane
+                PayESPane.add(lblESstore, 0, 0);
+                PayESPane.add(cboxESstore, 1, 0);
+                PayESPane.add(lblESdep, 2, 0);
+                PayESPane.add(cboxESdep, 3, 0);
+                PayESPane.add(btnESupdate, 4, 0);
+                PayESPane.add(lstES, 0, 1, 5, 1);
+                
+                //Filling in the list in Add Employee Pane
+                lstESemp = FXCollections.observableArrayList(EmpData);
+                lstES.setItems(lstESemp);
+                
+                //Filling in the add employees comboboxes
+                cboxESstore.getItems().add("All");
+                cboxESstore.getItems().add("sto22221");
+                cboxESstore.getItems().add("sto22222");
+                cboxESstore.getItems().add("sto22223");
+                cboxESstore.getItems().add("sto22224");
+                cboxESstore.getItems().add("sto22225");
+                cboxESstore.getItems().add("sto22226");
+                // Event handler for store cbox to set dep cbox
+                cboxESstore.setOnAction(eB -> {
+                
+                    cboxESdep.getItems().clear();
+                    cboxESdep.getItems().add("All");
+                    String tempsnum2 = (String)cboxESstore.getSelectionModel().getSelectedItem();
+                    if(tempsnum2.equals("sto22221")) {
+                        cboxESdep.getItems().add("dep55555");
+                        cboxESdep.getItems().add("dep55556");
+                        cboxESdep.getItems().add("dep55554");
+                    } else if(tempsnum2.equals("sto22222")) {
+                        cboxESdep.getItems().add("dep55557");
+                        cboxESdep.getItems().add("dep55558");
+                    } else if(tempsnum2.equals("sto22223")) {
+                        cboxESdep.getItems().add("dep55559");
+                    } else if(tempsnum2.equals("sto22224")) {
+                        cboxESdep.getItems().add("dep55553");
+                    }
+                    
+                });
+                
+                
+                //Controls for Create Payroll Pane
+                PayCPpane.add(lblCPeid, 0, 0);
+                PayCPpane.add(cboxCPeid, 1, 0);
+                PayCPpane.add(lblCPsid, 0, 1);
+                PayCPpane.add(cboxCPsid, 1, 1);
+                PayCPpane.add(lblCPdid, 0, 2);
+                PayCPpane.add(cboxCPdid, 1, 2);
+                PayCPpane.add(lblCPsd, 0, 3);
+                PayCPpane.add(txtCPsd, 1, 3);
+                PayCPpane.add(lblCPed, 0, 4);
+                PayCPpane.add(txtCPed, 1, 4);
+                PayCPpane.add(lblCPpr, 0, 5);
+                PayCPpane.add(txtCPpr, 1, 5);
+                PayCPpane.add(lblCPhw, 0, 6);
+                PayCPpane.add(txtCPhw, 1, 6);
+                PayCPpane.add(btnCP, 1, 7);
+                
+                //Controls for Edit Payroll Pane
+                PayEPpane.add(lblEPeid, 0, 0);
+                PayEPpane.add(cboxEPeid, 1, 0);
+                PayEPpane.add(lblEPsid, 0, 1);
+                PayEPpane.add(cboxEPsid, 1, 1);
+                PayEPpane.add(lblEPdid, 0, 2);
+                PayEPpane.add(cboxEPdid, 1, 2);
+                PayEPpane.add(lblEPsd, 0, 3);
+                PayEPpane.add(txtEPsd, 1, 3);
+                PayEPpane.add(lblEPed, 0, 4);
+                PayEPpane.add(txtEPed, 1, 4);
+                PayEPpane.add(lblEPpr, 0, 5);
+                PayEPpane.add(txtEPpr, 1, 5);
+                PayEPpane.add(lblEPhw, 0, 6);
+                PayEPpane.add(txtEPhw, 1, 6);
+                PayEPpane.add(btnEP, 1, 7);
+                
+                //Filling in Comboboxes for Edit Payroll
+                for (Employee ez : EmpData) {
+                    cboxEPeid.getItems().add(ez.getEmployeeID());
+                }
+                cboxEPsid.editableProperty().setValue(false);
+                cboxEPdid.editableProperty().setValue(false);
+                //Event Handler to set store and department box values
+                cboxEPeid.setOnAction(eB -> {
+                    
+                    if(!cboxEPeid.getSelectionModel().isEmpty()) {
+                        for (Employee ez : EmpData) {
+                            if(ez.getEmployeeID().equals(cboxEPeid.getSelectionModel().getSelectedItem()))
+                            {
+                                cboxEPsid.setValue(ez.getStoreID());
+                                cboxEPdid.setValue(ez.getdepID());
+                                txtEPpr.setText(String.valueOf(ez.getEmpHrPay()));
+                            }
+                        }
+                    }
+                    
+                });
+                
+                //Filling in Comboboxes for Create Payroll
+                for (Employee ez : EmpData) {
+                    cboxCPeid.getItems().add(ez.getEmployeeID());
+                }
+                cboxCPsid.editableProperty().setValue(false);
+                cboxCPdid.editableProperty().setValue(false);
+                //Event Handler to set store and department box values
+                cboxCPeid.setOnAction(eB -> {
+                    
+                    if(!cboxCPeid.getSelectionModel().isEmpty()) {
+                        for (Employee ez : EmpData) {
+                            if(ez.getEmployeeID().equals(cboxCPeid.getSelectionModel().getSelectedItem()))
+                            {
+                                cboxCPsid.setValue(ez.getStoreID());
+                                cboxCPdid.setValue(ez.getdepID());
+                                txtCPpr.setText(String.valueOf(ez.getEmpHrPay()));
+                            }
+                        }
+                    }
+                    
+                });
+                
+                
+                
+                //Payroll Pane Event Handlers
+                btnpayemp.setOnAction(eB -> {
+                    
+                    SrchPayEmp(PayESStage);
+                    
+                });
+                btnpayclearemp.setOnAction(eB -> {
+                    txtpayempsort.clear();
+                });
+                btnupdatePR.setOnAction(eB -> {
+                    ArrayList<WorkLog> specData = new ArrayList<>();
+                    PayrollData.removeAll();
+                    for (WorkLog wl : PayData) {
+                        //If no store is selected or "all" is selected
+                        if(cboxpaystore.getSelectionModel().isEmpty() || cboxpaystore.getSelectionModel().getSelectedItem().toString().equals("All")) {
+                            //If no Pay period is selected or if "all" is selected
+                            if(cboxpp.getSelectionModel().isEmpty() || cboxpp.getSelectionModel().getSelectedItem().toString().equals("All"))
+                            {
+                                if(txtpayempsort.getText().isEmpty())
+                                    specData.add(wl);
+                                else if(wl.getEmployeeID().equals(txtpayempsort.getText()))
+                                    specData.add(wl);
+                            }
+                            //If a particular pay period was selected and it matches the worklog's
+                            else if(wl.period().equals(cboxpp.getSelectionModel().getSelectedItem().toString()))
+                            {
+                                if(txtpayempsort.getText().isEmpty())
+                                    specData.add(wl);
+                                else if(wl.getEmployeeID().equals(txtpayempsort.getText()))
+                                    specData.add(wl);
+                            }
+                        //If a particular store is selected
+                        } else {
+                            //Checks if the selected store ID matches the worklog's
+                            if(wl.getStoreID().equals(cboxpaystore.getSelectionModel().getSelectedItem().toString()))
+                            {
+                                //If no dept is selected or if "all" is selected
+                                if(cboxpaydep.getSelectionModel().isEmpty() || cboxpaydep.getSelectionModel().getSelectedItem().toString().equals("All"))
+                                {
+                                    //If no Pay period is selected or if "all" is selected
+                                    if(cboxpp.getSelectionModel().isEmpty() || cboxpp.getSelectionModel().getSelectedItem().toString().equals("All"))
+                                    {
+                                        if(txtpayempsort.getText().isEmpty())
+                                            specData.add(wl);
+                                        else if(wl.getEmployeeID().equals(txtpayempsort.getText()))
+                                            specData.add(wl);
+                                    }
+                                    //If a particular pay period was selected and it matches the worklog's
+                                    else if(wl.period().equals(cboxpp.getSelectionModel().getSelectedItem().toString()))
+                                    {
+                                        if(txtpayempsort.getText().isEmpty())
+                                            specData.add(wl);
+                                        else if(wl.getEmployeeID().equals(txtpayempsort.getText()))
+                                            specData.add(wl);
+                                    }
+                                //When a department is selected
+                                } else {
+                                    //Checks if the worklog's department matches up
+                                    if(wl.getDepartmentID().equals(cboxpaydep.getSelectionModel().getSelectedItem().toString())) {
+                                        //If no Pay period is selected or if "all" is selected
+                                        if(cboxpp.getSelectionModel().isEmpty() || cboxpp.getSelectionModel().getSelectedItem().toString().equals("All"))
+                                        {
+                                            if(txtpayempsort.getText().isEmpty())
+                                                specData.add(wl);
+                                            else if(wl.getEmployeeID().equals(txtpayempsort.getText()))
+                                                specData.add(wl);
+                                        }
+                                        //If a particular pay period was selected and it matches the worklog's
+                                        else if(wl.period().equals(cboxpp.getSelectionModel().getSelectedItem().toString()))
+                                        {
+                                            if(txtpayempsort.getText().isEmpty())
+                                                specData.add(wl);
+                                            else if(wl.getEmployeeID().equals(txtpayempsort.getText()))
+                                                specData.add(wl);
+                                        } 
+                                    }
+                                        
+                                }
+                            }
+                            
+                        }
+                    }
+                    PayrollData = FXCollections.observableList(specData);
+                    PayrollTable.setItems(PayrollData);
+                    
+                });
+                btnpayedit.setOnAction(eB -> {
+                    if(!PayrollTable.getSelectionModel().isEmpty()) {
+                        EditPayroll(PayEPStage, PayrollTable.getSelectionModel().getSelectedItem());
+                    }
+                    
+                });
+                btnpaycreate.setOnAction(eB -> {
+                    CreatePayroll(PayCPStage);
+                });
 
                               // Adding controls to POS Pane
                 posPane.add(lblPOSclub, 0, 0);
@@ -1872,7 +2292,7 @@ public class ThriftyStoreGUI extends Application {
         editEmployeeName.setText(editEmp.getEmployeeName());
         editEmployeePhone.setText(editEmp.getEmployeePhone());
         editEmployeeAddress.setText(editEmp.getEmployeeAddress());
-        editEmployeeHourlyPay.setText(String.valueOf(editEmp.getEmployeeSalary()));
+        editEmployeeHourlyPay.setText(String.valueOf(editEmp.getEmpHrPay()));
         editEmployeeType.setText(editEmp.getEmployeeType());
         editEmployeeStore.setText(editEmp.getStoreID());
 
@@ -1888,7 +2308,7 @@ public class ThriftyStoreGUI extends Application {
                     td.setEmployeeName(editEmployeeName.getText());
                     td.setEmployeePhone(editEmployeePhone.getText());
                     td.setEmployeeAddress(editEmployeeAddress.getText());
-                    td.setEmployeeSalary(Double.parseDouble(editEmployeeHourlyPay.getText()));
+                    td.setEmpHrPay(Double.parseDouble(editEmployeeHourlyPay.getText()));
                     td.setEmployeeType(editEmployeeType.getText());
                     td.setStoreID(editEmployeeStore.getText());
                 }
@@ -1995,8 +2415,8 @@ public class ThriftyStoreGUI extends Application {
     
     public void AddExpense(Expense e)
     {
-        ExpTable.getItems().add(e);
-        //ExpData.add(e);
+        //ExpTable.getItems().add(e);
+        ExpData.add(e);
         
     }
     
@@ -2129,5 +2549,169 @@ public class ThriftyStoreGUI extends Application {
                 cboxPOSclub.getSelectionModel().select(0);
             
         });
+    }
+    
+    public void SrchPayEmp(Stage PayESStage) {
+        
+        PayESStage.setScene(PayESScene);
+        PayESStage.setTitle("Search for Employee");
+        PayESStage.show();
+        
+        btnESupdate.setOnAction(eB -> {
+            ArrayList<Employee> specData2 = new ArrayList<>();
+            PayrollData.removeAll();
+            for (Employee e : EmpData) {
+                if(cboxESstore.getSelectionModel().isEmpty() || cboxESstore.getSelectionModel().getSelectedItem().toString().equals("All"))
+                {
+                    if(cboxESdep.getSelectionModel().isEmpty() || cboxESdep.getSelectionModel().getSelectedItem().toString().equals("All"))
+                    {
+                        specData2.add(e);
+                    }
+                    else if(cboxESdep.getSelectionModel().getSelectedItem().toString().equals(e.depID))
+                    {
+                        specData2.add(e);
+                    }
+                }
+                else if(cboxESstore.getSelectionModel().getSelectedItem().toString().equals(e.storeID))
+                {
+                    if(cboxESdep.getSelectionModel().isEmpty() || cboxESdep.getSelectionModel().getSelectedItem().toString().equals("All"))
+                    {
+                        specData2.add(e);
+                    }
+                    else if(cboxESdep.getSelectionModel().getSelectedItem().toString().equals(e.depID))
+                    {
+                        specData2.add(e);
+                    }
+                }
+                
+            }
+            lstESemp = FXCollections.observableArrayList(specData2);
+            lstES.setItems(lstESemp);
+            
+            System.out.println(lstES.getSelectionModel().getSelectedItems().toString().substring(1, lstES.getSelectionModel().getSelectedItems().toString().length()-1));
+            String comparethis = lstES.getSelectionModel().getSelectedItems().toString().substring(1, lstES.getSelectionModel().getSelectedItems().toString().length()-1);
+            if(!lstES.getSelectionModel().isEmpty()){
+                Employee tempemp = null;
+                for (Employee e : EmpData) { 
+                    if(e.toString().equals(comparethis))
+                        tempemp = e;
+                }
+                if(tempemp != null) {
+                    System.out.println(tempemp.getEmployeeID());
+                    txtpayempsort.setText(tempemp.getEmployeeID());
+                }
+            }
+        });
+        
+        /**
+        POSsrchcustStage.setScene(POSCustScene);
+        POSsrchcustStage.setTitle("Search for Product");
+        POSsrchcustStage.show();
+        
+        lstPOScust.getItems().clear();
+        for (ClubMember cm : POSCustArr) { 
+            lstPOScust.getItems().add(cm);
+        }
+        
+        butPOSCustSel.setOnAction(eB -> {
+            
+            ClubMember tempcm = (ClubMember)lstPOScust.getSelectionModel().getSelectedItem();
+            txtPOSEID.setText(tempcm.getCustomerID());
+            if(!lstPOScust.getSelectionModel().isEmpty())
+                cboxPOSclub.getSelectionModel().select(0);
+            
+        });
+        **/
+    }
+    
+    public void EditPayroll(Stage daStage, WorkLog editWorkLog) {
+        
+        cboxEPeid.setValue(editWorkLog.getEmployeeID());
+        cboxEPsid.setValue(editWorkLog.getStoreID());
+        cboxEPdid.setValue(editWorkLog.getDepartmentID());
+        txtEPsd.setText(editWorkLog.getStartDate());
+        txtEPed.setText(editWorkLog.getEndDate());
+        txtEPpr.setText(String.valueOf(editWorkLog.getHourlyPay()));
+        txtEPhw.setText(String.valueOf(editWorkLog.getHoursWorked()));
+        
+        daStage.setScene(PayEPScene);
+        daStage.setTitle("Edit Payroll Information");
+        daStage.show();
+        
+        btnEP.setOnAction (eB -> {
+            
+            String EPeid = cboxEPeid.getSelectionModel().getSelectedItem().toString();
+            String EPsid = cboxEPsid.getSelectionModel().getSelectedItem().toString();
+            String EPdid = cboxEPdid.getSelectionModel().getSelectedItem().toString();
+            String EPsd = txtEPsd.getText();
+            String EPed = txtEPed.getText();
+            double EPpr = Double.parseDouble(txtEPpr.getText());
+            double EPhw = Double.parseDouble(txtEPhw.getText());
+            
+            for (WorkLog wl : PayData) {
+                if(wl.getWorkLogID().equals(editWorkLog.getWorkLogID())) {
+                    wl.setDepartmentID(EPdid);
+                    wl.setStoreID(EPsid);
+                    wl.setEmployeeID(EPeid);
+                    wl.setStartDate(EPsd);
+                    wl.setEndDate(EPed);
+                    wl.setHourlyPay(EPpr);
+                    wl.setHoursWorked(EPhw);
+                    wl.setTotalPay();
+                }
+            }
+            System.out.println("I'm Reloaded!! also:" + EPsd);
+            //refilling the Payroll table
+            PayrollTable.getItems().clear();
+            PayrollData = FXCollections.observableList(PayData);
+            PayrollTable.setItems(PayrollData);
+            
+            //Insert Code to update the worklog in the database here:
+            
+        });
+        
+    }
+    
+    public void CreatePayroll(Stage daStage) {
+        
+        daStage.setScene(PayCPScene);
+        daStage.setTitle("Create Payroll Item");
+        daStage.show();
+        
+        btnCP.setOnAction (eB -> {
+            
+            String CPeid = cboxCPeid.getSelectionModel().getSelectedItem().toString();
+            String CPsid = cboxCPsid.getSelectionModel().getSelectedItem().toString();
+            String CPdid = cboxCPdid.getSelectionModel().getSelectedItem().toString();
+            String CPsd = txtCPsd.getText();
+            String CPed = txtCPed.getText();
+            double CPpr = Double.parseDouble(txtCPpr.getText());
+            double CPhw = Double.parseDouble(txtCPhw.getText());
+            
+            
+            if(!PayData.get(PayData.size()-1).getWorkLogID().equals("log555") && (onetime)){
+                System.out.println(PayData.get(PayData.size()-1).getWorkLogID().substring(3, 6));
+                WLIDCount = Integer.parseInt(PayData.get(PayData.size()-1).getWorkLogID().substring(3, 6)) + 1;
+                onetime = false;
+            }
+            
+            //Note: assigning autogenerated worklog IDs
+            WorkLog tempWL = new WorkLog("log" + WLIDCount, CPeid, CPdid, CPsd, CPed,
+            CPpr, CPhw);
+            
+            PayData.add(tempWL);
+            
+            System.out.println("before: " + WLIDCount);
+            WLIDCount = WLIDCount + 1;
+            System.out.println("after: " + WLIDCount);
+            
+            //refilling the Payroll table
+            PayrollData = FXCollections.observableList(PayData);
+            PayrollTable.setItems(PayrollData);
+            
+            //Insert Code to insert new WorkLog into database here:
+            
+        });
+        
     }
 }
