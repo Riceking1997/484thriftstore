@@ -441,6 +441,18 @@ public class ThriftyStoreGUI extends Application {
         primaryStage.setScene(loginScene);
         primaryStage.setTitle("Thrifty Store");
         primaryStage.show();
+        
+        //Creating an arraylist of Products available
+        //send query to oracle database to retrieve employee info
+        ArrayList<Product> Prods = new ArrayList<>();
+        sendDBCommand("select * from Product");
+        try {
+            while (dbResults.next()) {
+                Prods.add(new Product(dbResults.getString(1), dbResults.getString(2), dbResults.getString(3), dbResults.getString(4), Double.valueOf(dbResults.getString(5)), Double.valueOf(dbResults.getString(6))));      
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
 
         btnlogin.setOnAction(e -> {
 
