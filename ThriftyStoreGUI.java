@@ -2675,6 +2675,20 @@ public class ThriftyStoreGUI extends Application {
                     wl.setTotalPay();
                 }
             }
+            
+            PayPeriod Original = new PayPeriod(editWorkLog.getStartDate(), editWorkLog.getEndDate());
+            PayPeriod NewPP = new PayPeriod(EPsd, EPed);
+            if(!Original.toString().equals(NewPP.toString()))
+            {
+                //To add new PayPeriod to the date combobox
+                pps.add(new PayPeriod(EPsd, EPed));
+
+                cboxpp.getItems().clear();
+                for (PayPeriod z : pps) {
+                    cboxpp.getItems().add(z.toString());
+                }
+            }
+            
             System.out.println("I'm Reloaded!! also:" + EPsd);
             //refilling the Payroll table
             PayrollTable.getItems().clear();
