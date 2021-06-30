@@ -898,12 +898,22 @@ public class ThriftyStoreGUI extends Application {
                 tblcsupphone.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactPhone"));
                 tblcsupemail.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactEmail"));
 
-                //Button btnsupadd = new Button("Add Supplier");
-                //Button btnsupedit = new Button("Edit Supplier");
-                //Button btnsupdel = new Button("Delete Supplier");
-                //Button btnsupvs = new Button("View Shipments");
-                //Button btnsupvp = new Button("View Products");
-                //Button btnsupsrch = new Button("Search");
+                 sendDBCommand("select * from Product");
+                    try {
+                        while (dbResults.next()) {
+                            ProData.add(new Product(dbResults.getString(1), dbResults.getString(2), dbResults.getString(3), dbResults.getString(4), Double.parseDouble(dbResults.getString(5)), Double.parseDouble(dbResults.getString(6))));
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    ProTable = new TableView<Product>();
+                    ProTableData = FXCollections.observableArrayList(ProData);
+                    ProTable.setItems(ProTableData);
+
+                    for (Product p : ProData) {
+                        ProTableData.add(p);
+                    }
                 
                 // Event handler to add a supplier to the table
                 btnsupadd.setOnAction(eB -> {
@@ -948,19 +958,6 @@ public class ThriftyStoreGUI extends Application {
 
                 // Event handler to see what products certain suppliers carry/distribute
                 btnsupvp.setOnAction(eB -> {
-                    
-                    sendDBCommand("select * from Product");
-                    try {
-                        while (dbResults.next()) {
-                            ProData.add(new Product(dbResults.getString(1), dbResults.getString(2), dbResults.getString(3), dbResults.getString(4), Double.parseDouble(dbResults.getString(5)), Double.parseDouble(dbResults.getString(6))));
-                        }
-                    } catch (SQLException ex) {
-                        Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                    ProTable = new TableView<Product>();
-                    ProTableData = FXCollections.observableArrayList(ProData);
-                    ProTable.setItems(ProTableData);
 
                     ViewProducts(ItemStage);
 
@@ -2381,12 +2378,30 @@ public class ThriftyStoreGUI extends Application {
         ItemStage.setScene(ProScene);
         ItemStage.setTitle("View Products By Supplier");
         ItemStage.show();
-        
-        ListView<Product> lst = new ListView<>();
-        
-          for (Product td : ProData) {
-                lst.getItems().add(td);
-            }
+
+        TableColumn tblcProdSup = new TableColumn("Product");
+        TableColumn tblcSupProd = new TableColumn("Supplier");
+        TableColumn tblcProdName = new TableColumn("ProductName");
+        TableColumn tblcProdDescrip = new TableColumn("ProductDescription");
+
+        //SupTable.setMinWidth(primaryScene.getWidth());
+        tblcProdSup.setCellValueFactory(new PropertyValueFactory<Product, String>("productID"));
+        tblcSupProd.setCellValueFactory(new PropertyValueFactory<Product, String>("supplierID"));
+        tblcProdName.setCellValueFactory(new PropertyValueFactory<Product, String>("productName"));
+        tblcProdDescrip.setCellValueFactory(new PropertyValueFactory<Product, String>("productDescription"));
+
+        ProTable.getColumns().addAll(tblcProdSup, tblcSupProd, tblcProdName, tblcProdDescrip);
+        viewSupplierPane.add(ProTable, 0, 2, 10, 1);
+
+        viewSupplierPane.setAlignment(Pos.CENTER);
+
+    }
+    
+     public void ViewShipments(Stage ItemStage) {
+
+        ItemStage.setScene(ProScene);
+        ItemStage.setTitle("View Incoming Shipments");
+        ItemStage.show();
 
     }
     
