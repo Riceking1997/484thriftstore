@@ -2714,6 +2714,23 @@ public class ThriftyStoreGUI extends Application {
             WorkLog tempWL = new WorkLog("log" + WLIDCount, CPeid, CPdid, CPsd, CPed,
             CPpr, CPhw);
             
+            //To add new PayPeriod to the date combobox
+            PayPeriod tempPeriod = new PayPeriod(CPsd, CPed);
+            boolean periodexists = false;
+            for (PayPeriod p : pps) {
+                if(p.toString().equals(tempPeriod.toString()))
+                {
+                    periodexists = true;
+                }
+            }
+            if(periodexists == false) {
+                pps.add(tempPeriod);
+            }
+            cboxpp.getItems().clear();
+            for (PayPeriod z : pps) {
+                cboxpp.getItems().add(z.toString());
+            }
+            
             PayData.add(tempWL);
             
             System.out.println("before: " + WLIDCount);
