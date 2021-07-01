@@ -1,7 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+Money Team
+Group Project
+CIS 484
  */
 package Capstone;
 
@@ -50,10 +50,8 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import oracle.jdbc.pool.OracleDataSource;
 
-/**
- *
- * @author Diallo
- */
+
+
 public class ThriftyStoreGUI extends Application {
     AddEmployee mainReference;
 // This is a tester
@@ -200,7 +198,6 @@ public class ThriftyStoreGUI extends Application {
     Label lblsalday = new Label("Day");
     Label lblsalyr = new Label("Year");
     Button btnsalYPER = new Button("View Yearly Profit Expense Report");
-    //Button btnsalYTDPER = new Button("View Year To Date Profit Expense Report");
     Button btnsalPOSR = new Button("View POS Sales Report");
     Label lblsaltotal = new Label("Total Sales: ");
     TextField txtsaltotal = new TextField();
@@ -318,6 +315,7 @@ public class ThriftyStoreGUI extends Application {
     TextField txtCPhw = new TextField();
     Button btnCP = new Button("Create");
     Scene PayCPScene = new Scene(PayCPpane, 800, 800);
+    WorkLog tempWL;
 
     //Controls for POSPane
     Label lblPOSclub = new Label("Is Customer a club member");
@@ -361,7 +359,6 @@ public class ThriftyStoreGUI extends Application {
     Scene POSCustScene = new Scene(POSSrchCustPane, 800, 800);
     
     //For generating Receipt IDs and Customer IDs
-    /** MAKE SURE TO FILL THIS ARRAY WITH CUSTOMERS FROM DB AT START **/
     ArrayList<Customer> poscust = new ArrayList<>();
     
     //checkout button variables
@@ -422,9 +419,7 @@ public class ThriftyStoreGUI extends Application {
 
         validLogin = false;
         txtloginusr.setPrefWidth(50);
-        //txtloginusr.setMaxWidth(50);
         txtloginpass.setPrefWidth(50);
-        //txtloginpass.setMaxWidth(50);
         loginImage.setFitHeight(200);
         loginImage.setFitWidth(300);
         loginImage2.setFitHeight(200);
@@ -602,8 +597,7 @@ public class ThriftyStoreGUI extends Application {
                 PayCPpane.setAlignment(Pos.CENTER);
 
                 // Adding controls to InvPane
-                invPane.add(lblinvsearchtxt, 0, 0);
-                invPane.add(txtinvsearch, 1, 0);
+                
                 invPane.add(btninvadd, 6, 0);
                 invPane.add(btninvdel, 8, 0);
                 invPane.add(btninvedit, 9, 0);
@@ -653,8 +647,7 @@ public class ThriftyStoreGUI extends Application {
                 TableColumn tblcinvstr = new TableColumn("Store");
                 TableColumn tblcinvdep = new TableColumn("Department");
 
-                //TableColumn tblcinvstore = new TableColumn("Store");
-                //InvTable.setMinWidth(primaryScene.getWidth());
+                
                 tblcinvprod.setCellValueFactory(new PropertyValueFactory<Inventory, String>("productName"));
                 tblcinvpic.setCellValueFactory(new PropertyValueFactory<Inventory, ImageView>("image"));
                 tblcinvdep.setCellValueFactory(new PropertyValueFactory<Inventory, String>("deptID"));
@@ -665,7 +658,7 @@ public class ThriftyStoreGUI extends Application {
                 tblcucost.setCellValueFactory(new PropertyValueFactory<Inventory, Double>("unitCost"));
                 tblcinvprice.setCellValueFactory(new PropertyValueFactory<Inventory, Double>("salesPrice"));
 
-                //tblcinvpic.setPrefWidth(60);
+                
                 InvTable.getColumns().addAll(tblcinvprod, tblcinvpic, tblcucost, tblcinvprice, tblcinvqty, tblcinvstat, tblcinvexp,
                         tblcinvstr, tblcinvdep);
                 invPane.add(InvTable, 0, 1, 10, 1);
@@ -800,25 +793,12 @@ public class ThriftyStoreGUI extends Application {
                 cboxempstore.setValue("None");
                 
                 //Adding Employee Table
-                /*EmpTable = new TableView<>();
-                EmpTable.setItems(EmpData);*/
                 EmpTable = new TableView<Employee>();
                 EmpTableData = FXCollections.observableArrayList(EmpData);
                 EmpTable.setItems(EmpTableData);
                 
-                //send query to oracle database to retrieve employee info
-                //sendDBCommand("select * from Employee");
-                //try {
-                //    while (dbResults.next()) {
-                //        EmpData.add(new Employee(dbResults.getString(1), dbResults.getString(3), Double.valueOf(dbResults.getString(7)), dbResults.getString(4), dbResults.getString(6), dbResults.getString(5), dbResults.getString(11), dbResults.getString(8), dbResults.getString(9)));
-                //    }
-                //} catch (SQLException ex) {
-                //    Logger.getLogger(UpdateGUI.class.getName()).log(Level.SEVERE, null, ex);
-                //}
-
-                /*for (Employee emp : EmpData) {
-                    EmpTableData.add(emp);
-                }*/
+                
+    
                 TableColumn tblcempeid = new TableColumn("Employee ID");
                 TableColumn tblcempname = new TableColumn("Name");
                 TableColumn tblcempphone = new TableColumn("Phone");
@@ -827,7 +807,7 @@ public class ThriftyStoreGUI extends Application {
                 TableColumn tblcemptype = new TableColumn("Type");
                 TableColumn tblcempstore = new TableColumn("Store");
                 TableColumn tblcempdepartment = new TableColumn("Department");
-                //EmpTable.setMinWidth(primaryScene.getWidth());
+                
 
                 tblcempeid.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeID"));
                 tblcempname.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeName"));
@@ -836,7 +816,7 @@ public class ThriftyStoreGUI extends Application {
                 tblcempsal.setCellValueFactory(new PropertyValueFactory<Employee, Double>("employeeSalary"));
                 tblcemptype.setCellValueFactory(new PropertyValueFactory<Employee, String>("employeeType"));
                 tblcempstore.setCellValueFactory(new PropertyValueFactory<Employee, String>("storeID"));
-                //tblcempdepartment.setCellValueFactory(new PropertyValueFactory<Employee, String>(""));
+               
                 EmpTable.getColumns().addAll(tblcempeid, tblcempname, tblcempphone, tblcempaddy, tblcempsal,
                         tblcemptype, tblcempstore);
                 empPane.add(EmpTable, 0, 2, 10, 1);
@@ -876,7 +856,7 @@ public class ThriftyStoreGUI extends Application {
                     EditEmployee(ItemStage, editEmp);
 
                 });
-                btnviewempstore.setOnAction(eS -> {
+                cboxempstore.setOnAction(eS -> {
                     EmpTableData.clear();
                    for (Employee emp : EmpData) {
                        if (emp.storeID.equals(cboxempstore.getValue())){
@@ -888,9 +868,7 @@ public class ThriftyStoreGUI extends Application {
                    } 
                 });
 
-                // Adding controls to SupPane
-                supPane.add(txtsupsearch, 0, 0);
-                supPane.add(btnsupsrch, 1, 0);
+                // Adding controls to SupPane               
                 supPane.add(btnsupadd, 0, 1);
                 supPane.add(btnsupedit, 1, 1);
                 supPane.add(btnsupdel, 2, 1);
@@ -915,15 +893,12 @@ public class ThriftyStoreGUI extends Application {
                 }
 
                 TableColumn tblcsupsup = new TableColumn("Supplier");
-                //TableColumn tblcsupprod = new TableColumn("Products");
                 TableColumn tblcsupaddy = new TableColumn("Address");
                 TableColumn tblcsupcname = new TableColumn("Contact Name");
                 TableColumn tblcsupphone = new TableColumn("Phone Number");
                 TableColumn tblcsupemail = new TableColumn("Email");
-                //SupTable.setMinWidth(primaryScene.getWidth());
 
                 tblcsupsup.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierName"));
-                //tblcsupprod.setCellValueFactory(new PropertyValueFactory<Supplier, String>("employeeName"));
                 tblcsupaddy.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supplierAddress"));
                 tblcsupcname.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactName"));
                 tblcsupphone.setCellValueFactory(new PropertyValueFactory<Supplier, String>("contactPhone"));
@@ -1014,7 +989,6 @@ public class ThriftyStoreGUI extends Application {
                 expPane.add(btnexpview, 8, 1);
                 expPane.add(lblexpstore, 7, 0);
                 expPane.add(cboxexpstore, 7, 1);
-                //expPane.add(btnexpstore, 8, 1);
                 expPane.add(btnexpadd, 9, 1);
                 expPane.add(lblexptotal, 0, 3);
                 expPane.add(txtexptotal, 1, 3);
@@ -1039,7 +1013,6 @@ public class ThriftyStoreGUI extends Application {
                     Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
-                //ObservableList storeItems = FXCollections.observableArrayList(ExpStoreData);
                 cboxexpstore.setItems(storeItems);
                 cboxexpstore.setValue("None");
                 
@@ -1058,13 +1031,11 @@ public class ThriftyStoreGUI extends Application {
                 txtexptotal.setText(String.valueOf(exptotal));
                 
 
-                //ExpTable.setItems(SupTableData);
                 TableColumn tblcexpid = new TableColumn("Bill ID");
                 TableColumn tblcexpname = new TableColumn("Expenses");
                 TableColumn tblcexpamt = new TableColumn("Expense Amount");
                 TableColumn tblcexpdue = new TableColumn("Due Date");
                 TableColumn tblcexpstore = new TableColumn("Store");
-                //SupTable.setMinWidth(primaryScene.getWidth());
 
                 tblcexpid.setCellValueFactory(new PropertyValueFactory<Expense, String>("billID"));
                 tblcexpname.setCellValueFactory(new PropertyValueFactory<Expense, String>("expenseType"));
@@ -1072,12 +1043,10 @@ public class ThriftyStoreGUI extends Application {
                 tblcexpdue.setCellValueFactory(new PropertyValueFactory<Expense, String>("dueDate"));
                 tblcexpstore.setCellValueFactory(new PropertyValueFactory<Expense, String>("storeID"));
                 
-                //String[] months = {"None", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
-                //ObservableList monthItems = FXCollections.observableArrayList(months);
+                
                 cboxexpmonth.getItems().addAll(monthItems);
                 cboxexpmonth.setValue("None");
-                //String[] years = {"None", "2019", "2020", "2021"};
-                //ObservableList yearItems = FXCollections.observableArrayList(years);
+                
                 cboxexpyr.getItems().addAll(yearItems);
                 cboxexpyr.setValue("None");
                 
@@ -1175,15 +1144,12 @@ public class ThriftyStoreGUI extends Application {
                     saltotal += r.finalTotal;
                 }
                 txtsaltotal.setText(String.valueOf(saltotal));
-                //String[] days = {"None", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
                 
                 cboxsalday.getItems().addAll(dayItems);
                 cboxsalday.setValue("None");
-                //String[] months = {"None", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
                 
                 cboxsalmonth.getItems().addAll(monthItems);
                 cboxsalmonth.setValue("None");
-                //String[] years = {"None", "2019", "2020", "2021"};
                 
                 cboxsalyr.getItems().addAll(yearItems);
                 cboxsalyr.setValue("None");
@@ -1191,7 +1157,6 @@ public class ThriftyStoreGUI extends Application {
                     
                     strday = String.valueOf(cboxsalday.getValue());
                     
-                    //day = String.valueOf(cboxsalday.getValue());
                     
                     strmonth = String.valueOf(cboxsalmonth.getValue());
                     
@@ -1234,7 +1199,6 @@ public class ThriftyStoreGUI extends Application {
                     }
                     txtsaltotal.setText(String.valueOf(viewtotal));
                 });
-                //SupTable.setMinWidth(primaryScene.getWidth());
                 SalTable.getColumns().addAll(tblcsalrec, tblcsalamt, tblcsalstore, tblcsaldate);
                 salPane.add(SalTable, 0, 1, 10, 1);
                 salPane.add(btnsalYPER, 0, 4);
@@ -1333,9 +1297,7 @@ public class ThriftyStoreGUI extends Application {
                     salesReport += " YTD : $" + strYTDProfit +"\n";
                     lstExpenses.setText(salesReport);
                     profitData.add(txtsaltotal.getText());
-                    /*for(String s : profitData) {
-                        lstExpenses.setText()
-                    }*/
+                    
                     
                     
                     GridPane listPane = new GridPane();
@@ -1397,7 +1359,8 @@ public class ThriftyStoreGUI extends Application {
                     } catch (FileNotFoundException ex) {
                         Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Profit/Expenses Report has been printed.", ButtonType.OK);
+                    alert.show();
                 });
                         
                 btnsalPOSR.setOnAction( eP -> {
@@ -1601,7 +1564,8 @@ public class ThriftyStoreGUI extends Application {
                         } catch (FileNotFoundException ex) {
                             Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Point of Sales Report has been printed.", ButtonType.OK);
+                        alert.show();
                     });
                 });
 
@@ -1615,9 +1579,7 @@ public class ThriftyStoreGUI extends Application {
                 payPane.add(lblpaydep, 2, 1);
                 payPane.add(cboxpaydep, 3, 1);
                 payPane.add(lblpaydate, 0, 2);
-                payPane.add(cboxpp, 1, 2);
-                //payPane.add(cboxpaymonth, 2, 2);
-                //payPane.add(cboxpayyr, 3, 2);
+                payPane.add(cboxpp, 1, 2);               
                 payPane.add(btnupdatePR, 0, 3);
                 payPane.add(btnpayedit, 1, 3);
                 payPane.add(btnpaycreate, 2, 3);
@@ -1684,7 +1646,6 @@ public class ThriftyStoreGUI extends Application {
                 try {
                     while (dbResults.next()) {
                         String templid = dbResults.getString(1);
-                        //System.out.print(templid);
                         String tempeid = dbResults.getString(2);
                         String tempsdate = dbResults.getString(3);
                         String tempedate = dbResults.getString(4);
@@ -1739,7 +1700,6 @@ public class ThriftyStoreGUI extends Application {
                 TableColumn tblcpayHW = new TableColumn("Hours Worked");
                 TableColumn tblcpayTP = new TableColumn("Total Pay");
                 
-                //tblcpayEID.setCellValueFactory(new PropertyValueFactory<>("empID"));
                 
                 tblcpayEID.setCellValueFactory(new PropertyValueFactory<WorkLog, String>("EmployeeID"));
                 tblcpayWID.setCellValueFactory(new PropertyValueFactory<WorkLog, String>("WorkLogID"));
@@ -1754,7 +1714,6 @@ public class ThriftyStoreGUI extends Application {
                 
                 PayrollTable.getColumns().addAll(tblcpayEID, tblcpayWID, tblcpaySID, tblcpayDID, 
                         tblcpaySD, tblcpayED, tblcpayHP, tblcpayHW, tblcpayTP);
-                //SupTable.setMinWidth(primaryScene.getWidth());
                 payPane.add(PayrollTable, 0, 4, 10, 1);
                 
                 //Controls for Add Employee Payroll Pane
@@ -1989,7 +1948,6 @@ public class ThriftyStoreGUI extends Application {
                 //Adding POS Table
                 POSTable = new TableView<>();
                 POSData = FXCollections.observableArrayList(InvData);
-                //POSTable.setItems(POSData);
                 TableColumn tblcposprod = new TableColumn("Product");
                 TableColumn tblcposprice = new TableColumn("Price");
                 TableColumn tblcposclubprice = new TableColumn("Club Price");
@@ -1999,7 +1957,6 @@ public class ThriftyStoreGUI extends Application {
                 tblcposclubprice.setCellValueFactory(new PropertyValueFactory<Inventory, String>("clubPrice"));
                 
                 POSTable.getColumns().addAll(tblcposprod, tblcposprice, tblcposclubprice);
-                //SupTable.setMinWidth(primaryScene.getWidth());
                 posPane.add(POSTable, 0, 3, 10, 1);
 
                 //final POS Pane controls
@@ -2010,7 +1967,6 @@ public class ThriftyStoreGUI extends Application {
                 posPane.add(lblPOSSAV, 0, 5);
                 posPane.add(txtPOSSAV, 1, 5);
                 posPane.add(btnCheckout, 0, 6);
-                //posPane.add(btnPrintReceipt, 1, 6);
                 posPane.add(btnCancelOrder, 2, 6);
                 
                 txtPOSEID.editableProperty().setValue(false);
@@ -2019,14 +1975,14 @@ public class ThriftyStoreGUI extends Application {
                 AddPOSProdPane.setAlignment(Pos.CENTER);
                 
                 //POS add prod pane controls
-                //AddPOSProdPane.add(txtPOSaddprod, 0, 0);
-                //AddPOSProdPane.add(btnPOSaddprodsrch, 1, 0);
+                
                 AddPOSProdPane.add(btnPOSaddprod, 2, 0);
                 AddPOSProdPane.add(POSaddprodlst, 0, 1, 4, 1);
                 
                 //Filling the product listview
                 POSInvProducts = FXCollections.observableArrayList(InvData);
                 POSaddprodlst.setItems(POSInvProducts);
+                POSaddprodlst.setMinWidth(700);
                 
                 // setting up gridpane alignment for POS search customer pane
                 POSSrchCustPane.setAlignment(Pos.CENTER);
@@ -2051,11 +2007,12 @@ public class ThriftyStoreGUI extends Application {
                 //Filling the customer listview
                 POSCustData = FXCollections.observableArrayList(POSCustArr);
                 lstPOScust.setItems(POSCustData);       
-                        
+                lstPOScust.setMinWidth(700);
+                
                 //Event handlers for POS pane
                 btnPOSprod.setOnAction(eB -> {
                     
-                    System.out.println("yuh its here");
+                    
                     AddPOSProd(POSaddprodStage);
                     
                 });
@@ -2084,19 +2041,7 @@ public class ThriftyStoreGUI extends Application {
                     Logger.getLogger(ThriftyStoreGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
-                // To make sure that Receipt and Customer IDs have accurate values
-                /*if(SalData.get(SalData.size()-1).getReceiptID().equals("po99995")) {
-                    //when there haven't been any pos sales yet
-                } else {
-                    //when there have been a few pos sales
-                    RecIDCount = Integer.parseInt(SalData.get(SalData.size()-1).getReceiptID().substring(3, 7)) + 1;
-                }*/
-                /*if((poscust.isEmpty()) || (poscust.get(poscust.size()-1).equals("cust00010"))) {
-                    //when there haven't been any pos sales yet
-                } else {
-                    //when there have been a few pos sales
-                    CustIDCount = Integer.parseInt(poscust.get(poscust.size()-1).getCustomerID().substring(5, 9)) + 1;
-                }*/
+               
                 btnCheckout.setOnAction (eB -> {
                     
                     if(!POSTable.getItems().isEmpty()) {
@@ -2147,11 +2092,10 @@ public class ThriftyStoreGUI extends Application {
                         sendDBCommand("INSERT INTO PURCHASEORDERITEM VALUES ('"+ r.productID + "', '"+ r.receiptID +
                                 "', '" + r.quantityPurchased +"', '" + r.totalPrice + "')");
                     }
-                    //sendDBCommand("select * from InventoryItem");
+                   
                     for (Inventory i : POSDataArr) {
                         for (ReceiptItem r : tempitems){
                             if(i.productID.equals(r.productID) && i.QIS > 1){
-                                //double tempquant = Double.valueOf(dbResults.getString(3)) - r.quantityPurchased;
                                 sendDBCommand("UPDATE INVENTORYITEM SET QUANTITYINSTOCK = '"+ (i.QIS) + "' WHERE PRODUCTID = '" + r.productID + "'");
                             }
                             else if(i.productID.equals(r.productID) && i.QIS == 1){
@@ -2319,7 +2263,6 @@ public class ThriftyStoreGUI extends Application {
 
     public void AddInventory(Stage AddItemStage, Inventory addInv) {
 
-        //Button addSaveBut = new Button("Save Changes->");
         AddItemStage.setScene(AddInvScene);
         AddItemStage.setTitle("Add Inventory Item");
         AddItemStage.show();
@@ -2359,7 +2302,6 @@ public class ThriftyStoreGUI extends Application {
         editProductStoreLocation.setText(editInv.getStoreID());
         editProductDepartment.setText(editInv.getDeptID());
 
-        //Button editSaveBut = new Button("Save Changes->");
         ItemStage.setScene(ItemScene);
         ItemStage.setTitle("Edit Inventory Item");
         ItemStage.show();
@@ -2406,7 +2348,6 @@ public class ThriftyStoreGUI extends Application {
         editEmployeeType.setText(editEmp.getEmployeeType());
         editEmployeeStore.setText(editEmp.getStoreID());
 
-        //Button editSaveBut = new Button("Save Changes->");
         ItemStage.setScene(EmpScene);
         ItemStage.setTitle("Edit Employee Information");
         ItemStage.show();
@@ -2452,7 +2393,6 @@ public class ThriftyStoreGUI extends Application {
         editContactNumber.setText(editSup.getContactPhone());
         editContactEmail.setText(editSup.getContactEmail());
 
-        //Button editSaveBut = new Button("Save Changes->");
         ItemStage.setScene(SupScene);
         ItemStage.setTitle("Edit Supplier Information");
         ItemStage.show();
@@ -2497,7 +2437,6 @@ public class ThriftyStoreGUI extends Application {
         TableColumn tblcProdName = new TableColumn("ProductName");
         TableColumn tblcProdDescrip = new TableColumn("ProductDescription");
 
-        //SupTable.setMinWidth(primaryScene.getWidth());
         tblcProdSup.setCellValueFactory(new PropertyValueFactory<Product, String>("productID"));
         tblcSupProd.setCellValueFactory(new PropertyValueFactory<Product, String>("supplierID"));
         tblcProdName.setCellValueFactory(new PropertyValueFactory<Product, String>("productName"));
@@ -2543,9 +2482,8 @@ public class ThriftyStoreGUI extends Application {
     
     public void AddExpense(Expense e)
     {
-        ExpTable.getItems().add(e);
-        //ExpData.add(e);
-        
+        ExpData.add(e);        
+               
     }
     
     public void AddInventory(Inventory e)
@@ -2568,8 +2506,7 @@ public class ThriftyStoreGUI extends Application {
         //event handlers
         btnPOSaddprod.setOnAction(eB -> {
             
-            //POSData.add(POSaddprodlst.getSelectionModel().getSelectedItem());
-            //System.out.print(POSaddprodlst.getSelectionModel().getSelectedItem());
+            
             //Search Inventory 
             Inventory tempinv = (Inventory)POSaddprodlst.getSelectionModel().getSelectedItem();
             if(tempinv.getQIS() > 0) {
@@ -2580,7 +2517,6 @@ public class ThriftyStoreGUI extends Application {
                 POSDataArr.add(tempinv);
 
                 //To update POS list inventory values
-                //POSaddprodlst.getItems().clear();
                 for (Inventory td : InvData) { 
                     if(td.equals(tempinv)) {
                         td = tempinv;
@@ -2604,7 +2540,7 @@ public class ThriftyStoreGUI extends Application {
                     POSTable.getItems().add(td);
                 }
 
-                //Determing transaction totals depending on club member statud
+                //Determing transaction totals depending on club member status
                 double totsum = 0;
                 double savsum = 0;
                 if((!cboxPOSclub.getSelectionModel().isEmpty()) && cboxPOSclub.getSelectionModel().getSelectedItem().toString().equals("yes"))
@@ -2636,7 +2572,7 @@ public class ThriftyStoreGUI extends Application {
         
         cboxPOSclub.setOnAction(eB -> {
             
-            //Determing transaction totals depending on club member statud
+            //Determing transaction totals depending on club member status
             double totsum = 0;
             double savsum = 0;
             if((!cboxPOSclub.getSelectionModel().isEmpty()) && cboxPOSclub.getSelectionModel().getSelectedItem().toString().equals("yes"))
@@ -2731,25 +2667,7 @@ public class ThriftyStoreGUI extends Application {
             }
         });
         
-        /**
-        POSsrchcustStage.setScene(POSCustScene);
-        POSsrchcustStage.setTitle("Search for Product");
-        POSsrchcustStage.show();
         
-        lstPOScust.getItems().clear();
-        for (ClubMember cm : POSCustArr) { 
-            lstPOScust.getItems().add(cm);
-        }
-        
-        butPOSCustSel.setOnAction(eB -> {
-            
-            ClubMember tempcm = (ClubMember)lstPOScust.getSelectionModel().getSelectedItem();
-            txtPOSEID.setText(tempcm.getCustomerID());
-            if(!lstPOScust.getSelectionModel().isEmpty())
-                cboxPOSclub.getSelectionModel().select(0);
-            
-        });
-        **/
     }
     
     public void EditPayroll(Stage daStage, WorkLog editWorkLog) {
@@ -2810,7 +2728,8 @@ public class ThriftyStoreGUI extends Application {
             PayrollTable.setItems(PayrollData);
             
             //Insert Code to update the worklog in the database here:
-            
+            sendDBCommand("UPDATE EMPLOYEEWORKLOG SET EMPLOYEEID = '" + EPeid + "', STARTDATE = TO_DATE('" + EPsd + "', 'YYYY-MM-DD'), ENDDATE = TO_DATE('" + EPed + "', 'YYYY-MM-DD') WHERE LOGID = '"+ editWorkLog.worklogID + "'");
+            sendDBCommand("commit");
         });
         
     }
@@ -2839,7 +2758,7 @@ public class ThriftyStoreGUI extends Application {
             }
             
             //Note: assigning autogenerated worklog IDs
-            WorkLog tempWL = new WorkLog("log" + WLIDCount, CPeid, CPdid, CPsd, CPed,
+            tempWL = new WorkLog("log" + WLIDCount, CPeid, CPdid, CPsd, CPed,
             CPpr, CPhw);
             
             //To add new PayPeriod to the date combobox
@@ -2871,7 +2790,8 @@ public class ThriftyStoreGUI extends Application {
             PayrollTable.setItems(PayrollData);
             
             //Insert Code to insert new WorkLog into database here:
-            
+            sendDBCommand("INSERT INTO EMPLOYEEWORKLOG VALUES ('" + tempWL.worklogID + "', '" + tempWL.empID + "', TO_DATE('" + tempWL.startDate + "', 'YYYY-MM-DD'), TO_DATE('" + tempWL.endDate + "', 'YYYY-MM-DD'))");
+            sendDBCommand("commit");
         });
         
     }
